@@ -1,17 +1,20 @@
 package emily.command.test;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import emily.command.bot_administration.BotStatusCommand;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class BotStatusCommandTest {
+public class BotStatusCommandTest {
+    BotStatusCommand a = new BotStatusCommand();
 
     @Test
-    void getDescription() {
+    public void getDescription() {
+        assertTrue(a.getDescription() != null);
     }
 
     @Test
     void getCommand() {
+        assertTrue(a.getCommand() != null);
     }
 
     @Test

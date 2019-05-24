@@ -1,10 +1,10 @@
 package emily.command.test;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import emily.command.informative.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class UptimeCommandTest {
+public class UptimeCommandTest {
 
     @Test
     void getDescription() {

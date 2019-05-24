@@ -1,10 +1,10 @@
 package emily.command.test;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import emily.command.music.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class PlaylistCommandTest {
+public class PlaylistCommandTest {
 
     @Test
     void getDescription() {
