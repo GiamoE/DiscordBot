@@ -1,12 +1,15 @@
 package emily.command.test;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import static org.junit.Assert.*;
+import emily.command.informative.*;
 
 @RunWith(JUnit4.class)
 public class UptimeCommandTest {
+
+    UptimeCommand a = new UptimeCommand();
 
     public UptimeCommandTest() {
         super();
@@ -14,7 +17,7 @@ public class UptimeCommandTest {
 
     @Test
     public void getDescription() {
-        Assert.assertFalse(true);
+        assertTrue(a.getDescription() != null);
     }
 
     @Test
