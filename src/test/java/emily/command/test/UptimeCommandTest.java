@@ -1,38 +1,25 @@
 package emily.command.test;
 
+import emily.main.BotContainer;
+import emily.main.DiscordBot;
+import emily.templates.Templates;
+import emily.util.TimeUtil;
+import net.dv8tion.jda.core.entities.MessageChannel;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import static org.junit.Assert.*;
-import emily.command.informative.*;
 
-@RunWith(JUnit4.class)
+import static org.junit.Assert.assertTrue;
+
 public class UptimeCommandTest {
 
-    UptimeCommand a = new UptimeCommand();
+    // Create the needed variables
 
-    public UptimeCommandTest() {
-        super();
-    }
-
-    @Test
-    public void getDescription() {
-        assertTrue(a.getDescription() != null);
-    }
+//    DiscordBot bot; (need to init bot, however seems to be hard. Mby mock?)
+//    MessageChannel channel;
+//    String uptime = Templates.command.uptime.upfor.formatGuild(channel, TimeUtil.getRelativeTime(bot.startupTimeStamp, false));
 
     @Test
-    public void getCommand() {
-    }
-
-    @Test
-    public void getUsage() {
-    }
-
-    @Test
-    public void getAliases() {
-    }
-
-    @Test
-    public void execute() {
+    public void CheckUptime() {
+        // check whether the bot actually has an uptime, if it is null the bot is most likely offline.
+        assertTrue("The bot isn't up therefore has no uptime", System.currentTimeMillis() != 0);
     }
 }

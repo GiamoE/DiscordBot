@@ -2,8 +2,8 @@ package emily.command.test;
 
 import emily.permission.SimpleRank;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import emily.command.bot_administration.BotStatusCommand;
+
+import static org.junit.Assert.assertTrue;
 
 public class BotStatusCommandTest {
 
