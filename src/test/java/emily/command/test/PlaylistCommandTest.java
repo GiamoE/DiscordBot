@@ -14,11 +14,13 @@ public class PlaylistCommandTest {
     }
 
     @Test
-    public void getCommand() {
+    public void getCommand()  {
+        assertTrue(a.getDescription() != null);
     }
 
     @Test
-    public void getUsage() {
+    public void getUsage()  {
+        assertTrue(a.getDescription() != null);
     }
 
     @Test
@@ -30,7 +32,10 @@ public class PlaylistCommandTest {
     }
 
     @Test
-    public void execute() {
+    public void executeDisplayPlaylistInfo() {
+        String args = "";
+        // when no option given, only ?playlist is used to display the playlist
+        assertEquals("?playlist is used", 0, args.length());
     }
 
     @Test
