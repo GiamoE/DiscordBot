@@ -1,35 +1,24 @@
 package emily.command.test;
 
+import emily.permission.SimpleRank;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import emily.command.music.*;
 
 public class SkipTrackTest {
 
-    SkipTrack a = new SkipTrack();
-
     @Test
-    public void getDescription() {
-        assertTrue(a.getDescription() != null);
+    public void executeSkipSong() {
+        SimpleRank userRank = SimpleRank.GUILD_ADMIN;
+        boolean adminOnly = true;
+
+        assertTrue("Admin only & guild admin", adminOnly && userRank == SimpleRank.GUILD_ADMIN);
     }
 
     @Test
-    public void getCommand() {
-    }
+    public void executeSkipSongByVote() {
+        int voteCount = 1;
+        int requiredVotes = 1;
 
-    @Test
-    public void getUsage() {
-    }
-
-    @Test
-    public void getVisibility() {
-    }
-
-    @Test
-    public void getAliases() {
-    }
-
-    @Test
-    public void execute() {
+        assertTrue("Skip by vote", voteCount >= requiredVotes);
     }
 }
