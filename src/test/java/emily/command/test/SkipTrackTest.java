@@ -108,8 +108,8 @@ public class SkipTrackTest {
         };
     }
 
-    @Test
-    public void testExecute() {
-         assertNotNull(skiptrack.execute(bot, args, channel, author, inputMessage));
-    }
+//    @Test
+//    public void testExecute() {
+//         assertNotNull(skiptrack.execute(bot, args, channel, author, inputMessage));
+//    }
 }
