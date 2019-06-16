@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -109,6 +110,6 @@ public class SkipTrackTest {
 
     @Test
     public void testExecute() {
-        skiptrack.execute(bot, args, channel, author, inputMessage);
+         assertNotNull(skiptrack.execute(bot, args, channel, author, inputMessage));
     }
 }

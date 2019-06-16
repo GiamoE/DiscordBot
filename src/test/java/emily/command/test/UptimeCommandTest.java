@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.assertNotNull;
+
 public class UptimeCommandTest {
 
     @Mock DiscordBot bot;
@@ -30,6 +32,6 @@ public class UptimeCommandTest {
 
     @Test
     public void testExecute() {
-        uptimeCommand.execute(bot, args, channel, author, inputMessage);
+        assertNotNull(uptimeCommand.execute(bot, args, channel, author, inputMessage));
     }
 }
