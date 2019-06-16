@@ -57,4 +57,8 @@ public class KickCommand extends AbstractModActionCommand {
         bot.queue.add(guild.getController().kick(member));
         return true;
     }
+//
+//    public boolean publicPunish(DiscordBot bot, Guild guild, Member member) {
+//        return punish(bot, guild, member);
+//    }
 }
