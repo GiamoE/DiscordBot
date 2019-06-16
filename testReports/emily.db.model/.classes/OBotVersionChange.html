@@ -1,0 +1,195 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: OBotVersionChange</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.db.model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: OBotVersionChange (emily.db.model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OBotVersionChange</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">OBotVersionChange$ChangeType</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 30)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.db.model;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.util.Emojibet;
+<i>20</i>&nbsp;
+<b class="nc"><i>21</i>&nbsp;public class OBotVersionChange {</b>
+<i>22</i>&nbsp;
+<b class="nc"><i>23</i>&nbsp;    public int id = 0;</b>
+<b class="nc"><i>24</i>&nbsp;    public int author = 0;</b>
+<b class="nc"><i>25</i>&nbsp;    public String description = &quot;&quot;;</b>
+<b class="nc"><i>26</i>&nbsp;    public int version = 0;</b>
+<b class="nc"><i>27</i>&nbsp;    public ChangeType changeType = ChangeType.UNKNOWN;</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    public void setChangeType(int changeType) {
+<b class="nc"><i>30</i>&nbsp;        this.changeType = ChangeType.fromId(changeType);</b>
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<b class="nc"><i>33</i>&nbsp;    public enum ChangeType {</b>
+<b class="nc"><i>34</i>&nbsp;        ADDED(1, &quot;A&quot;, &quot;Added&quot;, Emojibet.CHECK_MARK_GREEN),</b>
+<b class="nc"><i>35</i>&nbsp;        CHANGED(2, &quot;C&quot;, &quot;Changed&quot;, Emojibet.WRENCH),</b>
+<b class="nc"><i>36</i>&nbsp;        REMOVED(3, &quot;R&quot;, &quot;Removed&quot;, Emojibet.BASKET),</b>
+<b class="nc"><i>37</i>&nbsp;        FIXED(4, &quot;F&quot;, &quot;Bugs fixed&quot;, Emojibet.BUG),</b>
+<b class="nc"><i>38</i>&nbsp;        UNKNOWN(5, &quot;?&quot;, &quot;Misc&quot;, Emojibet.QUESTION_MARK);</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;        private final int id;
+<i>41</i>&nbsp;        private final String title;
+<i>42</i>&nbsp;        private final String code;
+<i>43</i>&nbsp;        private final String emoji;
+<i>44</i>&nbsp;
+<b class="nc"><i>45</i>&nbsp;        ChangeType(int id, String code, String title, String emoji) {</b>
+<b class="nc"><i>46</i>&nbsp;            this.title = title;</b>
+<b class="nc"><i>47</i>&nbsp;            this.id = id;</b>
+<b class="nc"><i>48</i>&nbsp;            this.code = code;</b>
+<b class="nc"><i>49</i>&nbsp;            this.emoji = emoji;</b>
+<i>50</i>&nbsp;        }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;        public static ChangeType fromId(int id) {
+<b class="nc"><i>53</i>&nbsp;            for (ChangeType et : values()) {</b>
+<b class="nc"><i>54</i>&nbsp;                if (id == et.getId()) {</b>
+<b class="nc"><i>55</i>&nbsp;                    return et;</b>
+<i>56</i>&nbsp;                }
+<i>57</i>&nbsp;            }
+<b class="nc"><i>58</i>&nbsp;            return UNKNOWN;</b>
+<i>59</i>&nbsp;        }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;        public static ChangeType fromCode(String code) {
+<b class="nc"><i>62</i>&nbsp;            for (ChangeType et : values()) {</b>
+<b class="nc"><i>63</i>&nbsp;                if (code.equalsIgnoreCase(et.getCode())) {</b>
+<b class="nc"><i>64</i>&nbsp;                    return et;</b>
+<i>65</i>&nbsp;                }
+<i>66</i>&nbsp;            }
+<b class="nc"><i>67</i>&nbsp;            return UNKNOWN;</b>
+<i>68</i>&nbsp;        }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;        public String getEmoji() {
+<b class="nc"><i>71</i>&nbsp;            return emoji;</b>
+<i>72</i>&nbsp;        }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;        public int getId() {
+<b class="nc"><i>75</i>&nbsp;            return id;</b>
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        public String getTitle() {
+<b class="nc"><i>79</i>&nbsp;            return title;</b>
+<i>80</i>&nbsp;        }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;        public String getCode() {
+<b class="nc"><i>83</i>&nbsp;            return code;</b>
+<i>84</i>&nbsp;        }
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,285 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UserRankCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.creator</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UserRankCommand (emily.command.creator)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserRankCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 82)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.creator;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>20</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>21</i>&nbsp;import emily.db.controllers.CRank;
+<i>22</i>&nbsp;import emily.db.controllers.CUser;
+<i>23</i>&nbsp;import emily.db.controllers.CUserRank;
+<i>24</i>&nbsp;import emily.db.model.ORank;
+<i>25</i>&nbsp;import emily.db.model.OUser;
+<i>26</i>&nbsp;import emily.db.model.OUserRank;
+<i>27</i>&nbsp;import emily.handler.SecurityHandler;
+<i>28</i>&nbsp;import emily.main.DiscordBot;
+<i>29</i>&nbsp;import emily.permission.SimpleRank;
+<i>30</i>&nbsp;import emily.templates.Templates;
+<i>31</i>&nbsp;import emily.util.DisUtil;
+<i>32</i>&nbsp;import emily.util.Misc;
+<i>33</i>&nbsp;import net.dv8tion.jda.core.entities.Member;
+<i>34</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>35</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>36</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>37</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;import java.util.ArrayList;
+<i>40</i>&nbsp;import java.util.Arrays;
+<i>41</i>&nbsp;import java.util.Collection;
+<i>42</i>&nbsp;import java.util.List;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;/**
+<i>45</i>&nbsp; * !userrank
+<i>46</i>&nbsp; */
+<i>47</i>&nbsp;public class UserRankCommand extends AbstractCommand {
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public UserRankCommand() {
+<b class="nc"><i>50</i>&nbsp;        super();</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    @Override
+<i>54</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>55</i>&nbsp;        return &quot;This command is intended for bot admins&quot;;</b>
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    @Override
+<i>59</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>60</i>&nbsp;        return &quot;userrank&quot;;</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    @Override
+<i>64</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>65</i>&nbsp;        return new String[]{</b>
+<i>66</i>&nbsp;                &quot;userrank &lt;user&gt;                   //check rank of user&quot;,
+<i>67</i>&nbsp;                &quot;userrank &lt;user&gt; &lt;rank&gt;            //gives a rank to user&quot;,
+<i>68</i>&nbsp;                &quot;userrank &lt;user&gt; perm &lt;+/-&gt; &lt;node&gt; //adds/removes permission from user&quot;,
+<i>69</i>&nbsp;                &quot;userrank permlist                 //lists all permissions&quot;,
+<i>70</i>&nbsp;                &quot;userrank ranks                    //lists all ranks&quot;,
+<i>71</i>&nbsp;        };
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    @Override
+<i>75</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>76</i>&nbsp;        return new String[]{</b>
+<i>77</i>&nbsp;                &quot;ur&quot;
+<i>78</i>&nbsp;        };
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    @Override
+<i>82</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>83</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    @Override
+<i>87</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>88</i>&nbsp;        SimpleRank authorRank = bot.security.getSimpleRank(author);</b>
+<b class="nc"><i>89</i>&nbsp;        if (!authorRank.isAtLeast(SimpleRank.BOT_ADMIN)) {</b>
+<b class="nc"><i>90</i>&nbsp;            return Templates.no_permission.formatGuild(channel);</b>
+<i>91</i>&nbsp;        }
+<b class="nc"><i>92</i>&nbsp;        if (args.length == 0) {</b>
+<b class="nc"><i>93</i>&nbsp;            return Templates.invalid_use.formatGuild(channel);</b>
+<i>94</i>&nbsp;        }
+<b class="nc"><i>95</i>&nbsp;        if (args[0].equals(&quot;permlist&quot;)) {</b>
+<b class="nc"><i>96</i>&nbsp;            return &quot;Available permissions: \n&quot; +</b>
+<b class="nc"><i>97</i>&nbsp;                    tableFor(Arrays.asList(OUser.PermissionNode.values()));</b>
+<i>98</i>&nbsp;        }
+<b class="nc"><i>99</i>&nbsp;        if (args[0].equals(&quot;ranks&quot;)) {</b>
+<b class="nc"><i>100</i>&nbsp;            return &quot;Available permissions: \n&quot; +</b>
+<b class="nc"><i>101</i>&nbsp;                    tableFor(SimpleRank.values());</b>
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;        User user;
+<b class="nc"><i>104</i>&nbsp;        if (DisUtil.isUserMention(args[0])) {</b>
+<b class="nc"><i>105</i>&nbsp;            user = channel.getJDA().getUserById(DisUtil.mentionToId(args[0]));</b>
+<b class="nc"><i>106</i>&nbsp;        } else if (args[0].matches(&quot;^i\\d+$&quot;)) {</b>
+<b class="nc"><i>107</i>&nbsp;            user = channel.getJDA().getUserById(CUser.getCachedDiscordId(Integer.parseInt(args[0].substring(1))));</b>
+<i>108</i>&nbsp;        } else {
+<b class="nc"><i>109</i>&nbsp;            Member member = DisUtil.findUserIn((TextChannel) channel, args[0]);</b>
+<b class="nc"><i>110</i>&nbsp;            if (member != null) {</b>
+<b class="nc"><i>111</i>&nbsp;                user = member.getUser();</b>
+<i>112</i>&nbsp;            } else {
+<b class="nc"><i>113</i>&nbsp;                user = null;</b>
+<i>114</i>&nbsp;            }
+<i>115</i>&nbsp;        }
+<b class="nc"><i>116</i>&nbsp;        if (user == null) {</b>
+<b class="nc"><i>117</i>&nbsp;            return Templates.config.cant_find_user.formatGuild(channel, args[0]);</b>
+<i>118</i>&nbsp;        }
+<b class="nc"><i>119</i>&nbsp;        SimpleRank targetOldRank = bot.security.getSimpleRank(user);</b>
+<b class="nc"><i>120</i>&nbsp;        OUser dbUser = CUser.findBy(user.getIdLong());</b>
+<b class="nc"><i>121</i>&nbsp;        if (args.length == 1) {</b>
+<b class="nc"><i>122</i>&nbsp;            OUserRank userRank = CUserRank.findBy(user.getIdLong());</b>
+<b class="nc"><i>123</i>&nbsp;            if (userRank.rankId == 0 &amp;&amp; !targetOldRank.isAtLeast(SimpleRank.CREATOR)) {</b>
+<b class="nc"><i>124</i>&nbsp;                return Templates.command.userrank.no_rank.formatGuild(channel, user.getName());</b>
+<b class="nc"><i>125</i>&nbsp;            } else if (targetOldRank.isAtLeast(SimpleRank.CREATOR)) {</b>
+<b class="nc"><i>126</i>&nbsp;                return Templates.command.userrank.rank.formatGuild(channel, user, &quot;creator&quot;);</b>
+<i>127</i>&nbsp;            } else {
+<b class="nc"><i>128</i>&nbsp;                return Templates.command.userrank.rank.formatGuild(channel, user, CRank.findById(userRank.rankId).codeName);</b>
+<i>129</i>&nbsp;            }
+<b class="nc"><i>130</i>&nbsp;        } else if (args[1].equals(&quot;perm&quot;)) {</b>
+<i>131</i>&nbsp;
+<b class="nc"><i>132</i>&nbsp;            if (args.length &lt; 4) {</b>
+<b class="nc"><i>133</i>&nbsp;                if (dbUser.getPermission().isEmpty()) {</b>
+<b class="nc"><i>134</i>&nbsp;                    return &quot;No permissions set for &quot; + user.getName();</b>
+<i>135</i>&nbsp;                }
+<b class="nc"><i>136</i>&nbsp;                return &quot;Permissions for &quot; + user.getName() + &quot;\n&quot; +</b>
+<b class="nc"><i>137</i>&nbsp;                        tableFor(dbUser.getPermission());</b>
+<i>138</i>&nbsp;            }
+<b class="nc"><i>139</i>&nbsp;            boolean adding = true;</b>
+<b class="nc"><i>140</i>&nbsp;            switch (args[2].toLowerCase()) {</b>
+<i>141</i>&nbsp;                case &quot;-&quot;:
+<i>142</i>&nbsp;                case &quot;del&quot;:
+<i>143</i>&nbsp;                case &quot;rem&quot;:
+<i>144</i>&nbsp;                case &quot;min&quot;:
+<i>145</i>&nbsp;                case &quot;remove&quot;:
+<i>146</i>&nbsp;                case &quot;delete&quot;:
+<b class="nc"><i>147</i>&nbsp;                    adding = false;</b>
+<i>148</i>&nbsp;                    break;
+<i>149</i>&nbsp;            }
+<i>150</i>&nbsp;            try {
+<b class="nc"><i>151</i>&nbsp;                OUser.PermissionNode node = OUser.PermissionNode.valueOf(args[3].toUpperCase());</b>
+<b class="nc"><i>152</i>&nbsp;                if (adding) {</b>
+<b class="nc"><i>153</i>&nbsp;                    dbUser.addPermission(node);</b>
+<b class="nc"><i>154</i>&nbsp;                    CUser.update(dbUser);</b>
+<b class="nc"><i>155</i>&nbsp;                    return String.format(&quot;:+1: adding `%s` to %s&quot;, node.toString(), user.getName());</b>
+<i>156</i>&nbsp;                }
+<b class="nc"><i>157</i>&nbsp;                dbUser.removePermission(node);</b>
+<b class="nc"><i>158</i>&nbsp;                CUser.update(dbUser);</b>
+<b class="nc"><i>159</i>&nbsp;                return String.format(&quot;:+1: removed `%s` from %s&quot;, node.toString(), user.getName());</b>
+<b class="nc"><i>160</i>&nbsp;            } catch (Exception e) {</b>
+<b class="nc"><i>161</i>&nbsp;                return &quot;Invalid permission node&quot;;</b>
+<i>162</i>&nbsp;            }
+<b class="nc"><i>163</i>&nbsp;        } else if (args.length == 2) {</b>
+<b class="nc"><i>164</i>&nbsp;            SimpleRank targetNewRank = args[1].equals(&quot;none&quot;) ? SimpleRank.USER : SimpleRank.findRank(args[1]);</b>
+<b class="nc"><i>165</i>&nbsp;            if (targetNewRank == null) {</b>
+<b class="nc"><i>166</i>&nbsp;                return Templates.command.userrank.not_exists.formatGuild(channel, args[1]);</b>
+<i>167</i>&nbsp;            }
+<b class="nc"><i>168</i>&nbsp;            if (!authorRank.isHigherThan(targetNewRank) || !authorRank.isHigherThan(targetOldRank)) {</b>
+<b class="nc"><i>169</i>&nbsp;                return Templates.no_permission.formatGuild(channel);</b>
+<i>170</i>&nbsp;            }
+<b class="nc"><i>171</i>&nbsp;            ORank targetDbRank = CRank.findBy(args[1]);</b>
+<b class="nc"><i>172</i>&nbsp;            if (targetDbRank.id == 0) {</b>
+<b class="nc"><i>173</i>&nbsp;                targetDbRank.codeName = targetNewRank.name();</b>
+<b class="nc"><i>174</i>&nbsp;                targetDbRank.fullName = targetNewRank.name().toLowerCase();</b>
+<b class="nc"><i>175</i>&nbsp;                CRank.insert(targetDbRank);</b>
+<i>176</i>&nbsp;            }
+<b class="nc"><i>177</i>&nbsp;            OUserRank userRank = CUserRank.findBy(CUser.getCachedId(user.getIdLong(), user.getName()));</b>
+<b class="nc"><i>178</i>&nbsp;            userRank.rankId = targetDbRank.id;</b>
+<b class="nc"><i>179</i>&nbsp;            CUserRank.insertOrUpdate(userRank);</b>
+<b class="nc"><i>180</i>&nbsp;            SecurityHandler.initialize();</b>
+<b class="nc"><i>181</i>&nbsp;            return Templates.command.userrank.rank.formatGuild(channel, user, targetDbRank.codeName);</b>
+<i>182</i>&nbsp;        }
+<b class="nc"><i>183</i>&nbsp;        return Templates.invalid_use.formatGuild(channel);</b>
+<i>184</i>&nbsp;    }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    private String tableFor(Collection&lt;OUser.PermissionNode&gt; nodes) {
+<b class="nc"><i>187</i>&nbsp;        List&lt;List&lt;String&gt;&gt; tbl = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>188</i>&nbsp;        for (OUser.PermissionNode node : nodes) {</b>
+<b class="nc"><i>189</i>&nbsp;            tbl.add(Arrays.asList(node.toString(), node.getDescription()));</b>
+<b class="nc"><i>190</i>&nbsp;        }</b>
+<b class="nc"><i>191</i>&nbsp;        return Misc.makeAsciiTable(Arrays.asList(&quot;code&quot;, &quot;description&quot;), tbl, null);</b>
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    private String tableFor(SimpleRank[] ranks) {
+<b class="nc"><i>195</i>&nbsp;        List&lt;List&lt;String&gt;&gt; tbl = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>196</i>&nbsp;        for (int i = ranks.length - 1; i &gt;= 0; i--) {</b>
+<b class="nc"><i>197</i>&nbsp;            SimpleRank rank = ranks[i];</b>
+<b class="nc"><i>198</i>&nbsp;            tbl.add(Arrays.asList(rank.toString(), rank.getDescription()));</b>
+<i>199</i>&nbsp;        }
+<b class="nc"><i>200</i>&nbsp;        return Misc.makeAsciiTable(Arrays.asList(&quot;code&quot;, &quot;description&quot;), tbl, null);</b>
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

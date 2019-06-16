@@ -1,0 +1,183 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DefaultGuildSettings</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.guildsettings</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DefaultGuildSettings (emily.guildsettings)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DefaultGuildSettings</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.guildsettings;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import java.util.ArrayList;
+<i>20</i>&nbsp;import java.util.Arrays;
+<i>21</i>&nbsp;import java.util.List;
+<i>22</i>&nbsp;import java.util.TreeSet;
+<i>23</i>&nbsp;
+<b class="nc"><i>24</i>&nbsp;public class DefaultGuildSettings {</b>
+<b class="nc"><i>25</i>&nbsp;    private static final TreeSet&lt;String&gt; tags = new TreeSet&lt;&gt;();</b>
+<b class="nc"><i>26</i>&nbsp;    private static boolean initialized = false;</b>
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    static {
+<b class="nc"><i>29</i>&nbsp;        initSettings();</b>
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public static TreeSet&lt;String&gt; getAllTags() {
+<b class="nc"><i>33</i>&nbsp;        return new TreeSet&lt;&gt;(tags);</b>
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public static String getDefault(String key) {
+<b class="nc"><i>37</i>&nbsp;        return GSetting.valueOf(key).getDefaultValue();</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public static int countSettings() {
+<b class="nc"><i>41</i>&nbsp;        return countSettings(true);</b>
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public static int countSettings(boolean includeReadOnly) {
+<b class="nc"><i>45</i>&nbsp;        if (includeReadOnly) {</b>
+<b class="nc"><i>46</i>&nbsp;            return GSetting.values().length;</b>
+<i>47</i>&nbsp;        }
+<b class="nc"><i>48</i>&nbsp;        return (int) Arrays.stream(GSetting.values()).filter(gSetting -&gt; !gSetting.isInternal()).count();</b>
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public static List&lt;String&gt; getWritableKeys() {
+<b class="nc"><i>52</i>&nbsp;        ArrayList&lt;String&gt; set = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>53</i>&nbsp;        for (GSetting setting : GSetting.values()) {</b>
+<b class="nc"><i>54</i>&nbsp;            if (setting.isInternal()) {</b>
+<b class="nc"><i>55</i>&nbsp;                continue;</b>
+<i>56</i>&nbsp;            }
+<b class="nc"><i>57</i>&nbsp;            set.add(setting.name());</b>
+<i>58</i>&nbsp;        }
+<b class="nc"><i>59</i>&nbsp;        return set;</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public static List&lt;String&gt; getAllKeys() {
+<b class="nc"><i>63</i>&nbsp;        ArrayList&lt;String&gt; set = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>64</i>&nbsp;        for (GSetting setting : GSetting.values()) {</b>
+<b class="nc"><i>65</i>&nbsp;            set.add(setting.name());</b>
+<i>66</i>&nbsp;        }
+<b class="nc"><i>67</i>&nbsp;        return set;</b>
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public static GSetting get(String key) {
+<b class="nc"><i>71</i>&nbsp;        return GSetting.valueOf(key.toUpperCase());</b>
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public static String getDefault(GSetting setting) {
+<b class="nc"><i>75</i>&nbsp;        return setting.getDefaultValue();</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public static boolean isValidKey(String key) {
+<i>79</i>&nbsp;        try {
+<b class="nc"><i>80</i>&nbsp;            GSetting.valueOf(key.toUpperCase());</b>
+<b class="nc"><i>81</i>&nbsp;            return true;</b>
+<b class="nc"><i>82</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>83</i>&nbsp;            return false;</b>
+<i>84</i>&nbsp;        }
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    private static void initSettings() {
+<b class="nc"><i>88</i>&nbsp;        if (initialized) {</b>
+<i>89</i>&nbsp;            return;
+<i>90</i>&nbsp;        }
+<b class="nc"><i>91</i>&nbsp;        for (GSetting setting : GSetting.values()) {</b>
+<b class="nc"><i>92</i>&nbsp;            for (GSettingTag tag : setting.getTags()) {</b>
+<b class="nc"><i>93</i>&nbsp;                if (!tags.contains(tag.name())) {</b>
+<b class="nc"><i>94</i>&nbsp;                    tags.add(tag.name());</b>
+<i>95</i>&nbsp;                }
+<b class="nc"><i>96</i>&nbsp;            }</b>
+<b class="nc"><i>97</i>&nbsp;            initialized = true;</b>
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

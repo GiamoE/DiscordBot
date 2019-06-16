@@ -1,0 +1,209 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ChangeLogAdminCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.creator</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ChangeLogAdminCommand (emily.command.creator)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ChangeLogAdminCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.creator;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>20</i>&nbsp;import emily.db.controllers.CBotVersionChanges;
+<i>21</i>&nbsp;import emily.db.controllers.CBotVersions;
+<i>22</i>&nbsp;import emily.db.model.OBotVersion;
+<i>23</i>&nbsp;import emily.db.model.OBotVersionChange;
+<i>24</i>&nbsp;import emily.main.DiscordBot;
+<i>25</i>&nbsp;import emily.main.Launcher;
+<i>26</i>&nbsp;import emily.main.ProgramVersion;
+<i>27</i>&nbsp;import emily.permission.SimpleRank;
+<i>28</i>&nbsp;import emily.templates.Templates;
+<i>29</i>&nbsp;import emily.util.Emojibet;
+<i>30</i>&nbsp;import emily.util.Misc;
+<i>31</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>32</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>33</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>34</i>&nbsp;
+<b class="nc"><i>35</i>&nbsp;public class ChangeLogAdminCommand extends AbstractCommand {</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    @Override
+<i>38</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>39</i>&nbsp;        return &quot;manage the changelog&quot;;</b>
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    @Override
+<i>43</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>44</i>&nbsp;        return &quot;cla&quot;;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    @Override
+<i>48</i>&nbsp;    public boolean isListed() {
+<b class="nc"><i>49</i>&nbsp;        return true;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    @Override
+<i>53</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>54</i>&nbsp;        return new String[]{</b>
+<i>55</i>&nbsp;                &quot;cla &lt;version&gt; &lt;type&gt; &lt;message&gt;     //adds a change to &lt;version&gt; of &lt;type&gt; with &lt;message&gt;&quot;,
+<i>56</i>&nbsp;                &quot;cla current &lt;type&gt; &lt;message&gt;       //shortcut for current version&quot;,
+<i>57</i>&nbsp;                &quot;cla next &lt;type&gt; &lt;message&gt;          // ^ next version&quot;,
+<i>58</i>&nbsp;                &quot;cla types&quot;,
+<i>59</i>&nbsp;                &quot;cla &lt;version&gt; publish &lt;true/false&gt; //publish the log for version (or not)&quot;
+<i>60</i>&nbsp;        };
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    @Override
+<i>64</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>65</i>&nbsp;        return new String[]{};</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    @Override
+<i>69</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>70</i>&nbsp;        if (!bot.security.getSimpleRank(author).isAtLeast(SimpleRank.CREATOR)) {</b>
+<b class="nc"><i>71</i>&nbsp;            return Templates.no_permission.formatGuild(channel);</b>
+<i>72</i>&nbsp;        }
+<b class="nc"><i>73</i>&nbsp;        if (args.length == 1) {</b>
+<b class="nc"><i>74</i>&nbsp;            switch (args[0].toLowerCase()) {</b>
+<i>75</i>&nbsp;                case &quot;types&quot;:
+<b class="nc"><i>76</i>&nbsp;                    return printTypes();</b>
+<i>77</i>&nbsp;            }
+<i>78</i>&nbsp;        }
+<b class="nc"><i>79</i>&nbsp;        if (args.length &lt; 3) {</b>
+<b class="nc"><i>80</i>&nbsp;            return Templates.invalid_use.formatGuild(channel);</b>
+<i>81</i>&nbsp;        }
+<i>82</i>&nbsp;        ProgramVersion v;
+<i>83</i>&nbsp;        OBotVersion version;
+<b class="nc"><i>84</i>&nbsp;        if (args[0].equalsIgnoreCase(&quot;current&quot;)) {</b>
+<b class="nc"><i>85</i>&nbsp;            v = Launcher.getVersion();</b>
+<b class="nc"><i>86</i>&nbsp;            version = CBotVersions.findBy(v);</b>
+<b class="nc"><i>87</i>&nbsp;            if (version.id == 0) {</b>
+<b class="nc"><i>88</i>&nbsp;                version.id = CBotVersions.insert(v, null);</b>
+<i>89</i>&nbsp;            }
+<b class="nc"><i>90</i>&nbsp;        } else if (args[0].equalsIgnoreCase(&quot;next&quot;)) {</b>
+<b class="nc"><i>91</i>&nbsp;            v = CBotVersions.versionAfter(Launcher.getVersion()).getVersion();</b>
+<b class="nc"><i>92</i>&nbsp;            if (Launcher.getVersion().isHigherThan(v)) {</b>
+<b class="nc"><i>93</i>&nbsp;                return Templates.command.cla.version_not_found.formatGuild(channel, args[0]);</b>
+<i>94</i>&nbsp;            }
+<b class="nc"><i>95</i>&nbsp;            version = CBotVersions.findBy(v);</b>
+<i>96</i>&nbsp;        } else {
+<b class="nc"><i>97</i>&nbsp;            v = ProgramVersion.fromString(args[0]);</b>
+<b class="nc"><i>98</i>&nbsp;            version = CBotVersions.findBy(v);</b>
+<b class="nc"><i>99</i>&nbsp;            if (version.id == 0) {</b>
+<b class="nc"><i>100</i>&nbsp;                version.id = CBotVersions.insert(v, null);</b>
+<i>101</i>&nbsp;            }
+<i>102</i>&nbsp;        }
+<b class="nc"><i>103</i>&nbsp;        if (args[1].equals(&quot;publish&quot;)) {</b>
+<b class="nc"><i>104</i>&nbsp;            CBotVersions.publish(v, Misc.isFuzzyTrue(args[2]));</b>
+<b class="nc"><i>105</i>&nbsp;            return &quot;Published &quot; + v.toString() + &quot; &quot; + (Misc.isFuzzyTrue(args[2]) ? Emojibet.OKE_SIGN : Emojibet.X);</b>
+<i>106</i>&nbsp;        }
+<b class="nc"><i>107</i>&nbsp;        OBotVersionChange.ChangeType changeType = OBotVersionChange.ChangeType.fromCode(args[1]);</b>
+<b class="nc"><i>108</i>&nbsp;        if (changeType.equals(OBotVersionChange.ChangeType.UNKNOWN)) {</b>
+<b class="nc"><i>109</i>&nbsp;            return Templates.command.cla.type_unknown.formatGuild(channel, args[1]);</b>
+<i>110</i>&nbsp;        }
+<b class="nc"><i>111</i>&nbsp;        String description = Misc.joinStrings(args, 2);</b>
+<b class="nc"><i>112</i>&nbsp;        if (description.length() &lt; 5) {</b>
+<b class="nc"><i>113</i>&nbsp;            return Templates.command.cla.desc_short.formatGuild(channel);</b>
+<i>114</i>&nbsp;        }
+<b class="nc"><i>115</i>&nbsp;        CBotVersionChanges.insert(version.id, changeType, description);</b>
+<b class="nc"><i>116</i>&nbsp;        return Emojibet.THUMBS_UP;</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    private String printTypes() {
+<b class="nc"><i>120</i>&nbsp;        StringBuilder ret = new StringBuilder(&quot;The following changelog types exist:\n\n&quot;);</b>
+<b class="nc"><i>121</i>&nbsp;        for (OBotVersionChange.ChangeType type : OBotVersionChange.ChangeType.values()) {</b>
+<b class="nc"><i>122</i>&nbsp;            ret.append(String.format(&quot;%s %s\n&quot;, type.getCode(), type.getTitle()));</b>
+<i>123</i>&nbsp;        }
+<b class="nc"><i>124</i>&nbsp;        return ret.toString();</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

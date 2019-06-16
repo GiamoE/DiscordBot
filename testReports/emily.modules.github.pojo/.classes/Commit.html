@@ -1,0 +1,213 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Commit</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.modules.github.pojo</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Commit (emily.modules.github.pojo)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Commit</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.modules.github.pojo;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import com.google.gson.annotations.Expose;
+<i>20</i>&nbsp;import com.google.gson.annotations.SerializedName;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;import javax.annotation.Generated;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;@Generated(&quot;org.jsonschema2pojo&quot;)
+<b class="nc"><i>25</i>&nbsp;public class Commit {</b>
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    @SerializedName(&quot;author&quot;)
+<i>28</i>&nbsp;    @Expose
+<i>29</i>&nbsp;    private AuthorShort authorShort;
+<i>30</i>&nbsp;    @SerializedName(&quot;committer&quot;)
+<i>31</i>&nbsp;    @Expose
+<i>32</i>&nbsp;    private CommitterShort committerShort;
+<i>33</i>&nbsp;    @SerializedName(&quot;message&quot;)
+<i>34</i>&nbsp;    @Expose
+<i>35</i>&nbsp;    private String message;
+<i>36</i>&nbsp;    @SerializedName(&quot;tree&quot;)
+<i>37</i>&nbsp;    @Expose
+<i>38</i>&nbsp;    private Tree tree;
+<i>39</i>&nbsp;    @SerializedName(&quot;url&quot;)
+<i>40</i>&nbsp;    @Expose
+<i>41</i>&nbsp;    private String url;
+<i>42</i>&nbsp;    @SerializedName(&quot;comment_count&quot;)
+<i>43</i>&nbsp;    @Expose
+<i>44</i>&nbsp;    private Integer commentCount;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    /**
+<i>47</i>&nbsp;     * @return The author
+<i>48</i>&nbsp;     */
+<i>49</i>&nbsp;    public AuthorShort getAuthorShort() {
+<b class="nc"><i>50</i>&nbsp;        return authorShort;</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    /**
+<i>54</i>&nbsp;     * @param authorShort The author
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    public void setAuthorShort(AuthorShort authorShort) {
+<b class="nc"><i>57</i>&nbsp;        this.authorShort = authorShort;</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * @return The committer
+<i>62</i>&nbsp;     */
+<i>63</i>&nbsp;    public CommitterShort getCommitterShort() {
+<b class="nc"><i>64</i>&nbsp;        return committerShort;</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * @param committerShort The committer
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    public void setCommitterShort(CommitterShort committerShort) {
+<b class="nc"><i>71</i>&nbsp;        this.committerShort = committerShort;</b>
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    /**
+<i>75</i>&nbsp;     * @return The message
+<i>76</i>&nbsp;     */
+<i>77</i>&nbsp;    public String getMessage() {
+<b class="nc"><i>78</i>&nbsp;        return message;</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     * @param message The message
+<i>83</i>&nbsp;     */
+<i>84</i>&nbsp;    public void setMessage(String message) {
+<b class="nc"><i>85</i>&nbsp;        this.message = message;</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /**
+<i>89</i>&nbsp;     * @return The tree
+<i>90</i>&nbsp;     */
+<i>91</i>&nbsp;    public Tree getTree() {
+<b class="nc"><i>92</i>&nbsp;        return tree;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * @param tree The tree
+<i>97</i>&nbsp;     */
+<i>98</i>&nbsp;    public void setTree(Tree tree) {
+<b class="nc"><i>99</i>&nbsp;        this.tree = tree;</b>
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    /**
+<i>103</i>&nbsp;     * @return The url
+<i>104</i>&nbsp;     */
+<i>105</i>&nbsp;    public String getUrl() {
+<b class="nc"><i>106</i>&nbsp;        return url;</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * @param url The url
+<i>111</i>&nbsp;     */
+<i>112</i>&nbsp;    public void setUrl(String url) {
+<b class="nc"><i>113</i>&nbsp;        this.url = url;</b>
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    /**
+<i>117</i>&nbsp;     * @return The commentCount
+<i>118</i>&nbsp;     */
+<i>119</i>&nbsp;    public Integer getCommentCount() {
+<b class="nc"><i>120</i>&nbsp;        return commentCount;</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    /**
+<i>124</i>&nbsp;     * @param commentCount The comment_count
+<i>125</i>&nbsp;     */
+<i>126</i>&nbsp;    public void setCommentCount(Integer commentCount) {
+<b class="nc"><i>127</i>&nbsp;        this.commentCount = commentCount;</b>
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

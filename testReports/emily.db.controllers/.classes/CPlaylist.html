@@ -1,0 +1,475 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CPlaylist</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.db.controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CPlaylist (emily.db.controllers)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CPlaylist</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 159)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CPlaylist$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 160)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.db.controllers;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.Logger;
+<i>20</i>&nbsp;import emily.db.WebDb;
+<i>21</i>&nbsp;import emily.db.model.OMusic;
+<i>22</i>&nbsp;import emily.db.model.OPlaylist;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;import java.sql.ResultSet;
+<i>25</i>&nbsp;import java.sql.SQLException;
+<i>26</i>&nbsp;import java.sql.Timestamp;
+<i>27</i>&nbsp;import java.util.ArrayList;
+<i>28</i>&nbsp;import java.util.List;
+<i>29</i>&nbsp;import java.util.Random;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * data communication with the controllers `playlist`
+<i>33</i>&nbsp; */
+<b class="nc"><i>34</i>&nbsp;public class CPlaylist {</b>
+<b class="nc"><i>35</i>&nbsp;    private static Random rng = new Random();</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public static ArrayList&lt;OPlaylist&gt; getPlaylistsForUser(int userId) {
+<b class="nc"><i>38</i>&nbsp;        ArrayList&lt;OPlaylist&gt; s = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>39</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>40</i>&nbsp;                &quot;SELECT id,code, title, owner_id, guild_id, visibility_level, play_type, edit_type, create_date  &quot; +
+<i>41</i>&nbsp;                        &quot;FROM playlist &quot; +
+<b class="nc"><i>42</i>&nbsp;                        &quot;WHERE owner_id = ? &quot;, userId)) {</b>
+<b class="nc"><i>43</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>44</i>&nbsp;                s.add(fillRecord(rs));</b>
+<i>45</i>&nbsp;            }
+<b class="nc"><i>46</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>47</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>48</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>49</i>&nbsp;        }</b>
+<b class="nc"><i>50</i>&nbsp;        return s;</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public static ArrayList&lt;OPlaylist&gt; getPlaylistsForGuild(int guildId) {
+<b class="nc"><i>54</i>&nbsp;        ArrayList&lt;OPlaylist&gt; s = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>55</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>56</i>&nbsp;                &quot;SELECT id,code, title, owner_id, guild_id, visibility_level, play_type, edit_type, create_date  &quot; +
+<i>57</i>&nbsp;                        &quot;FROM playlist &quot; +
+<b class="nc"><i>58</i>&nbsp;                        &quot;WHERE guild_id = ? &quot;, guildId)) {</b>
+<b class="nc"><i>59</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>60</i>&nbsp;                s.add(fillRecord(rs));</b>
+<i>61</i>&nbsp;            }
+<b class="nc"><i>62</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>63</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>64</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>65</i>&nbsp;        }</b>
+<b class="nc"><i>66</i>&nbsp;        return s;</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public static OPlaylist getGlobalList() {
+<b class="nc"><i>70</i>&nbsp;        OPlaylist globalList = findBy(0, 0, &quot;default&quot;);</b>
+<b class="nc"><i>71</i>&nbsp;        if (globalList.id == 0) {</b>
+<b class="nc"><i>72</i>&nbsp;            globalList.title = &quot;Global&quot;;</b>
+<b class="nc"><i>73</i>&nbsp;            globalList.code = &quot;default&quot;;</b>
+<b class="nc"><i>74</i>&nbsp;            insert(globalList);</b>
+<i>75</i>&nbsp;        }
+<b class="nc"><i>76</i>&nbsp;        return globalList;</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public static OPlaylist findBy(int userId, int guildId) {
+<b class="nc"><i>80</i>&nbsp;        return findBy(userId, guildId, &quot;default&quot;);</b>
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    public static OPlaylist findBy(int userId, int guildId, String code) {
+<b class="nc"><i>84</i>&nbsp;        OPlaylist s = new OPlaylist();</b>
+<b class="nc"><i>85</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>86</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>87</i>&nbsp;                        &quot;FROM playlist &quot; +
+<b class="nc"><i>88</i>&nbsp;                        &quot;WHERE owner_id = ? AND guild_id = ? AND code = ? &quot;, userId, guildId, code)) {</b>
+<b class="nc"><i>89</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>90</i>&nbsp;                s = fillRecord(rs);</b>
+<i>91</i>&nbsp;            } else {
+<b class="nc"><i>92</i>&nbsp;                s.ownerId = userId;</b>
+<b class="nc"><i>93</i>&nbsp;                s.guildId = guildId;</b>
+<b class="nc"><i>94</i>&nbsp;                s.code = code;</b>
+<i>95</i>&nbsp;            }
+<b class="nc"><i>96</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>97</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>98</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>99</i>&nbsp;        }</b>
+<b class="nc"><i>100</i>&nbsp;        return s;</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    public static OPlaylist findById(int internalId) {
+<b class="nc"><i>104</i>&nbsp;        OPlaylist s = new OPlaylist();</b>
+<b class="nc"><i>105</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>106</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>107</i>&nbsp;                        &quot;FROM playlist &quot; +
+<b class="nc"><i>108</i>&nbsp;                        &quot;WHERE id = ? &quot;, internalId)) {</b>
+<b class="nc"><i>109</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>110</i>&nbsp;                s = fillRecord(rs);</b>
+<i>111</i>&nbsp;            }
+<b class="nc"><i>112</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>113</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>114</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>115</i>&nbsp;        }</b>
+<b class="nc"><i>116</i>&nbsp;        return s;</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    public static List&lt;OMusic&gt; getMusic(int playlistId, int maxListSize, int offset) {
+<b class="nc"><i>120</i>&nbsp;        List&lt;OMusic&gt; ret = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>121</i>&nbsp;        try (ResultSet rs = WebDb.get().select(&quot;&quot; +</b>
+<i>122</i>&nbsp;                &quot;SELECT m.* &quot; +
+<i>123</i>&nbsp;                &quot;FROM music m &quot; +
+<i>124</i>&nbsp;                &quot;JOIN playlist_item pi ON pi.music_id = m.id &quot; +
+<i>125</i>&nbsp;                &quot;WHERE pi.playlist_id = ? &quot; +
+<i>126</i>&nbsp;                &quot;ORDER BY m.youtube_title ASC &quot; +
+<b class="nc"><i>127</i>&nbsp;                &quot;LIMIT ?, ?&quot;, playlistId, offset, maxListSize)) {</b>
+<b class="nc"><i>128</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>129</i>&nbsp;                ret.add(CMusic.fillRecord(rs));</b>
+<i>130</i>&nbsp;            }
+<b class="nc"><i>131</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>132</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>133</i>&nbsp;            System.out.println(e);</b>
+<b class="nc"><i>134</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>135</i>&nbsp;        }</b>
+<b class="nc"><i>136</i>&nbsp;        return ret;</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    public static int getMusicCount(int playlistId) {
+<b class="nc"><i>141</i>&nbsp;        int amount = 0;</b>
+<b class="nc"><i>142</i>&nbsp;        try (ResultSet rs = WebDb.get().select(&quot;SELECT count(*) AS amount FROM playlist_item WHERE playlist_id = ?&quot;, playlistId)) {</b>
+<b class="nc"><i>143</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>144</i>&nbsp;                amount = rs.getInt(&quot;amount&quot;);</b>
+<i>145</i>&nbsp;            }
+<b class="nc"><i>146</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>147</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>148</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>149</i>&nbsp;        }</b>
+<b class="nc"><i>150</i>&nbsp;        return amount;</b>
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    public static String getNextTrack(int playlistId, OPlaylist.PlayType playType) {
+<b class="nc"><i>154</i>&nbsp;        switch (playType) {</b>
+<i>155</i>&nbsp;            case LOOP:
+<b class="nc"><i>156</i>&nbsp;                return getNextMusic(playlistId);</b>
+<i>157</i>&nbsp;            case SHUFFLE:
+<i>158</i>&nbsp;            default:
+<b class="nc"><i>159</i>&nbsp;                return getRandomMusic(playlistId);</b>
+<i>160</i>&nbsp;        }
+<i>161</i>&nbsp;    }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    /**
+<i>164</i>&nbsp;     * Retrieves a somewhat random item from the playlist
+<i>165</i>&nbsp;     *
+<i>166</i>&nbsp;     * @param playlistId the playlist to look in
+<i>167</i>&nbsp;     * @return absolute path to file
+<i>168</i>&nbsp;     */
+<i>169</i>&nbsp;    public static String getRandomMusic(int playlistId) {
+<b class="nc"><i>170</i>&nbsp;        List&lt;String&gt; potentialSongs = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>171</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>172</i>&nbsp;                &quot;SELECT m.id, m.youtubecode &quot; +
+<i>173</i>&nbsp;                        &quot;FROM music m &quot; +
+<i>174</i>&nbsp;                        &quot;JOIN playlist_item pi ON pi.music_id = m.id &quot; +
+<i>175</i>&nbsp;                        &quot;JOIN playlist pl ON pl.id = pi.playlist_id  &quot; +
+<i>176</i>&nbsp;                        &quot;WHERE m.banned = 0 AND pl.id = ? &quot; +
+<i>177</i>&nbsp;                        &quot;ORDER BY pi.last_played ASC &quot; +
+<b class="nc"><i>178</i>&nbsp;                        &quot;LIMIT 5&quot;, playlistId)) {</b>
+<b class="nc"><i>179</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>180</i>&nbsp;                potentialSongs.add(rs.getString(&quot;youtubecode&quot;));</b>
+<i>181</i>&nbsp;            }
+<b class="nc"><i>182</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>183</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>184</i>&nbsp;        }</b>
+<b class="nc"><i>185</i>&nbsp;        if (!potentialSongs.isEmpty()) {</b>
+<b class="nc"><i>186</i>&nbsp;            return potentialSongs.get(rng.nextInt(potentialSongs.size()));</b>
+<i>187</i>&nbsp;        }
+<b class="nc"><i>188</i>&nbsp;        return null;</b>
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    public static String getNextMusic(int playlistId) {
+<b class="nc"><i>192</i>&nbsp;        String filename = null;</b>
+<b class="nc"><i>193</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>194</i>&nbsp;                &quot;SELECT m.id, m.youtubecode &quot; +
+<i>195</i>&nbsp;                        &quot;FROM music m &quot; +
+<i>196</i>&nbsp;                        &quot;JOIN playlist_item pi ON pi.music_id = m.id &quot; +
+<i>197</i>&nbsp;                        &quot;JOIN playlist pl ON pl.id = pi.playlist_id  &quot; +
+<i>198</i>&nbsp;                        &quot;WHERE m.banned = 0 AND pl.id = ? &quot; +
+<i>199</i>&nbsp;                        &quot;ORDER BY pi.last_played ASC &quot; +
+<b class="nc"><i>200</i>&nbsp;                        &quot;LIMIT 1&quot;, playlistId)) {</b>
+<b class="nc"><i>201</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>202</i>&nbsp;                filename = rs.getString(&quot;youtubecode&quot;);</b>
+<i>203</i>&nbsp;            }
+<b class="nc"><i>204</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>205</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>206</i>&nbsp;        }</b>
+<b class="nc"><i>207</i>&nbsp;        return filename;</b>
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    /**
+<i>211</i>&nbsp;     * Add a song to a playlist
+<i>212</i>&nbsp;     *
+<i>213</i>&nbsp;     * @param playlistId the playlist to add to
+<i>214</i>&nbsp;     * @param musicId    the id of the music record
+<i>215</i>&nbsp;     * @return success
+<i>216</i>&nbsp;     */
+<i>217</i>&nbsp;    public static boolean addToPlayList(int playlistId, int musicId) {
+<i>218</i>&nbsp;        try {
+<b class="nc"><i>219</i>&nbsp;            WebDb.get().query(</b>
+<i>220</i>&nbsp;                    &quot;INSERT INTO playlist_item(playlist_id, music_id, last_played) &quot; +
+<i>221</i>&nbsp;                            &quot;VALUES (?,?,?) ON DUPLICATE KEY UPDATE last_played=last_played &quot;,
+<b class="nc"><i>222</i>&nbsp;                    playlistId, musicId, 0</b>
+<i>223</i>&nbsp;            );
+<b class="nc"><i>224</i>&nbsp;            return true;</b>
+<b class="nc"><i>225</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>226</i>&nbsp;            e.printStackTrace();</b>
+<i>227</i>&nbsp;        }
+<b class="nc"><i>228</i>&nbsp;        return false;</b>
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    /**
+<i>232</i>&nbsp;     * checks if music is present in a playlist
+<i>233</i>&nbsp;     *
+<i>234</i>&nbsp;     * @param playlistId the playlist to check
+<i>235</i>&nbsp;     * @param musicId    id of the music record
+<i>236</i>&nbsp;     * @return found music in list?
+<i>237</i>&nbsp;     */
+<i>238</i>&nbsp;    public static boolean isInPlaylist(int playlistId, int musicId) {
+<b class="nc"><i>239</i>&nbsp;        boolean isInList = false;</b>
+<b class="nc"><i>240</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>241</i>&nbsp;                &quot;SELECT * FROM playlist_item WHERE playlist_id = ? AND music_id = ?&quot;,
+<b class="nc"><i>242</i>&nbsp;                playlistId, musicId)) {</b>
+<b class="nc"><i>243</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>244</i>&nbsp;                isInList = true;</b>
+<i>245</i>&nbsp;            }
+<b class="nc"><i>246</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>247</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>248</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>249</i>&nbsp;        }</b>
+<b class="nc"><i>250</i>&nbsp;        return isInList;</b>
+<i>251</i>&nbsp;    }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    /**
+<i>254</i>&nbsp;     * empty the whole playlist!
+<i>255</i>&nbsp;     *
+<i>256</i>&nbsp;     * @param playlistId id of the playlist
+<i>257</i>&nbsp;     */
+<i>258</i>&nbsp;    public static void resetPlaylist(int playlistId) {
+<i>259</i>&nbsp;        try {
+<b class="nc"><i>260</i>&nbsp;            WebDb.get().query(</b>
+<i>261</i>&nbsp;                    &quot;DELETE FROM playlist_item WHERE playlist_id = ?&quot;,
+<b class="nc"><i>262</i>&nbsp;                    playlistId</b>
+<i>263</i>&nbsp;            );
+<b class="nc"><i>264</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>265</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>266</i>&nbsp;        }</b>
+<i>267</i>&nbsp;    }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    /**
+<i>270</i>&nbsp;     * delete a track from the playlist
+<i>271</i>&nbsp;     *
+<i>272</i>&nbsp;     * @param playlistId internal playlist id
+<i>273</i>&nbsp;     * @param musicId    internal music id
+<i>274</i>&nbsp;     * @return track removed?
+<i>275</i>&nbsp;     */
+<i>276</i>&nbsp;    public static boolean removeFromPlayList(int playlistId, int musicId) {
+<i>277</i>&nbsp;        try {
+<b class="nc"><i>278</i>&nbsp;            WebDb.get().query(</b>
+<i>279</i>&nbsp;                    &quot;DELETE FROM playlist_item WHERE playlist_id = ? AND music_id = ?&quot;,
+<b class="nc"><i>280</i>&nbsp;                    playlistId, musicId</b>
+<i>281</i>&nbsp;            );
+<b class="nc"><i>282</i>&nbsp;            return true;</b>
+<b class="nc"><i>283</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>284</i>&nbsp;            e.printStackTrace();</b>
+<i>285</i>&nbsp;        }
+<b class="nc"><i>286</i>&nbsp;        return false;</b>
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    /**
+<i>290</i>&nbsp;     * updates the last time a song was played in a playlist
+<i>291</i>&nbsp;     *
+<i>292</i>&nbsp;     * @param playlistId id of the playlist
+<i>293</i>&nbsp;     * @param musicId    id of the music recordf
+<i>294</i>&nbsp;     */
+<i>295</i>&nbsp;    public static void updateLastPlayed(int playlistId, int musicId) {
+<i>296</i>&nbsp;        try {
+<b class="nc"><i>297</i>&nbsp;            WebDb.get().query(&quot;UPDATE playlist_item SET last_played = ? WHERE playlist_id = ? AND music_id = ?&quot;,</b>
+<b class="nc"><i>298</i>&nbsp;                    System.currentTimeMillis() / 1000L, playlistId, musicId);</b>
+<b class="nc"><i>299</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>300</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>301</i>&nbsp;        }</b>
+<i>302</i>&nbsp;    }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    private static OPlaylist fillRecord(ResultSet rs) throws SQLException {
+<b class="nc"><i>305</i>&nbsp;        OPlaylist r = new OPlaylist();</b>
+<b class="nc"><i>306</i>&nbsp;        r.id = rs.getInt(&quot;id&quot;);</b>
+<b class="nc"><i>307</i>&nbsp;        r.title = rs.getString(&quot;title&quot;);</b>
+<b class="nc"><i>308</i>&nbsp;        r.ownerId = rs.getInt(&quot;owner_id&quot;);</b>
+<b class="nc"><i>309</i>&nbsp;        r.guildId = rs.getInt(&quot;guild_id&quot;);</b>
+<b class="nc"><i>310</i>&nbsp;        r.setCode(rs.getString(&quot;code&quot;));</b>
+<b class="nc"><i>311</i>&nbsp;        r.setEditType(rs.getInt(&quot;edit_type&quot;));</b>
+<b class="nc"><i>312</i>&nbsp;        r.setPlayType(rs.getInt(&quot;play_type&quot;));</b>
+<b class="nc"><i>313</i>&nbsp;        r.setVisibility(rs.getInt(&quot;visibility_level&quot;));</b>
+<b class="nc"><i>314</i>&nbsp;        r.createdOn = rs.getTimestamp(&quot;create_date&quot;);</b>
+<b class="nc"><i>315</i>&nbsp;        return r;</b>
+<i>316</i>&nbsp;    }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;    public static void update(OPlaylist record) {
+<b class="nc"><i>319</i>&nbsp;        if (record.id == 0) {</b>
+<b class="nc"><i>320</i>&nbsp;            insert(record);</b>
+<i>321</i>&nbsp;            return;
+<i>322</i>&nbsp;        }
+<b class="nc"><i>323</i>&nbsp;        if (record.hasCodeChanged()) {</b>
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;        }
+<i>326</i>&nbsp;        try {
+<b class="nc"><i>327</i>&nbsp;            WebDb.get().query(</b>
+<i>328</i>&nbsp;                    &quot;UPDATE playlist SET title = ?, owner_id = ?, guild_id = ?, visibility_level = ?, edit_type = ?, play_type = ?, code = ? &quot; +
+<i>329</i>&nbsp;                            &quot;WHERE id = ? &quot;,
+<b class="nc"><i>330</i>&nbsp;                    record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(),</b>
+<b class="nc"><i>331</i>&nbsp;                    record.getPlayType().getId(), record.code, record.id</b>
+<i>332</i>&nbsp;            );
+<b class="nc"><i>333</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>334</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>335</i>&nbsp;        }</b>
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    public static void insert(OPlaylist record) {
+<i>339</i>&nbsp;        try {
+<b class="nc"><i>340</i>&nbsp;            record.createdOn = new Timestamp(System.currentTimeMillis());</b>
+<b class="nc"><i>341</i>&nbsp;            record.id = WebDb.get().insert(</b>
+<i>342</i>&nbsp;                    &quot;INSERT INTO playlist(title, owner_id, guild_id, visibility_level, edit_type,play_type, create_date,code) &quot; +
+<i>343</i>&nbsp;                            &quot;VALUES (?,?,?,?,?,?,?,?)&quot;,
+<b class="nc"><i>344</i>&nbsp;                    record.title, record.ownerId, record.guildId, record.getVisibility().getId(), record.getEditType().getId(),</b>
+<b class="nc"><i>345</i>&nbsp;                    record.getPlayType().getId(), record.createdOn, record.code);</b>
+<b class="nc"><i>346</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>347</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>348</i>&nbsp;        }</b>
+<i>349</i>&nbsp;    }
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    /**
+<i>352</i>&nbsp;     * removes a track from all playlists
+<i>353</i>&nbsp;     *
+<i>354</i>&nbsp;     * @param musicId internal music id
+<i>355</i>&nbsp;     */
+<i>356</i>&nbsp;    public static void deleteTrackFromPlaylists(int musicId) {
+<i>357</i>&nbsp;        try {
+<b class="nc"><i>358</i>&nbsp;            WebDb.get().query(</b>
+<i>359</i>&nbsp;                    &quot;DELETE FROM playlist_item WHERE music_id = ?&quot;,
+<b class="nc"><i>360</i>&nbsp;                    musicId</b>
+<i>361</i>&nbsp;            );
+<b class="nc"><i>362</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>363</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>364</i>&nbsp;        }</b>
+<i>365</i>&nbsp;    }
+<i>366</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

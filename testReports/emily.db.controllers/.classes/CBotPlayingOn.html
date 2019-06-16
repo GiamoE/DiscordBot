@@ -1,0 +1,172 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CBotPlayingOn</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.db.controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CBotPlayingOn (emily.db.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CBotPlayingOn</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 30)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.db.controllers;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.Logger;
+<i>20</i>&nbsp;import emily.db.WebDb;
+<i>21</i>&nbsp;import emily.db.model.OBotPlayingOn;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;import java.sql.ResultSet;
+<i>24</i>&nbsp;import java.sql.SQLException;
+<i>25</i>&nbsp;import java.util.ArrayList;
+<i>26</i>&nbsp;import java.util.List;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * data communication with the controllers `bot_playing_on`
+<i>30</i>&nbsp; */
+<b class="nc"><i>31</i>&nbsp;public class CBotPlayingOn {</b>
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    private static OBotPlayingOn fillRecord(ResultSet resultset) throws SQLException {
+<b class="nc"><i>35</i>&nbsp;        OBotPlayingOn record = new OBotPlayingOn();</b>
+<b class="nc"><i>36</i>&nbsp;        record.guildId = resultset.getString(&quot;guild_id&quot;);</b>
+<b class="nc"><i>37</i>&nbsp;        record.channelId = resultset.getString(&quot;channel_id&quot;);</b>
+<b class="nc"><i>38</i>&nbsp;        return record;</b>
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public static void insert(String guildId, String channelId) {
+<b class="nc"><i>42</i>&nbsp;        OBotPlayingOn rec = new OBotPlayingOn();</b>
+<b class="nc"><i>43</i>&nbsp;        rec.guildId = guildId;</b>
+<b class="nc"><i>44</i>&nbsp;        rec.channelId = channelId;</b>
+<b class="nc"><i>45</i>&nbsp;        insert(rec);</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public static List&lt;OBotPlayingOn&gt; getAll() {
+<b class="nc"><i>49</i>&nbsp;        List&lt;OBotPlayingOn&gt; list = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>50</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>51</i>&nbsp;                &quot;SELECT guild_id, channel_id  FROM bot_playing_on&quot;)) {
+<b class="nc"><i>52</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>53</i>&nbsp;                list.add(fillRecord(rs));</b>
+<i>54</i>&nbsp;            }
+<b class="nc"><i>55</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>56</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>57</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>58</i>&nbsp;        }</b>
+<b class="nc"><i>59</i>&nbsp;        return list;</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public static void insert(OBotPlayingOn record) {
+<i>63</i>&nbsp;        try {
+<b class="nc"><i>64</i>&nbsp;            WebDb.get().insert(</b>
+<i>65</i>&nbsp;                    &quot;INSERT INTO bot_playing_on(guild_id, channel_id) &quot; +
+<i>66</i>&nbsp;                            &quot;VALUES (?,?) ON DUPLICATE KEY UPDATE channel_id=channel_id&quot;,
+<i>67</i>&nbsp;                    record.guildId, record.channelId);
+<b class="nc"><i>68</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>69</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>70</i>&nbsp;        }</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public static void deleteGuild(String guildId) {
+<i>74</i>&nbsp;        try {
+<b class="nc"><i>75</i>&nbsp;            WebDb.get().query(&quot;DELETE FROM bot_playing_on WHERE guild_id = ?&quot;, guildId);</b>
+<b class="nc"><i>76</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>77</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>78</i>&nbsp;        }</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public static void deleteAll() {
+<i>83</i>&nbsp;        try {
+<b class="nc"><i>84</i>&nbsp;            WebDb.get().query(&quot;DELETE FROM bot_playing_on &quot;);</b>
+<b class="nc"><i>85</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>86</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>87</i>&nbsp;        }</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

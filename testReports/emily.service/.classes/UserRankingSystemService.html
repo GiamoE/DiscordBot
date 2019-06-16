@@ -1,0 +1,168 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UserRankingSystemService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.service</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UserRankingSystemService (emily.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserRankingSystemService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.service;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.AbstractService;
+<i>20</i>&nbsp;import emily.guildsettings.GSetting;
+<i>21</i>&nbsp;import emily.handler.GuildSettings;
+<i>22</i>&nbsp;import emily.main.BotContainer;
+<i>23</i>&nbsp;import emily.main.DiscordBot;
+<i>24</i>&nbsp;import emily.main.Launcher;
+<i>25</i>&nbsp;import emily.role.RoleRankings;
+<i>26</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.List;
+<i>29</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * updates the ranking of members within a guild
+<i>33</i>&nbsp; */
+<i>34</i>&nbsp;public class UserRankingSystemService extends AbstractService {
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    public UserRankingSystemService(BotContainer b) {
+<b class="nc"><i>37</i>&nbsp;        super(b);</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    @Override
+<i>41</i>&nbsp;    public String getIdentifier() {
+<b class="nc"><i>42</i>&nbsp;        return &quot;user_role_ranking&quot;;</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    @Override
+<i>46</i>&nbsp;    public long getDelayBetweenRuns() {
+<b class="nc"><i>47</i>&nbsp;        return TimeUnit.MINUTES.toMillis(15);</b>
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    @Override
+<i>51</i>&nbsp;    public boolean shouldIRun() {
+<b class="nc"><i>52</i>&nbsp;        return true;</b>
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    @Override
+<i>56</i>&nbsp;    public void beforeRun() {
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    @Override
+<i>60</i>&nbsp;    public void run() {
+<b class="nc"><i>61</i>&nbsp;        for (DiscordBot discordBot : bot.getShards()) {</b>
+<b class="nc"><i>62</i>&nbsp;            List&lt;Guild&gt; guilds = discordBot.getJda().getGuilds();</b>
+<b class="nc"><i>63</i>&nbsp;            for (Guild guild : guilds) {</b>
+<b class="nc"><i>64</i>&nbsp;                GuildSettings settings = GuildSettings.get(guild);</b>
+<b class="nc"><i>65</i>&nbsp;                if (settings != null &amp;&amp; settings.getBoolValue(GSetting.USER_TIME_RANKS) &amp;&amp; RoleRankings.canModifyRoles(guild, discordBot.getJda().getSelfUser())) {</b>
+<i>66</i>&nbsp;                    try {
+<b class="nc"><i>67</i>&nbsp;                        handleGuild(discordBot, guild);</b>
+<b class="nc"><i>68</i>&nbsp;                    } catch (Exception e) {</b>
+<b class="nc"><i>69</i>&nbsp;                        Launcher.logToDiscord(e, &quot;guild&quot;, guild.getId(), &quot;name&quot;, guild.getName());</b>
+<b class="nc"><i>70</i>&nbsp;                    }</b>
+<i>71</i>&nbsp;                }
+<b class="nc"><i>72</i>&nbsp;            }</b>
+<i>73</i>&nbsp;        }
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    private void handleGuild(DiscordBot bot, Guild guild) {
+<b class="nc"><i>77</i>&nbsp;        RoleRankings.fixForServer(guild);</b>
+<b class="nc"><i>78</i>&nbsp;        guild.getMembers().stream().filter(user -&gt; !user.getUser().isBot()).forEach(user -&gt; RoleRankings.assignUserRole(bot, guild, user.getUser()));</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    @Override
+<i>82</i>&nbsp;    public void afterRun() {
+<b class="nc"><i>83</i>&nbsp;        System.gc();</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

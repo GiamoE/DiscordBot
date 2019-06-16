@@ -1,0 +1,264 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LoLCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.leagueoflegends</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LoLCommand (emily.command.leagueoflegends)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LoLCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 62)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LoLCommand$ReactionData</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 65)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.leagueoflegends;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import com.google.api.client.repackaged.com.google.common.base.Joiner;
+<i>20</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>21</i>&nbsp;import emily.main.BotConfig;
+<i>22</i>&nbsp;import emily.main.DiscordBot;
+<i>23</i>&nbsp;import emily.util.Emojibet;
+<i>24</i>&nbsp;import emily.util.Misc;
+<i>25</i>&nbsp;import net.dv8tion.jda.core.EmbedBuilder;
+<i>26</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>27</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>28</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>29</i>&nbsp;import net.rithms.riot.api.ApiConfig;
+<i>30</i>&nbsp;import net.rithms.riot.api.RiotApi;
+<i>31</i>&nbsp;import net.rithms.riot.api.RiotApiException;
+<i>32</i>&nbsp;import net.rithms.riot.api.endpoints.static_data.constant.ChampionListTags;
+<i>33</i>&nbsp;import net.rithms.riot.api.endpoints.static_data.dto.Champion;
+<i>34</i>&nbsp;import net.rithms.riot.api.endpoints.static_data.dto.ChampionSpell;
+<i>35</i>&nbsp;import net.rithms.riot.api.endpoints.static_data.dto.Image;
+<i>36</i>&nbsp;import net.rithms.riot.constant.Platform;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;import java.util.HashMap;
+<i>39</i>&nbsp;import java.util.Map;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;public class LoLCommand extends AbstractCommand {
+<i>42</i>&nbsp;    private final RiotApi api;
+<b class="nc"><i>43</i>&nbsp;    private Map&lt;String, Champion&gt; dataChampionList = null;</b>
+<b class="nc"><i>44</i>&nbsp;    private String gameVersion = null;</b>
+<b class="nc"><i>45</i>&nbsp;    private String baseUrl = null;</b>
+<b class="nc"><i>46</i>&nbsp;    private String[] skillIndex = {Emojibet.getEmojiFor(&quot;q&quot;), Emojibet.getEmojiFor(&quot;w&quot;), Emojibet.getEmojiFor(&quot;e&quot;), Emojibet.getEmojiFor(&quot;r&quot;)};</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public LoLCommand() {
+<b class="nc"><i>49</i>&nbsp;        super();</b>
+<b class="nc"><i>50</i>&nbsp;        ApiConfig config = new ApiConfig().setKey(BotConfig.TOKEN_RIOT_GAMES);</b>
+<b class="nc"><i>51</i>&nbsp;        api = new RiotApi(config);</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    @Override
+<i>56</i>&nbsp;    public boolean isListed() {
+<b class="nc"><i>57</i>&nbsp;        return false;</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    @Override
+<i>61</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>62</i>&nbsp;        return &quot;check out a league of legends champion&quot;;</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    @Override
+<i>66</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>67</i>&nbsp;        return &quot;lolchamp&quot;;</b>
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    @Override
+<i>71</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>72</i>&nbsp;        return new String[0];</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    @Override
+<i>76</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>77</i>&nbsp;        return new String[0];</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    private String getImage(Image img) {
+<b class="nc"><i>81</i>&nbsp;        return baseUrl + img.getGroup() + &quot;/&quot; + img.getFull();</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    @Override
+<i>85</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<i>86</i>&nbsp;        try {
+<b class="nc"><i>87</i>&nbsp;            if (gameVersion == null) {</b>
+<b class="nc"><i>88</i>&nbsp;                gameVersion = api.getDataVersions(Platform.EUW).get(0);</b>
+<b class="nc"><i>89</i>&nbsp;                baseUrl = String.format(&quot;http://ddragon.leagueoflegends.com/cdn/%s/img/&quot;, gameVersion);</b>
+<i>90</i>&nbsp;            }
+<b class="nc"><i>91</i>&nbsp;            if (dataChampionList == null) {</b>
+<b class="nc"><i>92</i>&nbsp;                Map&lt;String, Champion&gt; tmp = api.getDataChampionList(Platform.EUW, null, null, false, ChampionListTags.ALL).getData();</b>
+<b class="nc"><i>93</i>&nbsp;                dataChampionList = new HashMap&lt;&gt;();</b>
+<b class="nc"><i>94</i>&nbsp;                for (Map.Entry&lt;String, Champion&gt; entry : tmp.entrySet()) {</b>
+<b class="nc"><i>95</i>&nbsp;                    dataChampionList.put(entry.getKey().toLowerCase(), entry.getValue());</b>
+<b class="nc"><i>96</i>&nbsp;                }</b>
+<i>97</i>&nbsp;            }
+<b class="nc"><i>98</i>&nbsp;            if (args.length == 0) {</b>
+<b class="nc"><i>99</i>&nbsp;                return &quot;Need a champion name&quot;;</b>
+<i>100</i>&nbsp;            }
+<b class="nc"><i>101</i>&nbsp;            String key = null;</b>
+<b class="nc"><i>102</i>&nbsp;            String search = args[0].toLowerCase();</b>
+<b class="nc"><i>103</i>&nbsp;            if (dataChampionList.containsKey(search)) {</b>
+<b class="nc"><i>104</i>&nbsp;                key = search;</b>
+<i>105</i>&nbsp;            } else {
+<b class="nc"><i>106</i>&nbsp;                for (String fullKey : dataChampionList.keySet()) {</b>
+<b class="nc"><i>107</i>&nbsp;                    if (fullKey.contains(search)) {</b>
+<b class="nc"><i>108</i>&nbsp;                        key = fullKey;</b>
+<b class="nc"><i>109</i>&nbsp;                        break;</b>
+<i>110</i>&nbsp;                    }
+<b class="nc"><i>111</i>&nbsp;                }</b>
+<i>112</i>&nbsp;            }
+<b class="nc"><i>113</i>&nbsp;            if (key == null) {</b>
+<b class="nc"><i>114</i>&nbsp;                return &quot;Can&#39;t find a champion with the name `&quot; + args[0] + &quot;`&quot;;</b>
+<i>115</i>&nbsp;            }
+<b class="nc"><i>116</i>&nbsp;            Champion c = dataChampionList.get(key);</b>
+<b class="nc"><i>117</i>&nbsp;            StringBuilder description = new StringBuilder(c.getBlurb().replace(&quot;&lt;br&gt;&lt;br&gt;&quot;, &quot;\n&quot;) + &quot;\n\n&quot;);</b>
+<b class="nc"><i>118</i>&nbsp;            EmbedBuilder e = new EmbedBuilder();</b>
+<b class="nc"><i>119</i>&nbsp;            e.setAuthor(c.getName(), null, getImage(c.getImage()));</b>
+<b class="nc"><i>120</i>&nbsp;            e.setThumbnail(getImage(c.getImage()));</b>
+<b class="nc"><i>121</i>&nbsp;            e.setTitle(c.getTitle(), null);</b>
+<b class="nc"><i>122</i>&nbsp;            description.append(Joiner.on(&quot;, &quot;).join(c.getTags()));</b>
+<b class="nc"><i>123</i>&nbsp;            description.append(&quot;\n\n&quot;);</b>
+<b class="nc"><i>124</i>&nbsp;            description.append(String.format(&quot;%s Attack\n&quot;, Misc.makeStackedBar(5, c.getInfo().getAttack() / 2, Emojibet.SWORDS)));</b>
+<b class="nc"><i>125</i>&nbsp;            description.append(String.format(&quot;%s Magic\n&quot;, Misc.makeStackedBar(5, c.getInfo().getMagic() / 2, Emojibet.EXPLOSION)));</b>
+<b class="nc"><i>126</i>&nbsp;            description.append(String.format(&quot;%s Defense\n&quot;, Misc.makeStackedBar(5, c.getInfo().getDefense() / 2, Emojibet.DEFENSE)));</b>
+<b class="nc"><i>127</i>&nbsp;            description.append(String.format(&quot;%s Difficulty\n&quot;, Misc.makeStackedBar(5, c.getInfo().getDifficulty() / 2, Emojibet.QUESTION_MARK)));</b>
+<b class="nc"><i>128</i>&nbsp;            description.append(&quot;\n**Abilities**\n\n**&quot;).append(Emojibet.getEmojiFor(&quot;p&quot;)).append(&quot; &quot;).append(c.getPassive().getName()).append(&quot;**\n&quot;);</b>
+<b class="nc"><i>129</i>&nbsp;            description.append(c.getPassive().getSanitizedDescription()).append(&quot;\n\n&quot;);</b>
+<b class="nc"><i>130</i>&nbsp;            int skillNum = 0;</b>
+<b class="nc"><i>131</i>&nbsp;            for (ChampionSpell spell : c.getSpells()) {</b>
+<b class="nc"><i>132</i>&nbsp;                description.append(&quot;**&quot;).append(skillIndex[skillNum]).append(&quot; &quot;).append(spell.getName()).append(&quot;**\n&quot;);</b>
+<b class="nc"><i>133</i>&nbsp;                description.append(spell.getDescription().replace(&quot;&lt;br&gt;&lt;br&gt;&quot;, &quot;\n&quot;)).append(&quot;\n&quot;);</b>
+<b class="nc"><i>134</i>&nbsp;                description.append(&quot;\n&quot;);</b>
+<b class="nc"><i>135</i>&nbsp;                skillNum++;</b>
+<b class="nc"><i>136</i>&nbsp;            }</b>
+<b class="nc"><i>137</i>&nbsp;            e.setDescription(description.toString());</b>
+<b class="nc"><i>138</i>&nbsp;            bot.queue.add(channel.sendMessage(e.build()));</b>
+<i>139</i>&nbsp;
+<b class="nc"><i>140</i>&nbsp;        } catch (RiotApiException e) {</b>
+<b class="nc"><i>141</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>142</i>&nbsp;        }</b>
+<b class="nc"><i>143</i>&nbsp;        return &quot;&quot;;</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    private class ReactionData {
+<i>147</i>&nbsp;        String champion;
+<i>148</i>&nbsp;        String page;
+<i>149</i>&nbsp;
+<b class="nc"><i>150</i>&nbsp;        private ReactionData(String champion, String page) {</b>
+<b class="nc"><i>151</i>&nbsp;            this.champion = champion;</b>
+<b class="nc"><i>152</i>&nbsp;            this.page = page;</b>
+<i>153</i>&nbsp;        }
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

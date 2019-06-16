@@ -1,0 +1,150 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InviteCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.informative</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InviteCommand (emily.command.informative)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InviteCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.informative;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>20</i>&nbsp;import emily.main.DiscordBot;
+<i>21</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>22</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>23</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;/**
+<i>26</i>&nbsp; * !invite
+<i>27</i>&nbsp; * Instructions on how to invite the bot to a discord server
+<i>28</i>&nbsp; */
+<i>29</i>&nbsp;public class InviteCommand extends AbstractCommand {
+<i>30</i>&nbsp;    public InviteCommand() {
+<b class="nc"><i>31</i>&nbsp;        super();</b>
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    @Override
+<i>35</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>36</i>&nbsp;        return &quot;Provides an invite link to add the bot to your server.&quot;;</b>
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    @Override
+<i>40</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>41</i>&nbsp;        return &quot;invite&quot;;</b>
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    @Override
+<i>45</i>&nbsp;    public boolean canBeDisabled() {
+<b class="nc"><i>46</i>&nbsp;        return false;</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    @Override
+<i>50</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>51</i>&nbsp;        return new String[]{};</b>
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    @Override
+<i>55</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>56</i>&nbsp;        return new String[]{</b>
+<i>57</i>&nbsp;                &quot;inv&quot;
+<i>58</i>&nbsp;        };
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    @Override
+<i>62</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>63</i>&nbsp;        return &quot;I am honored you&#39;d want to invite me! :hugging:\n&quot; +</b>
+<i>64</i>&nbsp;                &quot;You can add me to your guild/server with the following link:\n&quot; +
+<b class="nc"><i>65</i>&nbsp;                &quot;https://discordapp.com/oauth2/authorize?client_id=&quot; + channel.getJDA().getSelfUser().getId() + &quot;&amp;scope=bot&amp;permissions=339209287&quot;;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

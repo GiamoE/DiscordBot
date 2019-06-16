@@ -1,0 +1,176 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CommandCategory</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.meta</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CommandCategory (emily.command.meta)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CommandCategory</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    40%
+  </span>
+  <span class="absValue">
+    (4/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    61,5%
+  </span>
+  <span class="absValue">
+    (24/ 39)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.meta;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.permission.SimpleRank;
+<i>20</i>&nbsp;import emily.util.Emojibet;
+<i>21</i>&nbsp;
+<b class="fc"><i>22</i>&nbsp;public enum CommandCategory {</b>
+<b class="fc"><i>23</i>&nbsp;    CREATOR(&quot;creator&quot;, Emojibet.MAN_IN_SUIT, &quot;Development&quot;, SimpleRank.CREATOR),</b>
+<b class="fc"><i>24</i>&nbsp;    BOT_ADMINISTRATION(&quot;bot_administration&quot;, Emojibet.MONKEY, &quot;Bot administration&quot;, SimpleRank.BOT_ADMIN),</b>
+<b class="fc"><i>25</i>&nbsp;    ADMINISTRATIVE(&quot;administrative&quot;, Emojibet.POLICE, &quot;Administration&quot;, SimpleRank.GUILD_ADMIN),</b>
+<b class="fc"><i>26</i>&nbsp;    INFORMATIVE(&quot;informative&quot;, Emojibet.INFORMATION, &quot;Information&quot;),</b>
+<b class="fc"><i>27</i>&nbsp;    MUSIC(&quot;music&quot;, Emojibet.MUSIC_NOTE, &quot;Music&quot;),</b>
+<b class="fc"><i>28</i>&nbsp;    ECONOMY(&quot;economy&quot;, Emojibet.MONEY_BAG, &quot;Money&quot;),</b>
+<b class="fc"><i>29</i>&nbsp;    FUN(&quot;fun&quot;, Emojibet.GAME_DICE, &quot;Fun&quot;),</b>
+<b class="fc"><i>30</i>&nbsp;    POE(&quot;poe&quot;, Emojibet.CURRENCY_EXCHANGE, &quot;Path of exile&quot;),</b>
+<b class="fc"><i>31</i>&nbsp;    HEARTHSTONE(&quot;hearthstone&quot;, Emojibet.SLOT_MACHINE, &quot;Hearthstone&quot;),</b>
+<b class="fc"><i>32</i>&nbsp;    ADVENTURE(&quot;adventure&quot;, Emojibet.FOOTPRINTS, &quot;Adventure&quot;),</b>
+<b class="fc"><i>33</i>&nbsp;    UNKNOWN(&quot;nopackage&quot;, Emojibet.QUESTION_MARK, &quot;Misc&quot;);</b>
+<i>34</i>&nbsp;    private final String packageName;
+<i>35</i>&nbsp;    private final String emoticon;
+<i>36</i>&nbsp;    private final String displayName;
+<i>37</i>&nbsp;    private final SimpleRank rankRequired;
+<i>38</i>&nbsp;
+<b class="fc"><i>39</i>&nbsp;    CommandCategory(String packageName, String emoticon, String displayName) {</b>
+<i>40</i>&nbsp;
+<b class="fc"><i>41</i>&nbsp;        this.packageName = packageName;</b>
+<b class="fc"><i>42</i>&nbsp;        this.emoticon = emoticon;</b>
+<b class="fc"><i>43</i>&nbsp;        this.displayName = displayName;</b>
+<b class="fc"><i>44</i>&nbsp;        this.rankRequired = SimpleRank.USER;</b>
+<b class="fc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;    CommandCategory(String packageName, String emoticon, String displayName, SimpleRank rankRequired) {</b>
+<i>48</i>&nbsp;
+<b class="fc"><i>49</i>&nbsp;        this.packageName = packageName;</b>
+<b class="fc"><i>50</i>&nbsp;        this.emoticon = emoticon;</b>
+<b class="fc"><i>51</i>&nbsp;        this.displayName = displayName;</b>
+<b class="fc"><i>52</i>&nbsp;        this.rankRequired = rankRequired;</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public static CommandCategory getFirstWithPermission(SimpleRank rank) {
+<b class="nc"><i>56</i>&nbsp;        if (rank == null) {</b>
+<b class="nc"><i>57</i>&nbsp;            return INFORMATIVE;</b>
+<i>58</i>&nbsp;        }
+<b class="nc"><i>59</i>&nbsp;        for (CommandCategory category : values()) {</b>
+<b class="nc"><i>60</i>&nbsp;            if (rank.isAtLeast(category.getRankRequired())) {</b>
+<b class="nc"><i>61</i>&nbsp;                return category;</b>
+<i>62</i>&nbsp;            }
+<i>63</i>&nbsp;        }
+<b class="nc"><i>64</i>&nbsp;        return INFORMATIVE;</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    public static CommandCategory fromPackage(String packageName) {
+<b class="nc"><i>68</i>&nbsp;        if (packageName != null) {</b>
+<b class="nc"><i>69</i>&nbsp;            for (CommandCategory cc : values()) {</b>
+<b class="nc"><i>70</i>&nbsp;                if (packageName.equalsIgnoreCase(cc.packageName)) {</b>
+<b class="nc"><i>71</i>&nbsp;                    return cc;</b>
+<i>72</i>&nbsp;                }
+<i>73</i>&nbsp;            }
+<i>74</i>&nbsp;        }
+<b class="nc"><i>75</i>&nbsp;        return UNKNOWN;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public String getDisplayName() {
+<b class="nc"><i>79</i>&nbsp;        return displayName;</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public String getPackageName() {
+<b class="nc"><i>83</i>&nbsp;        return packageName;</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public String getEmoticon() {
+<b class="nc"><i>87</i>&nbsp;        return emoticon;</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public SimpleRank getRankRequired() {
+<b class="nc"><i>91</i>&nbsp;        return rankRequired;</b>
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

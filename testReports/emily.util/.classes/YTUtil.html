@@ -1,0 +1,203 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: YTUtil</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: YTUtil (emily.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">YTUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.util;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import org.apache.commons.lang3.StringEscapeUtils;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;import java.io.BufferedReader;
+<i>22</i>&nbsp;import java.io.InputStreamReader;
+<i>23</i>&nbsp;import java.net.URL;
+<i>24</i>&nbsp;import java.net.URLConnection;
+<i>25</i>&nbsp;import java.util.Calendar;
+<i>26</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>27</i>&nbsp;import java.util.regex.Matcher;
+<i>28</i>&nbsp;import java.util.regex.Pattern;
+<i>29</i>&nbsp;
+<b class="nc"><i>30</i>&nbsp;public class YTUtil {</b>
+<b class="nc"><i>31</i>&nbsp;    public final static Pattern yturl = Pattern.compile(&quot;^(?:https?:\\/\\/)?(?:(?:www\\.)?)?(?:youtube\\.com|youtu\\.be)\\/.*?(?:embed|e|v|watch.*?v=)?\\/?([-_a-z0-9]{10,})?(?:&amp;?index=\\d+)?(?&gt;(?:playlist\\?|&amp;)?list=([^#\\\\&amp;\\?]{12,}))?&quot;, Pattern.CASE_INSENSITIVE);</b>
+<b class="nc"><i>32</i>&nbsp;    private final static Pattern youtubeCode = Pattern.compile(&quot;^[A-Za-z0-9_-]{11}$&quot;);</b>
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    /**
+<i>35</i>&nbsp;     * checks if it could be a youtube videocode
+<i>36</i>&nbsp;     *
+<i>37</i>&nbsp;     * @param videocode code to check
+<i>38</i>&nbsp;     * @return could be a code
+<i>39</i>&nbsp;     */
+<i>40</i>&nbsp;    public static boolean isValidYoutubeCode(String videocode) {
+<b class="nc"><i>41</i>&nbsp;        return youtubeCode.matcher(videocode).matches();</b>
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    /**
+<i>45</i>&nbsp;     * Extracts the videocode from an url
+<i>46</i>&nbsp;     *
+<i>47</i>&nbsp;     * @param url youtube link
+<i>48</i>&nbsp;     * @return videocode
+<i>49</i>&nbsp;     */
+<i>50</i>&nbsp;    public static String extractCodeFromUrl(String url) {
+<b class="nc"><i>51</i>&nbsp;        Matcher matcher = yturl.matcher(url);</b>
+<b class="nc"><i>52</i>&nbsp;        if (matcher.find()) {</b>
+<b class="nc"><i>53</i>&nbsp;            if (matcher.group(1) != null) {</b>
+<b class="nc"><i>54</i>&nbsp;                return matcher.group(1);</b>
+<i>55</i>&nbsp;            }
+<i>56</i>&nbsp;        }
+<b class="nc"><i>57</i>&nbsp;        return url;</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Extracts the playlistcode from a yt url
+<i>62</i>&nbsp;     *
+<i>63</i>&nbsp;     * @param url the url
+<i>64</i>&nbsp;     * @return playlistcode || null if not found
+<i>65</i>&nbsp;     */
+<i>66</i>&nbsp;    public static String getPlayListCode(String url) {
+<b class="nc"><i>67</i>&nbsp;        Matcher matcher = yturl.matcher(url);</b>
+<b class="nc"><i>68</i>&nbsp;        if (matcher.find()) {</b>
+<b class="nc"><i>69</i>&nbsp;            if (matcher.groupCount() == 2) {</b>
+<b class="nc"><i>70</i>&nbsp;                return matcher.group(2);</b>
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;        }
+<b class="nc"><i>73</i>&nbsp;        return null;</b>
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * @param videocode youtubecode
+<i>78</i>&nbsp;     * @return whats in the &lt;title&gt; tag on a youtube page
+<i>79</i>&nbsp;     */
+<i>80</i>&nbsp;    public static String getTitleFromPage(String videocode) {
+<b class="nc"><i>81</i>&nbsp;        String ret = &quot;&quot;;</b>
+<i>82</i>&nbsp;        try {
+<b class="nc"><i>83</i>&nbsp;            URL loginurl = new URL(&quot;https://www.youtube.com/watch?v=&quot; + videocode);</b>
+<b class="nc"><i>84</i>&nbsp;            URLConnection yc = loginurl.openConnection();</b>
+<b class="nc"><i>85</i>&nbsp;            yc.setConnectTimeout(10 * 1000);</b>
+<b class="nc"><i>86</i>&nbsp;            BufferedReader in = new BufferedReader(</b>
+<i>87</i>&nbsp;                    new InputStreamReader(
+<b class="nc"><i>88</i>&nbsp;                            yc.getInputStream()));</b>
+<b class="nc"><i>89</i>&nbsp;            StringBuilder input = new StringBuilder();</b>
+<i>90</i>&nbsp;            String inputLine;
+<b class="nc"><i>91</i>&nbsp;            while ((inputLine = in.readLine()) != null)</b>
+<b class="nc"><i>92</i>&nbsp;                input.append(inputLine);</b>
+<b class="nc"><i>93</i>&nbsp;            in.close();</b>
+<b class="nc"><i>94</i>&nbsp;            int start = input.indexOf(&quot;&lt;title&gt;&quot;);</b>
+<b class="nc"><i>95</i>&nbsp;            int end = input.indexOf(&quot;&lt;/title&gt;&quot;);</b>
+<b class="nc"><i>96</i>&nbsp;            ret = input.substring(start + 7, end - 10);</b>
+<b class="nc"><i>97</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>98</i>&nbsp;            System.out.println(e);</b>
+<b class="nc"><i>99</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>100</i>&nbsp;        }</b>
+<b class="nc"><i>101</i>&nbsp;        return StringEscapeUtils.unescapeHtml4(ret);</b>
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    /**
+<i>105</i>&nbsp;     * Time until the next google api reset happens (Midnight PT), or 9am GMT
+<i>106</i>&nbsp;     *
+<i>107</i>&nbsp;     * @return formatted string, eg. &quot;10 minutes form now&quot;
+<i>108</i>&nbsp;     */
+<i>109</i>&nbsp;    public static String nextApiResetTime() {
+<b class="nc"><i>110</i>&nbsp;        Calendar c = Calendar.getInstance();</b>
+<b class="nc"><i>111</i>&nbsp;        c.add(Calendar.DAY_OF_MONTH, 0);</b>
+<b class="nc"><i>112</i>&nbsp;        c.set(Calendar.HOUR_OF_DAY, 9);</b>
+<b class="nc"><i>113</i>&nbsp;        c.set(Calendar.MINUTE, 0);</b>
+<b class="nc"><i>114</i>&nbsp;        c.set(Calendar.SECOND, 0);</b>
+<b class="nc"><i>115</i>&nbsp;        c.set(Calendar.MILLISECOND, 0);</b>
+<b class="nc"><i>116</i>&nbsp;        return TimeUtil.getRelativeTime(</b>
+<b class="nc"><i>117</i>&nbsp;                (System.currentTimeMillis() +</b>
+<b class="nc"><i>118</i>&nbsp;                        (c.getTimeInMillis() - System.currentTimeMillis()) % TimeUnit.DAYS.toMillis(1)) / 1000L, false);</b>
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

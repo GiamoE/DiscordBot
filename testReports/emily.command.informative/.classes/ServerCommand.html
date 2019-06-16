@@ -1,0 +1,189 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ServerCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.informative</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ServerCommand (emily.command.informative)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ServerCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.informative;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import com.google.common.collect.ImmutableSet;
+<i>20</i>&nbsp;import com.google.common.collect.Sets;
+<i>21</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>22</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>23</i>&nbsp;import emily.main.DiscordBot;
+<i>24</i>&nbsp;import emily.permission.SimpleRank;
+<i>25</i>&nbsp;import emily.templates.Templates;
+<i>26</i>&nbsp;import emily.util.DisUtil;
+<i>27</i>&nbsp;import emily.util.Emojibet;
+<i>28</i>&nbsp;import emily.util.GfxUtil;
+<i>29</i>&nbsp;import net.dv8tion.jda.core.EmbedBuilder;
+<i>30</i>&nbsp;import net.dv8tion.jda.core.OnlineStatus;
+<i>31</i>&nbsp;import net.dv8tion.jda.core.Permission;
+<i>32</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>33</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>34</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>35</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>36</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>37</i>&nbsp;import net.dv8tion.jda.core.utils.PermissionUtil;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;import java.text.SimpleDateFormat;
+<i>40</i>&nbsp;import java.util.Date;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;public class ServerCommand extends AbstractCommand {
+<i>43</i>&nbsp;    public ServerCommand() {
+<b class="nc"><i>44</i>&nbsp;        super();</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    @Override
+<i>48</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>49</i>&nbsp;        return &quot;Information about the server&quot;;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    @Override
+<i>53</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>54</i>&nbsp;        return &quot;server&quot;;</b>
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    @Override
+<i>58</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>59</i>&nbsp;        return new String[]{};</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    @Override
+<i>63</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>64</i>&nbsp;        return new String[]{};</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    @Override
+<i>68</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>69</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    @Override
+<i>73</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>74</i>&nbsp;        Guild guild = ((TextChannel) channel).getGuild();</b>
+<b class="nc"><i>75</i>&nbsp;        if (!PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {</b>
+<b class="nc"><i>76</i>&nbsp;            return Templates.permission_missing.formatGuild(channel, Permission.MESSAGE_EMBED_LINKS.toString());</b>
+<i>77</i>&nbsp;        }
+<b class="nc"><i>78</i>&nbsp;        if (bot.security.getSimpleRank(author, channel).isAtLeast(SimpleRank.BOT_ADMIN) &amp;&amp; args.length &gt; 0 &amp;&amp; DisUtil.matchesGuildSearch(args[0])) {</b>
+<b class="nc"><i>79</i>&nbsp;            guild = DisUtil.findGuildBy(args[0], bot.getContainer());</b>
+<b class="nc"><i>80</i>&nbsp;            if (guild == null) {</b>
+<b class="nc"><i>81</i>&nbsp;                return Templates.config.cant_find_guild.formatGuild(channel, args[0]);</b>
+<i>82</i>&nbsp;            }
+<i>83</i>&nbsp;        }
+<b class="nc"><i>84</i>&nbsp;        EmbedBuilder b = new EmbedBuilder();</b>
+<b class="nc"><i>85</i>&nbsp;        b.setAuthor(guild.getName(), guild.getIconUrl(), guild.getIconUrl());</b>
+<b class="nc"><i>86</i>&nbsp;        b.setThumbnail(guild.getIconUrl());</b>
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;        b.setDescription(</b>
+<b class="nc"><i>89</i>&nbsp;                &quot;Discord-id `&quot; + guild.getId() + &quot;`\n&quot; +</b>
+<b class="nc"><i>90</i>&nbsp;                        &quot;On shard `&quot; + bot.getShardId() + &quot;`\n&quot; +</b>
+<b class="nc"><i>91</i>&nbsp;                        (PermissionUtil.checkPermission(guild.getSelfMember(), Permission.ADMINISTRATOR)</b>
+<i>92</i>&nbsp;                                ? Emojibet.POLICE + &quot; Administrator&quot; : &quot;&quot;)
+<i>93</i>&nbsp;        );
+<b class="nc"><i>94</i>&nbsp;        ImmutableSet&lt;OnlineStatus&gt; onlineStatus = Sets.immutableEnumSet(OnlineStatus.ONLINE, OnlineStatus.IDLE, OnlineStatus.DO_NOT_DISTURB);</b>
+<b class="nc"><i>95</i>&nbsp;        long online = guild.getMembers().stream().filter(member -&gt; onlineStatus.contains(member.getOnlineStatus())).count();</b>
+<b class="nc"><i>96</i>&nbsp;        b.setColor(GfxUtil.getAverageColor(guild.getIconUrl()));</b>
+<b class="nc"><i>97</i>&nbsp;        b.addField(&quot;Members&quot;, String.format(&quot;%s online\n%s in total&quot;, online, guild.getMembers().size()), true);</b>
+<b class="nc"><i>98</i>&nbsp;        b.addField(&quot;Channels&quot;, String.format(&quot;%s text channels\n%s voice channels&quot;, guild.getTextChannels().size(), guild.getVoiceChannels().size()), true);</b>
+<b class="nc"><i>99</i>&nbsp;        b.addField(&quot;Created by&quot;, String.format(&quot;%s\\#%s&quot;, guild.getOwner().getUser().getName(), guild.getOwner().getUser().getDiscriminator()), true);</b>
+<b class="nc"><i>100</i>&nbsp;        b.addField(&quot;My prefix&quot;, String.format(&quot;`%s`&quot;, DisUtil.getCommandPrefix(guild)), true);</b>
+<b class="nc"><i>101</i>&nbsp;        b.addField(&quot;Created On&quot;, new SimpleDateFormat(&quot;dd MMMM yyyy&quot;).format(new Date(guild.getCreationTime().toInstant().toEpochMilli())), true);</b>
+<b class="nc"><i>102</i>&nbsp;        b.setFooter(guild.getSelfMember().getEffectiveName(), channel.getJDA().getSelfUser().getAvatarUrl());</b>
+<b class="nc"><i>103</i>&nbsp;        bot.queue.add(channel.sendMessage(b.build()));</b>
+<b class="nc"><i>104</i>&nbsp;        return &quot;&quot;;</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

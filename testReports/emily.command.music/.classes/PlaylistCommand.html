@@ -1,0 +1,633 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PlaylistCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.music</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PlaylistCommand (emily.command.music)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PlaylistCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    11,1%
+  </span>
+  <span class="absValue">
+    (2/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1,2%
+  </span>
+  <span class="absValue">
+    (3/ 256)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PlaylistCommand$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    10,5%
+  </span>
+  <span class="absValue">
+    (2/ 19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1,2%
+  </span>
+  <span class="absValue">
+    (3/ 257)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.music;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import com.google.api.client.repackaged.com.google.common.base.Joiner;
+<i>20</i>&nbsp;import emily.command.meta.CommandReactionListener;
+<i>21</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>22</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>23</i>&nbsp;import emily.command.meta.ICommandReactionListener;
+<i>24</i>&nbsp;import emily.command.meta.PaginationInfo;
+<i>25</i>&nbsp;import emily.db.controllers.CGuild;
+<i>26</i>&nbsp;import emily.db.controllers.CMusic;
+<i>27</i>&nbsp;import emily.db.controllers.CPlaylist;
+<i>28</i>&nbsp;import emily.db.controllers.CUser;
+<i>29</i>&nbsp;import emily.db.model.OMusic;
+<i>30</i>&nbsp;import emily.db.model.OPlaylist;
+<i>31</i>&nbsp;import emily.guildsettings.GSetting;
+<i>32</i>&nbsp;import emily.handler.GuildSettings;
+<i>33</i>&nbsp;import emily.handler.MusicPlayerHandler;
+<i>34</i>&nbsp;import emily.main.DiscordBot;
+<i>35</i>&nbsp;import emily.permission.SimpleRank;
+<i>36</i>&nbsp;import emily.templates.Templates;
+<i>37</i>&nbsp;import emily.util.*;
+<i>38</i>&nbsp;import emoji4j.EmojiUtils;
+<i>39</i>&nbsp;import net.dv8tion.jda.core.entities.*;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;import java.util.ArrayList;
+<i>42</i>&nbsp;import java.util.Arrays;
+<i>43</i>&nbsp;import java.util.List;
+<i>44</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;/**
+<i>47</i>&nbsp; * !playlist
+<i>48</i>&nbsp; * shows the current songs in the add
+<i>49</i>&nbsp; */
+<i>50</i>&nbsp;public class PlaylistCommand extends AbstractCommand implements ICommandReactionListener&lt;PaginationInfo&lt;OPlaylist&gt;&gt; {
+<i>51</i>&nbsp;    private final static int ITEMS_PER_PAGE = 20;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public PlaylistCommand() {
+<b class="fc"><i>54</i>&nbsp;        super();</b>
+<b class="fc"><i>55</i>&nbsp;    }</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    @Override
+<i>58</i>&nbsp;    public String getDescription() {
+<b class="fc"><i>59</i>&nbsp;        return &quot;information about the playlists&quot;;</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    @Override
+<i>63</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>64</i>&nbsp;        return &quot;playlist&quot;;</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    @Override
+<i>68</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>69</i>&nbsp;        return new String[]{</b>
+<i>70</i>&nbsp;                &quot;-- using playlists &quot;,
+<i>71</i>&nbsp;                &quot;playlist mine          //use your default playlist&quot;,
+<i>72</i>&nbsp;                &quot;playlist mine &lt;code&gt;   //use your playlist with code&quot;,
+<i>73</i>&nbsp;                &quot;playlist lists         //see what playlists you have &quot;,
+<i>74</i>&nbsp;                &quot;playlist guildlists    //see what playlists the guild has&quot;,
+<i>75</i>&nbsp;                &quot;playlist guild         //use the guild&#39;s default playlist&quot;,
+<i>76</i>&nbsp;                &quot;playlist guild &lt;code&gt;  //use the guild&#39;s playlist with code&quot;,
+<i>77</i>&nbsp;                &quot;playlist global        //use the global playlist&quot;,
+<i>78</i>&nbsp;                &quot;playlist settings      //check the settings for the active playlist&quot;,
+<i>79</i>&nbsp;                &quot;playlist               //info about the current playlist&quot;,
+<i>80</i>&nbsp;                &quot;playlist list &lt;page&gt;   //Shows the music in the playlist&quot;,
+<i>81</i>&nbsp;                &quot;&quot;,
+<i>82</i>&nbsp;                &quot;-- Adding and removing music from the playlist&quot;,
+<i>83</i>&nbsp;//				&quot;playlist show &lt;pagenumber&gt;           //shows music in the playlist&quot;,
+<i>84</i>&nbsp;                &quot;playlist add                         //adds the currently playing music&quot;,
+<i>85</i>&nbsp;                &quot;playlist add guild                   //adds the currently playing to the guild list&quot;,
+<i>86</i>&nbsp;//				&quot;playlist add &lt;youtubelink&gt;           //adds the link to the playlist&quot;,
+<i>87</i>&nbsp;                &quot;playlist remove                      //removes the currently playing music&quot;,
+<i>88</i>&nbsp;//				&quot;playlist remove &lt;youtubelink&gt;        //removes song from playlist&quot;,
+<i>89</i>&nbsp;                &quot;playlist removeall                   //removes ALL songs from playlist&quot;,
+<i>90</i>&nbsp;                &quot;&quot;,
+<i>91</i>&nbsp;                &quot;-- Changing the settings of the playlist&quot;,
+<i>92</i>&nbsp;                &quot;playlist title &lt;new title&gt;           //edit the playlist title&quot;,
+<i>93</i>&nbsp;                &quot;playlist edit &lt;new type&gt;             //change the edit-type of a playlist&quot;,
+<i>94</i>&nbsp;                &quot;playlist play &lt;id&gt;                   //plays a track from the playlist&quot;,
+<i>95</i>&nbsp;                &quot;playlist playtype &lt;new type&gt;         //change the play-type of a playlist&quot;,
+<i>96</i>&nbsp;//				&quot;playlist visibility &lt;new visibility&gt; //change who can see the playlist&quot;,
+<i>97</i>&nbsp;//				&quot;playlist reset                       //reset settings to default&quot;,
+<i>98</i>&nbsp;        };
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    @Override
+<i>102</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>103</i>&nbsp;        return new String[]{</b>
+<i>104</i>&nbsp;                &quot;pl&quot;
+<i>105</i>&nbsp;        };
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    @Override
+<i>109</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>110</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    @Override
+<i>114</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>115</i>&nbsp;        Guild guild = ((TextChannel) channel).getGuild();</b>
+<b class="nc"><i>116</i>&nbsp;        MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);</b>
+<b class="nc"><i>117</i>&nbsp;        SimpleRank userRank = bot.security.getSimpleRank(author, channel);</b>
+<b class="nc"><i>118</i>&nbsp;        int nowPlayingId = player.getCurrentlyPlaying();</b>
+<b class="nc"><i>119</i>&nbsp;        OMusic musicRec = CMusic.findById(nowPlayingId);</b>
+<b class="nc"><i>120</i>&nbsp;        if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {</b>
+<b class="nc"><i>121</i>&nbsp;            return Templates.music.required_role_not_found.formatGuild(channel, guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));</b>
+<i>122</i>&nbsp;        }
+<b class="nc"><i>123</i>&nbsp;        OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());</b>
+<b class="nc"><i>124</i>&nbsp;        if (playlist.id == 0) {</b>
+<b class="nc"><i>125</i>&nbsp;            playlist = CPlaylist.getGlobalList();</b>
+<i>126</i>&nbsp;        }
+<b class="nc"><i>127</i>&nbsp;        String cp = DisUtil.getCommandPrefix(channel);</b>
+<b class="nc"><i>128</i>&nbsp;        if (args.length == 0) {</b>
+<b class="nc"><i>129</i>&nbsp;            if (playlist.isGlobalList()) {</b>
+<b class="nc"><i>130</i>&nbsp;                return Templates.music.playlist_using.formatGuild(channel, playlist.title) + &quot; See `&quot; + cp + &quot;pl help` for more info\n&quot; +</b>
+<i>131</i>&nbsp;                        &quot;You can switch to a different playlist with `&quot; + cp + &quot;pl guild` to the guild&#39;s list or `&quot; + cp + &quot;pl mine` to your own one&quot;;
+<i>132</i>&nbsp;            }
+<b class="nc"><i>133</i>&nbsp;            return Templates.music.playlist_using.formatGuild(channel, playlist.title) +</b>
+<b class="nc"><i>134</i>&nbsp;                    &quot;Settings &quot; + makeSettingsTable(playlist) +</b>
+<b class="nc"><i>135</i>&nbsp;                    &quot;To add the currently playing music to the playlist use `&quot; + DisUtil.getCommandPrefix(channel) + &quot;pl add`, check out `&quot; + DisUtil.getCommandPrefix(channel) + &quot;help pl` for more info&quot;;</b>
+<i>136</i>&nbsp;        }
+<b class="nc"><i>137</i>&nbsp;        OPlaylist newlist = null;</b>
+<b class="nc"><i>138</i>&nbsp;        ArrayList&lt;OPlaylist&gt; playlists = null;</b>
+<b class="nc"><i>139</i>&nbsp;        StringBuilder out = null;</b>
+<b class="nc"><i>140</i>&nbsp;        switch (args[0].toLowerCase()) {</b>
+<i>141</i>&nbsp;            case &quot;lists&quot;:
+<b class="nc"><i>142</i>&nbsp;                playlists = CPlaylist.getPlaylistsForUser(CUser.getCachedId(author.getIdLong()));</b>
+<b class="nc"><i>143</i>&nbsp;                out = new StringBuilder(&quot;You have the following playlists:\n&quot;);</b>
+<i>144</i>&nbsp;            case &quot;guildlist&quot;:
+<i>145</i>&nbsp;            case &quot;guildlists&quot;:
+<b class="nc"><i>146</i>&nbsp;                if (playlists == null) {</b>
+<b class="nc"><i>147</i>&nbsp;                    playlists = CPlaylist.getPlaylistsForGuild(CGuild.getCachedId(guild.getIdLong()));</b>
+<b class="nc"><i>148</i>&nbsp;                    out = new StringBuilder(&quot;The guild has the following plalists: \n&quot;);</b>
+<i>149</i>&nbsp;                }
+<b class="nc"><i>150</i>&nbsp;                if (playlists.isEmpty()) {</b>
+<b class="nc"><i>151</i>&nbsp;                    return &quot;No playlists found&quot;;</b>
+<i>152</i>&nbsp;                }
+<b class="nc"><i>153</i>&nbsp;                for (OPlaylist list : playlists) {</b>
+<b class="nc"><i>154</i>&nbsp;                    out.append(&quot;`&quot;).append(list.code).append(&quot;`&quot;).append(&quot; - &quot;).append(list.title).append(&quot;\n&quot;);</b>
+<b class="nc"><i>155</i>&nbsp;                }</b>
+<b class="nc"><i>156</i>&nbsp;                return out.toString();</b>
+<i>157</i>&nbsp;            case &quot;export&quot;:
+<b class="nc"><i>158</i>&nbsp;                if (args.length == 1) {</b>
+<b class="nc"><i>159</i>&nbsp;                    newlist = findPlaylist(&quot;mine&quot;, &quot;default&quot;, author, guild);</b>
+<i>160</i>&nbsp;                } else {
+<b class="nc"><i>161</i>&nbsp;                    newlist = findPlaylist(&quot;mine&quot;, Misc.joinStrings(args, 1), author, guild);</b>
+<i>162</i>&nbsp;                }
+<b class="nc"><i>163</i>&nbsp;                out = new StringBuilder();</b>
+<b class="nc"><i>164</i>&nbsp;                out.append(newlist.code).append(&quot; - &quot;).append(newlist.title).append(&quot;\n&quot;);</b>
+<b class="nc"><i>165</i>&nbsp;                for (OMusic music : CPlaylist.getMusic(newlist.id, 1000, 0)) {</b>
+<b class="nc"><i>166</i>&nbsp;                    out.append(&quot;youtube.com/watch?v=&quot;).append(music.youtubecode).append(&quot;\n&quot;);</b>
+<b class="nc"><i>167</i>&nbsp;                }</b>
+<b class="nc"><i>168</i>&nbsp;                if (out.length() &gt; 0) {</b>
+<b class="nc"><i>169</i>&nbsp;                    DebugUtil.handleDebug(bot, channel, out.toString());</b>
+<b class="nc"><i>170</i>&nbsp;                    return &quot;&quot;;</b>
+<i>171</i>&nbsp;                }
+<b class="nc"><i>172</i>&nbsp;                return &quot;Playlist is empty&quot;;</b>
+<i>173</i>&nbsp;            case &quot;mine&quot;:
+<i>174</i>&nbsp;            case &quot;guild&quot;:
+<i>175</i>&nbsp;            case &quot;global&quot;:
+<b class="nc"><i>176</i>&nbsp;                String playlistCode = null;</b>
+<b class="nc"><i>177</i>&nbsp;                if (args.length &gt; 1) {</b>
+<b class="nc"><i>178</i>&nbsp;                    playlistCode = Misc.joinStrings(args, 1);</b>
+<b class="nc"><i>179</i>&nbsp;                    if (playlistCode.length() &gt; 32) {</b>
+<b class="nc"><i>180</i>&nbsp;                        playlistCode = playlistCode.substring(0, 32);</b>
+<i>181</i>&nbsp;                    }
+<i>182</i>&nbsp;                }
+<b class="nc"><i>183</i>&nbsp;                if (playlistCode == null || playlistCode.isEmpty()) {</b>
+<b class="nc"><i>184</i>&nbsp;                    playlistCode = &quot;default&quot;;</b>
+<i>185</i>&nbsp;                }
+<b class="nc"><i>186</i>&nbsp;                newlist = findPlaylist(args[0], playlistCode, author, guild);</b>
+<i>187</i>&nbsp;                break;
+<i>188</i>&nbsp;        }
+<b class="nc"><i>189</i>&nbsp;        if (newlist != null) {</b>
+<b class="nc"><i>190</i>&nbsp;            player.setActivePlayListId(newlist.id);</b>
+<b class="nc"><i>191</i>&nbsp;            return Templates.music.playlist_changed.formatGuild(channel, newlist.title);</b>
+<i>192</i>&nbsp;        }
+<i>193</i>&nbsp;
+<b class="nc"><i>194</i>&nbsp;        switch (args[0].toLowerCase()) {</b>
+<i>195</i>&nbsp;            case &quot;add&quot;:
+<i>196</i>&nbsp;            case &quot;+&quot;:
+<b class="nc"><i>197</i>&nbsp;                if (nowPlayingId == 0) {</b>
+<b class="nc"><i>198</i>&nbsp;                    return Templates.command.currentlyplaying.nosong.formatGuild(channel);</b>
+<i>199</i>&nbsp;                }
+<b class="nc"><i>200</i>&nbsp;                if (canAddTracks(playlist, (TextChannel) channel, author, userRank)) {</b>
+<b class="nc"><i>201</i>&nbsp;                    if (CPlaylist.isInPlaylist(playlist.id, nowPlayingId)) {</b>
+<b class="nc"><i>202</i>&nbsp;                        return Templates.playlist.music_already_added.formatGuild(channel, musicRec.youtubeTitle, playlist.title);</b>
+<i>203</i>&nbsp;                    }
+<b class="nc"><i>204</i>&nbsp;                    CPlaylist.addToPlayList(playlist.id, nowPlayingId);</b>
+<b class="nc"><i>205</i>&nbsp;                    return Templates.playlist.music_added.formatGuild(channel, musicRec.youtubeTitle, playlist.title);</b>
+<i>206</i>&nbsp;                }
+<b class="nc"><i>207</i>&nbsp;                return Templates.no_permission.formatGuild(channel);</b>
+<i>208</i>&nbsp;            case &quot;removeall&quot;:
+<b class="nc"><i>209</i>&nbsp;                if (isPlaylistAdmin(playlist, (TextChannel) channel, author, userRank)) {</b>
+<b class="nc"><i>210</i>&nbsp;                    CPlaylist.resetPlaylist(playlist.id);</b>
+<b class="nc"><i>211</i>&nbsp;                    return Templates.playlist.music_removed_all.formatGuild(channel, playlist.title);</b>
+<i>212</i>&nbsp;                }
+<b class="nc"><i>213</i>&nbsp;                return Templates.no_permission.formatGuild(channel);</b>
+<i>214</i>&nbsp;            case &quot;remove&quot;:
+<i>215</i>&nbsp;            case &quot;del&quot;:
+<i>216</i>&nbsp;            case &quot;-&quot;:
+<b class="nc"><i>217</i>&nbsp;                if (args.length &gt; 1 &amp;&amp; (args[1].equals(&quot;guild&quot;) || args[1].equals(&quot;g&quot;))) {</b>
+<b class="nc"><i>218</i>&nbsp;                    playlist = CPlaylist.findBy(0, CGuild.getCachedId(guild.getIdLong()));</b>
+<b class="nc"><i>219</i>&nbsp;                } else if (args.length &gt; 1 &amp;&amp; args[1].matches(&quot;^\\d+$&quot;)) {</b>
+<b class="nc"><i>220</i>&nbsp;                    musicRec = CMusic.findById(Integer.parseInt(args[1]));</b>
+<b class="nc"><i>221</i>&nbsp;                    nowPlayingId = musicRec.id;</b>
+<b class="nc"><i>222</i>&nbsp;                } else if (args.length &gt; 1 &amp;&amp; YTUtil.isValidYoutubeCode(args[1])) {</b>
+<b class="nc"><i>223</i>&nbsp;                    musicRec = CMusic.findByYoutubeId(args[1]);</b>
+<b class="nc"><i>224</i>&nbsp;                    nowPlayingId = musicRec.id;</b>
+<i>225</i>&nbsp;                }
+<b class="nc"><i>226</i>&nbsp;                if (!canRemoveTracks(playlist, (TextChannel) channel, author, userRank)) {</b>
+<b class="nc"><i>227</i>&nbsp;                    return Templates.no_permission.formatGuild(channel);</b>
+<i>228</i>&nbsp;                }
+<b class="nc"><i>229</i>&nbsp;                CPlaylist.removeFromPlayList(playlist.id, nowPlayingId);</b>
+<b class="nc"><i>230</i>&nbsp;                return Templates.playlist.music_removed.formatGuild(channel, musicRec.youtubeTitle, playlist.title);</b>
+<i>231</i>&nbsp;            case &quot;list&quot;:
+<i>232</i>&nbsp;            case &quot;music&quot;:
+<b class="nc"><i>233</i>&nbsp;                if (playlist.isGlobalList()) {</b>
+<b class="nc"><i>234</i>&nbsp;                    return Templates.playlist.global_readonly.formatGuild(channel);</b>
+<i>235</i>&nbsp;                }
+<b class="nc"><i>236</i>&nbsp;                final int currentPage = 1;</b>
+<b class="nc"><i>237</i>&nbsp;                int totalTracks = CPlaylist.getMusicCount(playlist.id);</b>
+<b class="nc"><i>238</i>&nbsp;                int maxPage = (int) Math.ceil((double) totalTracks / (double) ITEMS_PER_PAGE);</b>
+<b class="nc"><i>239</i>&nbsp;                OPlaylist finalPlaylist = playlist;</b>
+<b class="nc"><i>240</i>&nbsp;                bot.queue.add(channel.sendMessage(makePage(guild, playlist, currentPage, maxPage)),</b>
+<i>241</i>&nbsp;                        msg -&gt; {
+<b class="nc"><i>242</i>&nbsp;                            if (maxPage &gt; 1) {</b>
+<b class="nc"><i>243</i>&nbsp;                                bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getIdLong(), msg,</b>
+<b class="nc"><i>244</i>&nbsp;                                        getReactionListener(author.getIdLong(), new PaginationInfo&lt;&gt;(currentPage, maxPage, guild, finalPlaylist)));</b>
+<i>245</i>&nbsp;                            }
+<b class="nc"><i>246</i>&nbsp;                        });</b>
+<b class="nc"><i>247</i>&nbsp;                return &quot;&quot;;</b>
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;            default:
+<i>250</i>&nbsp;                break;
+<i>251</i>&nbsp;        }
+<b class="nc"><i>252</i>&nbsp;        if (args[0].equals(&quot;settings&quot;)) {</b>
+<b class="nc"><i>253</i>&nbsp;            return makeSettingsTable(playlist);</b>
+<i>254</i>&nbsp;        }
+<b class="nc"><i>255</i>&nbsp;        if (playlist.isGlobalList()) {</b>
+<b class="nc"><i>256</i>&nbsp;            return Templates.playlist.global_readonly.formatGuild(channel);</b>
+<i>257</i>&nbsp;        }
+<b class="nc"><i>258</i>&nbsp;        boolean isPlaylistAdmin = isPlaylistAdmin(playlist, (TextChannel) channel, author, userRank);</b>
+<b class="nc"><i>259</i>&nbsp;        switch (args[0].toLowerCase()) {</b>
+<i>260</i>&nbsp;            case &quot;title&quot;:
+<b class="nc"><i>261</i>&nbsp;                if (args.length == 1 || !isPlaylistAdmin) {</b>
+<b class="nc"><i>262</i>&nbsp;                    return Templates.command.playlist_title.formatGuild(channel, playlist.title);</b>
+<i>263</i>&nbsp;                }
+<b class="nc"><i>264</i>&nbsp;                playlist.title = EmojiUtils.shortCodify(Joiner.on(&quot; &quot;).join(Arrays.copyOfRange(args, 1, args.length)));</b>
+<b class="nc"><i>265</i>&nbsp;                CPlaylist.update(playlist);</b>
+<b class="nc"><i>266</i>&nbsp;                player.setActivePlayListId(playlist.id);</b>
+<b class="nc"><i>267</i>&nbsp;                return Templates.playlist.title_updated.formatGuild(channel, playlist.title);</b>
+<i>268</i>&nbsp;            case &quot;edit-type&quot;:
+<i>269</i>&nbsp;            case &quot;edittype&quot;:
+<i>270</i>&nbsp;            case &quot;edit&quot;:
+<b class="nc"><i>271</i>&nbsp;                if (args.length == 1 || !isPlaylistAdmin) {</b>
+<b class="nc"><i>272</i>&nbsp;                    List&lt;List&lt;String&gt;&gt; tbl = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>273</i>&nbsp;                    for (OPlaylist.EditType editType : OPlaylist.EditType.values()) {</b>
+<b class="nc"><i>274</i>&nbsp;                        if (editType.getId() &lt; 1) continue;</b>
+<b class="nc"><i>275</i>&nbsp;                        tbl.add(Arrays.asList((editType == playlist.getEditType() ? &quot;*&quot; : &quot; &quot;) + editType.getId(), editType.toString(), editType.getDescription()));</b>
+<i>276</i>&nbsp;                    }
+<b class="nc"><i>277</i>&nbsp;                    return &quot;the edit-type of the playlist. A `*` indicates the selected option\n&quot; +</b>
+<b class="nc"><i>278</i>&nbsp;                            Misc.makeAsciiTable(Arrays.asList(&quot;#&quot;, &quot;Code&quot;, &quot;Description&quot;), tbl, null) + &quot;\n&quot; +</b>
+<b class="nc"><i>279</i>&nbsp;                            &quot;To change the type use the \\#, for instance `&quot; + DisUtil.getCommandPrefix(channel) + &quot;pl edit 3` sets it to PUBLIC_ADD \n\n&quot; +</b>
+<i>280</i>&nbsp;                            &quot;Private in a guild context refers to users with admin privileges&quot;;
+<i>281</i>&nbsp;                }
+<b class="nc"><i>282</i>&nbsp;                if (args[1].matches(&quot;^\\d+$&quot;)) {</b>
+<b class="nc"><i>283</i>&nbsp;                    OPlaylist.EditType editType = OPlaylist.EditType.fromId(Integer.parseInt(args[1]));</b>
+<b class="nc"><i>284</i>&nbsp;                    if (editType.equals(OPlaylist.EditType.UNKNOWN)) {</b>
+<b class="nc"><i>285</i>&nbsp;                        Templates.playlist.setting_invalid.formatGuild(channel, args[1], &quot;edittype&quot;);</b>
+<i>286</i>&nbsp;                    }
+<b class="nc"><i>287</i>&nbsp;                    playlist.setEditType(editType);</b>
+<b class="nc"><i>288</i>&nbsp;                    CPlaylist.update(playlist);</b>
+<b class="nc"><i>289</i>&nbsp;                    player.setActivePlayListId(playlist.id);</b>
+<b class="nc"><i>290</i>&nbsp;                    return Templates.playlist.setting_updated.formatGuild(channel, &quot;edittype&quot;, args[1]);</b>
+<i>291</i>&nbsp;                }
+<b class="nc"><i>292</i>&nbsp;                return Templates.playlist.setting_not_numeric.formatGuild(channel, &quot;edittype&quot;);</b>
+<i>293</i>&nbsp;            case &quot;vis&quot;:
+<i>294</i>&nbsp;            case &quot;visibility&quot;:
+<b class="nc"><i>295</i>&nbsp;                if (args.length == 1 || !isPlaylistAdmin) {</b>
+<b class="nc"><i>296</i>&nbsp;                    List&lt;List&lt;String&gt;&gt; tbl = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>297</i>&nbsp;                    for (OPlaylist.Visibility visibility : OPlaylist.Visibility.values()) {</b>
+<b class="nc"><i>298</i>&nbsp;                        if (visibility.getId() &lt; 1) continue;</b>
+<b class="nc"><i>299</i>&nbsp;                        tbl.add(Arrays.asList((visibility == playlist.getVisibility() ? &quot;*&quot; : &quot; &quot;) + visibility.getId(), visibility.toString(), visibility.getDescription()));</b>
+<i>300</i>&nbsp;                    }
+<b class="nc"><i>301</i>&nbsp;                    return &quot;the visibility-type of the playlist. A `*` indicates the selected option\n&quot; +</b>
+<b class="nc"><i>302</i>&nbsp;                            Misc.makeAsciiTable(Arrays.asList(&quot;#&quot;, &quot;Code&quot;, &quot;Description&quot;), tbl, null) + &quot;\n&quot; +</b>
+<b class="nc"><i>303</i>&nbsp;                            &quot;To change the type use the \\#, for instance `&quot; + DisUtil.getCommandPrefix(channel) + &quot;pl vis 3` sets it to guild \n\n&quot; +</b>
+<i>304</i>&nbsp;                            &quot;Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it&quot;;
+<i>305</i>&nbsp;                }
+<b class="nc"><i>306</i>&nbsp;                if (args.length &gt; 1 &amp;&amp; args[1].matches(&quot;^\\d+$&quot;)) {</b>
+<b class="nc"><i>307</i>&nbsp;                    OPlaylist.Visibility visibility = OPlaylist.Visibility.fromId(Integer.parseInt(args[1]));</b>
+<b class="nc"><i>308</i>&nbsp;                    if (visibility.equals(OPlaylist.Visibility.UNKNOWN)) {</b>
+<b class="nc"><i>309</i>&nbsp;                        Templates.playlist.setting_invalid.formatGuild(channel, args[1], &quot;visibility&quot;);</b>
+<i>310</i>&nbsp;                    }
+<b class="nc"><i>311</i>&nbsp;                    playlist.setVisibility(visibility);</b>
+<b class="nc"><i>312</i>&nbsp;                    CPlaylist.update(playlist);</b>
+<b class="nc"><i>313</i>&nbsp;                    player.setActivePlayListId(playlist.id);</b>
+<b class="nc"><i>314</i>&nbsp;                    return Templates.playlist.setting_updated.formatGuild(channel, &quot;visibility&quot;, args[1]);</b>
+<i>315</i>&nbsp;                }
+<b class="nc"><i>316</i>&nbsp;                return Templates.playlist.setting_not_numeric.formatGuild(channel, &quot;visibility&quot;);</b>
+<i>317</i>&nbsp;            case &quot;play&quot;:
+<b class="nc"><i>318</i>&nbsp;                if (args.length &gt; 1) {</b>
+<b class="nc"><i>319</i>&nbsp;                    OMusic record = null;</b>
+<b class="nc"><i>320</i>&nbsp;                    if (args[1].matches(&quot;^\\d+$&quot;)) {</b>
+<b class="nc"><i>321</i>&nbsp;                        record = CMusic.findById(Integer.parseInt(args[1]));</b>
+<b class="nc"><i>322</i>&nbsp;                    } else if (YTUtil.isValidYoutubeCode(args[1])) {</b>
+<b class="nc"><i>323</i>&nbsp;                        record = CMusic.findByYoutubeId(args[1]);</b>
+<i>324</i>&nbsp;                    }
+<b class="nc"><i>325</i>&nbsp;                    if (record != null &amp;&amp; record.id &gt; 0) {</b>
+<b class="nc"><i>326</i>&nbsp;                        if (player.canUseVoiceCommands(author, userRank)) {</b>
+<b class="nc"><i>327</i>&nbsp;                            player.connectTo(guild.getMember(author).getVoiceState().getChannel());</b>
+<b class="nc"><i>328</i>&nbsp;                            player.addToQueue(record.youtubecode, author);</b>
+<b class="nc"><i>329</i>&nbsp;                            return Templates.music.added_to_queue.formatGuild(channel, record.youtubeTitle);</b>
+<i>330</i>&nbsp;                        }
+<i>331</i>&nbsp;                    }
+<b class="nc"><i>332</i>&nbsp;                    return Templates.music.not_added_to_queue.formatGuild(channel, args[1]);</b>
+<i>333</i>&nbsp;                }
+<b class="nc"><i>334</i>&nbsp;                return Templates.invalid_use.formatGuild(channel);</b>
+<i>335</i>&nbsp;            case &quot;playtype&quot;:
+<i>336</i>&nbsp;            case &quot;play-type&quot;:
+<b class="nc"><i>337</i>&nbsp;                if (args.length == 1) {</b>
+<b class="nc"><i>338</i>&nbsp;                    List&lt;List&lt;String&gt;&gt; tbl = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>339</i>&nbsp;                    for (OPlaylist.PlayType playType : OPlaylist.PlayType.values()) {</b>
+<b class="nc"><i>340</i>&nbsp;                        if (playType.getId() &lt; 1) continue;</b>
+<b class="nc"><i>341</i>&nbsp;                        tbl.add(Arrays.asList((playType == playlist.getPlayType() ? &quot;*&quot; : &quot; &quot;) + playType.getId(), playType.toString(), playType.getDescription()));</b>
+<i>342</i>&nbsp;                    }
+<b class="nc"><i>343</i>&nbsp;                    return &quot;the play-type of the playlist. A `*` indicates the selected option\n&quot; +</b>
+<b class="nc"><i>344</i>&nbsp;                            Misc.makeAsciiTable(Arrays.asList(&quot;#&quot;, &quot;Code&quot;, &quot;Description&quot;), tbl, null) + &quot;\n&quot; +</b>
+<i>345</i>&nbsp;                            &quot;Private in a guild-setting refers to users with admin privileges, use the number in the first column to set it&quot;;
+<i>346</i>&nbsp;                }
+<b class="nc"><i>347</i>&nbsp;                if (args[1].matches(&quot;^\\d+$&quot;)) {</b>
+<b class="nc"><i>348</i>&nbsp;                    OPlaylist.PlayType playType = OPlaylist.PlayType.fromId(Integer.parseInt(args[1]));</b>
+<b class="nc"><i>349</i>&nbsp;                    playlist.setPlayType(playType);</b>
+<b class="nc"><i>350</i>&nbsp;                    CPlaylist.update(playlist);</b>
+<b class="nc"><i>351</i>&nbsp;                    player.setActivePlayListId(playlist.id);</b>
+<b class="nc"><i>352</i>&nbsp;                    return Templates.playlist.setting_updated.formatGuild(channel, &quot;play-type&quot;, args[1]);</b>
+<i>353</i>&nbsp;                }
+<b class="nc"><i>354</i>&nbsp;                return Templates.playlist.setting_not_numeric.formatGuild(channel, &quot;play-type&quot;);</b>
+<i>355</i>&nbsp;        }
+<b class="nc"><i>356</i>&nbsp;        return Templates.invalid_use.formatGuild(channel);</b>
+<i>357</i>&nbsp;    }
+<i>358</i>&nbsp;
+<i>359</i>&nbsp;    /**
+<i>360</i>&nbsp;     * @see PlaylistCommand#canEditPlaylist(OPlaylist, TextChannel, User, SimpleRank, boolean)
+<i>361</i>&nbsp;     */
+<i>362</i>&nbsp;    private boolean canAddTracks(OPlaylist playlist, TextChannel channel, User invoker, SimpleRank userRank) {
+<b class="nc"><i>363</i>&nbsp;        return canEditPlaylist(playlist, channel, invoker, userRank, true);</b>
+<i>364</i>&nbsp;    }
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    /**
+<i>367</i>&nbsp;     * @see PlaylistCommand#canEditPlaylist(OPlaylist, TextChannel, User, SimpleRank, boolean)
+<i>368</i>&nbsp;     */
+<i>369</i>&nbsp;    private boolean canRemoveTracks(OPlaylist playlist, TextChannel channel, User invoker, SimpleRank userRank) {
+<b class="nc"><i>370</i>&nbsp;        return canEditPlaylist(playlist, channel, invoker, userRank, false);</b>
+<i>371</i>&nbsp;    }
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;    /**
+<i>374</i>&nbsp;     * Check if a user has admin privilege on a playlist
+<i>375</i>&nbsp;     *
+<i>376</i>&nbsp;     * @param playlist the playlist to check
+<i>377</i>&nbsp;     * @param channel  the channel where its invoked
+<i>378</i>&nbsp;     * @param invoker  the user who invoked
+<i>379</i>&nbsp;     * @param userRank rank of the user
+<i>380</i>&nbsp;     * @return true if the user is at least a guild admin
+<i>381</i>&nbsp;     */
+<i>382</i>&nbsp;    private boolean isPlaylistAdmin(OPlaylist playlist, TextChannel channel, User invoker, SimpleRank userRank) {
+<b class="nc"><i>383</i>&nbsp;        if (playlist.isGlobalList() &amp;&amp; userRank.isAtLeast(SimpleRank.CREATOR)) {</b>
+<b class="nc"><i>384</i>&nbsp;            return false;</b>
+<i>385</i>&nbsp;        }
+<b class="nc"><i>386</i>&nbsp;        if (playlist.isGuildList()) {</b>
+<b class="nc"><i>387</i>&nbsp;            return userRank.isAtLeast(SimpleRank.GUILD_ADMIN);</b>
+<i>388</i>&nbsp;        }
+<b class="nc"><i>389</i>&nbsp;        if (playlist.isPersonal()) {</b>
+<b class="nc"><i>390</i>&nbsp;            return CUser.getCachedId(invoker.getIdLong()) == playlist.ownerId;</b>
+<i>391</i>&nbsp;        }
+<b class="nc"><i>392</i>&nbsp;        return userRank.isAtLeast(SimpleRank.CREATOR);</b>
+<i>393</i>&nbsp;    }
+<i>394</i>&nbsp;
+<i>395</i>&nbsp;    /**
+<i>396</i>&nbsp;     * can an invoker add/remove tracks?
+<i>397</i>&nbsp;     *
+<i>398</i>&nbsp;     * @param playlist the playlist to check
+<i>399</i>&nbsp;     * @param channel  the channel where its invoked
+<i>400</i>&nbsp;     * @param invoker  the user who invoked
+<i>401</i>&nbsp;     * @param userRank rank of the user
+<i>402</i>&nbsp;     * @param isAdding adding or removing? false for removing
+<i>403</i>&nbsp;     * @return can the user add/remove tracks?
+<i>404</i>&nbsp;     */
+<i>405</i>&nbsp;    private boolean canEditPlaylist(OPlaylist playlist, TextChannel channel, User invoker, SimpleRank userRank, boolean isAdding) {
+<b class="nc"><i>406</i>&nbsp;        switch (playlist.getEditType()) {</b>
+<i>407</i>&nbsp;            case PUBLIC_AUTO:
+<i>408</i>&nbsp;            case PUBLIC_FULL:
+<b class="nc"><i>409</i>&nbsp;                return true;</b>
+<i>410</i>&nbsp;            case PRIVATE_AUTO:
+<b class="nc"><i>411</i>&nbsp;                if (playlist.isGuildList()) {</b>
+<b class="nc"><i>412</i>&nbsp;                    if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {</b>
+<b class="nc"><i>413</i>&nbsp;                        return false;</b>
+<i>414</i>&nbsp;                    }
+<b class="nc"><i>415</i>&nbsp;                } else if (playlist.isPersonal()) {</b>
+<b class="nc"><i>416</i>&nbsp;                    return CUser.getCachedId(invoker.getIdLong()) == playlist.ownerId;</b>
+<i>417</i>&nbsp;                }
+<i>418</i>&nbsp;            case PUBLIC_ADD:
+<b class="nc"><i>419</i>&nbsp;                if (!isAdding) {</b>
+<b class="nc"><i>420</i>&nbsp;                    if (playlist.isGuildList()) {</b>
+<b class="nc"><i>421</i>&nbsp;                        return userRank.isAtLeast(SimpleRank.GUILD_ADMIN);</b>
+<b class="nc"><i>422</i>&nbsp;                    } else if (playlist.isPersonal()) {</b>
+<b class="nc"><i>423</i>&nbsp;                        return CUser.getCachedId(invoker.getIdLong()) == playlist.ownerId;</b>
+<i>424</i>&nbsp;                    }
+<b class="nc"><i>425</i>&nbsp;                    return false;</b>
+<i>426</i>&nbsp;                }
+<b class="nc"><i>427</i>&nbsp;                return true;</b>
+<i>428</i>&nbsp;            case PRIVATE:
+<b class="nc"><i>429</i>&nbsp;                if (playlist.isGuildList() &amp;&amp; playlist.guildId == CGuild.getCachedId(channel.getGuild().getIdLong()) &amp;&amp; userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {</b>
+<b class="nc"><i>430</i>&nbsp;                    return true;</b>
+<b class="nc"><i>431</i>&nbsp;                } else if (playlist.isPersonal()) {</b>
+<b class="nc"><i>432</i>&nbsp;                    return CUser.getCachedId(invoker.getIdLong()) == playlist.ownerId;</b>
+<i>433</i>&nbsp;                }
+<b class="nc"><i>434</i>&nbsp;                return false;</b>
+<i>435</i>&nbsp;        }
+<b class="nc"><i>436</i>&nbsp;        return false;</b>
+<i>437</i>&nbsp;    }
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;    private OPlaylist findPlaylist(String search, String code, User user, Guild guild) {
+<i>440</i>&nbsp;        int userId;
+<b class="nc"><i>441</i>&nbsp;        int guildId = CGuild.getCachedId(guild.getIdLong());</b>
+<i>442</i>&nbsp;        OPlaylist playlist;
+<i>443</i>&nbsp;        String title;
+<b class="nc"><i>444</i>&nbsp;        switch (search.toLowerCase()) {</b>
+<i>445</i>&nbsp;            case &quot;mine&quot;:
+<b class="nc"><i>446</i>&nbsp;                title = user.getName() + &quot;&#39;s &quot; + code + &quot; list&quot;;</b>
+<b class="nc"><i>447</i>&nbsp;                userId = CUser.getCachedId(user.getIdLong(), user.getName());</b>
+<b class="nc"><i>448</i>&nbsp;                playlist = CPlaylist.findBy(userId, 0, code);</b>
+<b class="nc"><i>449</i>&nbsp;                break;</b>
+<i>450</i>&nbsp;            case &quot;guild&quot;:
+<b class="nc"><i>451</i>&nbsp;                title = EmojiUtils.shortCodify(guild.getName()) + &quot;&#39;s &quot; + code + &quot; list&quot;;</b>
+<b class="nc"><i>452</i>&nbsp;                playlist = CPlaylist.findBy(0, guildId, code);</b>
+<b class="nc"><i>453</i>&nbsp;                break;</b>
+<i>454</i>&nbsp;            case &quot;global&quot;:
+<i>455</i>&nbsp;            default:
+<b class="nc"><i>456</i>&nbsp;                title = &quot;Global&quot;;</b>
+<b class="nc"><i>457</i>&nbsp;                playlist = CPlaylist.findBy(0, 0);</b>
+<i>458</i>&nbsp;                break;
+<i>459</i>&nbsp;        }
+<b class="nc"><i>460</i>&nbsp;        if (playlist.id == 0) {</b>
+<b class="nc"><i>461</i>&nbsp;            playlist.title = title;</b>
+<b class="nc"><i>462</i>&nbsp;            playlist.code = code;</b>
+<b class="nc"><i>463</i>&nbsp;            if (playlist.isPersonal()) {</b>
+<b class="nc"><i>464</i>&nbsp;                playlist.setEditType(OPlaylist.EditType.PRIVATE_AUTO);</b>
+<i>465</i>&nbsp;            }
+<b class="nc"><i>466</i>&nbsp;            CPlaylist.insert(playlist);</b>
+<i>467</i>&nbsp;        }
+<b class="nc"><i>468</i>&nbsp;        return playlist;</b>
+<i>469</i>&nbsp;    }
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;    private String makeSettingsTable(OPlaylist playlist) {
+<b class="nc"><i>472</i>&nbsp;        List&lt;List&lt;String&gt;&gt; body = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>473</i>&nbsp;        String owner = playlist.isGlobalList() ? &quot;Emily&quot; : playlist.isGuildList() ? CGuild.findById(playlist.guildId).name : CUser.findById(playlist.ownerId).name;</b>
+<b class="nc"><i>474</i>&nbsp;        body.add(Arrays.asList(&quot;Title&quot;, playlist.title));</b>
+<b class="nc"><i>475</i>&nbsp;        if (!playlist.isGlobalList()) {</b>
+<b class="nc"><i>476</i>&nbsp;            body.add(Arrays.asList(&quot;code&quot;, playlist.code));</b>
+<i>477</i>&nbsp;        }
+<b class="nc"><i>478</i>&nbsp;        body.add(Arrays.asList(&quot;Owner&quot;, owner));</b>
+<b class="nc"><i>479</i>&nbsp;        body.add(Arrays.asList(&quot;edit-type&quot;, playlist.getEditType().getDescription()));</b>
+<b class="nc"><i>480</i>&nbsp;        body.add(Arrays.asList(&quot;play-type&quot;, playlist.getPlayType().getDescription()));</b>
+<b class="nc"><i>481</i>&nbsp;        return Misc.makeAsciiTable(Arrays.asList(&quot;Name&quot;, &quot;Value&quot;), body, null);</b>
+<i>482</i>&nbsp;    }
+<i>483</i>&nbsp;
+<i>484</i>&nbsp;    private String makePage(Guild guild, OPlaylist playlist, int currentPage, int maxPage) {
+<b class="nc"><i>485</i>&nbsp;        List&lt;OMusic&gt; items = CPlaylist.getMusic(playlist.id, ITEMS_PER_PAGE, (currentPage - 1) * ITEMS_PER_PAGE);</b>
+<b class="nc"><i>486</i>&nbsp;        if (items.isEmpty()) {</b>
+<b class="nc"><i>487</i>&nbsp;            return &quot;The playlist is empty!&quot;;</b>
+<i>488</i>&nbsp;        }
+<b class="nc"><i>489</i>&nbsp;        StringBuilder playlistTable = new StringBuilder(&quot;\n&quot;);</b>
+<b class="nc"><i>490</i>&nbsp;        for (OMusic item : items) {</b>
+<b class="nc"><i>491</i>&nbsp;            playlistTable.append(String.format(&quot;`%11s` | %s\n&quot;, item.youtubecode, item.youtubeTitle));</b>
+<b class="nc"><i>492</i>&nbsp;        }</b>
+<b class="nc"><i>493</i>&nbsp;        return String.format(&quot;Music in the playlist: %s\n&quot;, playlist.title) +</b>
+<i>494</i>&nbsp;                playlistTable + &quot;\n&quot; +
+<b class="nc"><i>495</i>&nbsp;                String.format(&quot;Showing [page %s/%s]&quot;, currentPage, maxPage) + &quot;\n\n&quot; +</b>
+<i>496</i>&nbsp;                &quot;_You can use the `#` to remove an item from the playlist._&quot; + &quot;\n\n&quot; +
+<b class="nc"><i>497</i>&nbsp;                &quot;_Example:_ `&quot; + DisUtil.getCommandPrefix(guild) + &quot;pl del QnTYIBU7Ueg`&quot;;</b>
+<i>498</i>&nbsp;    }
+<i>499</i>&nbsp;
+<i>500</i>&nbsp;    @Override
+<i>501</i>&nbsp;    public CommandReactionListener&lt;PaginationInfo&lt;OPlaylist&gt;&gt; getReactionListener(long userId, PaginationInfo&lt;OPlaylist&gt; initialData) {
+<b class="nc"><i>502</i>&nbsp;        CommandReactionListener&lt;PaginationInfo&lt;OPlaylist&gt;&gt; listener = new CommandReactionListener&lt;&gt;(userId, initialData);</b>
+<b class="nc"><i>503</i>&nbsp;        listener.setExpiresIn(TimeUnit.MINUTES, 2);</b>
+<b class="nc"><i>504</i>&nbsp;        listener.registerReaction(Emojibet.PREV_TRACK, o -&gt; {</b>
+<b class="nc"><i>505</i>&nbsp;            if (listener.getData().previousPage()) {</b>
+<b class="nc"><i>506</i>&nbsp;                String txt = makePage(initialData.getGuild(), initialData.getExtra(), listener.getData().getCurrentPage(), listener.getData().getMaxPage());</b>
+<b class="nc"><i>507</i>&nbsp;                if (txt.length() &gt; 2000) {</b>
+<b class="nc"><i>508</i>&nbsp;                    txt = txt.substring(0, 1999);</b>
+<i>509</i>&nbsp;                }
+<b class="nc"><i>510</i>&nbsp;                o.editMessage(txt).complete();</b>
+<i>511</i>&nbsp;            }
+<b class="nc"><i>512</i>&nbsp;        });</b>
+<b class="nc"><i>513</i>&nbsp;        listener.registerReaction(Emojibet.NEXT_TRACK, o -&gt; {</b>
+<b class="nc"><i>514</i>&nbsp;            if (listener.getData().nextPage()) {</b>
+<b class="nc"><i>515</i>&nbsp;                String txt = makePage(initialData.getGuild(), initialData.getExtra(), listener.getData().getCurrentPage(), listener.getData().getMaxPage());</b>
+<b class="nc"><i>516</i>&nbsp;                if (txt.length() &gt; 2000) {</b>
+<b class="nc"><i>517</i>&nbsp;                    txt = txt.substring(0, 1999);</b>
+<i>518</i>&nbsp;                }
+<b class="nc"><i>519</i>&nbsp;                o.editMessage(txt).complete();</b>
+<i>520</i>&nbsp;            }
+<b class="nc"><i>521</i>&nbsp;        });</b>
+<b class="nc"><i>522</i>&nbsp;        return listener;</b>
+<i>523</i>&nbsp;    }
+<i>524</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,292 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ReactionRoleCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.administrative</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ReactionRoleCommand (emily.command.administrative)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReactionRoleCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 86)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.administrative;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>20</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>21</i>&nbsp;import emily.db.controllers.CReactionRole;
+<i>22</i>&nbsp;import emily.db.model.OReactionRoleKey;
+<i>23</i>&nbsp;import emily.db.model.OReactionRoleMessage;
+<i>24</i>&nbsp;import emily.main.DiscordBot;
+<i>25</i>&nbsp;import emily.permission.SimpleRank;
+<i>26</i>&nbsp;import emily.templates.Templates;
+<i>27</i>&nbsp;import emily.util.DisUtil;
+<i>28</i>&nbsp;import emily.util.Emojibet;
+<i>29</i>&nbsp;import emily.util.Misc;
+<i>30</i>&nbsp;import emoji4j.EmojiUtils;
+<i>31</i>&nbsp;import net.dv8tion.jda.core.Permission;
+<i>32</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>33</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>34</i>&nbsp;import net.dv8tion.jda.core.entities.Role;
+<i>35</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>36</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>37</i>&nbsp;import net.dv8tion.jda.core.utils.PermissionUtil;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;import java.util.List;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;/**
+<i>42</i>&nbsp; * give and take away roles with reactions rather than typing
+<i>43</i>&nbsp; */
+<i>44</i>&nbsp;public class ReactionRoleCommand extends AbstractCommand {
+<i>45</i>&nbsp;    public ReactionRoleCommand() {
+<b class="nc"><i>46</i>&nbsp;        super();</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    @Override
+<i>50</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>51</i>&nbsp;        return &quot;Adds and removes roles from users based on reactions from a message\n\n&quot; +</b>
+<i>52</i>&nbsp;                &quot;You save messages/reactions to keys to make maintaining them a little easier.&quot;;
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    @Override
+<i>56</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>57</i>&nbsp;        return &quot;reactionrole&quot;;</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    @Override
+<i>61</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>62</i>&nbsp;        return new String[]{</b>
+<i>63</i>&nbsp;                &quot;rr //overview of all the configured keys&quot;,
+<i>64</i>&nbsp;                &quot;rr add &lt;key&gt; &lt;emote&gt; &lt;role&gt; //adds a reaction with role to the message&quot;,
+<i>65</i>&nbsp;                &quot;rr remove &lt;key&gt; &lt;emote&gt;     //removes emote reaction from key&quot;,
+<i>66</i>&nbsp;                &quot;rr delete &lt;key&gt;             //deletes the set&quot;,
+<i>67</i>&nbsp;                &quot;rr message &lt;key&gt; &lt;message&gt;  //updates the message&quot;,
+<i>68</i>&nbsp;                &quot;rr display &lt;key&gt; [channel]  //displays the message in this channel&quot;,
+<i>69</i>&nbsp;                &quot;                            //or in the channel you specified&quot;
+<i>70</i>&nbsp;        };
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    @Override
+<i>74</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>75</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    @Override
+<i>79</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>80</i>&nbsp;        return new String[]{</b>
+<i>81</i>&nbsp;                &quot;rr&quot;
+<i>82</i>&nbsp;        };
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    @Override
+<i>86</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>87</i>&nbsp;        SimpleRank rank = bot.security.getSimpleRank(author);</b>
+<b class="nc"><i>88</i>&nbsp;        TextChannel t = (TextChannel) channel;</b>
+<b class="nc"><i>89</i>&nbsp;        if (!PermissionUtil.checkPermission(t.getGuild().getSelfMember(), Permission.MANAGE_ROLES)) {</b>
+<b class="nc"><i>90</i>&nbsp;            return Templates.permission_missing.formatGuild(channel, &quot;manage_roles&quot;);</b>
+<i>91</i>&nbsp;        }
+<b class="nc"><i>92</i>&nbsp;        if (args.length == 0) {</b>
+<b class="nc"><i>93</i>&nbsp;            List&lt;OReactionRoleKey&gt; list = CReactionRole.getKeysForGuild(t.getGuild().getIdLong());</b>
+<b class="nc"><i>94</i>&nbsp;            String result = &quot;&quot;;</b>
+<b class="nc"><i>95</i>&nbsp;            if (list.isEmpty()) {</b>
+<b class="nc"><i>96</i>&nbsp;                return &quot;No keys are configured&quot;;</b>
+<i>97</i>&nbsp;            }
+<b class="nc"><i>98</i>&nbsp;            for (OReactionRoleKey key : list) {</b>
+<b class="nc"><i>99</i>&nbsp;                result += key.messageKey + &quot;\n&quot;;</b>
+<b class="nc"><i>100</i>&nbsp;            }</b>
+<b class="nc"><i>101</i>&nbsp;            return &quot;all configured keys: \n&quot; + result;</b>
+<i>102</i>&nbsp;        }
+<b class="nc"><i>103</i>&nbsp;        switch (args[0].toLowerCase()) {</b>
+<i>104</i>&nbsp;            case &quot;add&quot;:// eg. !rr add &lt;key&gt; &lt;emote&gt; &lt;role&gt;
+<b class="nc"><i>105</i>&nbsp;                if (args.length &gt;= 4) {</b>
+<b class="nc"><i>106</i>&nbsp;                    Role role = DisUtil.findRole(t.getGuild(), args[3]);</b>
+<b class="nc"><i>107</i>&nbsp;                    OReactionRoleKey key = CReactionRole.findOrCreate(t.getGuild().getIdLong(), args[1]);</b>
+<b class="nc"><i>108</i>&nbsp;                    if (!DisUtil.isEmote(bot, args[2])) {</b>
+<b class="nc"><i>109</i>&nbsp;                        return &quot;no emote found&quot;;</b>
+<i>110</i>&nbsp;                    }
+<b class="nc"><i>111</i>&nbsp;                    if (role == null) {</b>
+<b class="nc"><i>112</i>&nbsp;                        return &quot;no role found containing `&quot; + args[3] + &quot;`&quot;;</b>
+<i>113</i>&nbsp;                    }
+<b class="nc"><i>114</i>&nbsp;                    boolean isNormalEmote = EmojiUtils.isEmoji(args[2]);</b>
+<b class="nc"><i>115</i>&nbsp;                    String emoteId = Misc.getGuildEmoteId(args[2]);</b>
+<b class="nc"><i>116</i>&nbsp;                    if (!isNormalEmote &amp;&amp; bot.getJda().getEmoteById(emoteId) == null) {</b>
+<b class="nc"><i>117</i>&nbsp;                        return &quot;can&#39;t find guild-emote&quot;;</b>
+<i>118</i>&nbsp;                    }
+<b class="nc"><i>119</i>&nbsp;                    CReactionRole.addReaction(key.id, isNormalEmote ? args[2] : emoteId, isNormalEmote, role.getIdLong());</b>
+<b class="nc"><i>120</i>&nbsp;                    return String.format(&quot;adding to key `%s` the reaction %s with role `%s`&quot;, args[1], DisUtil.emoteToDisplay(bot, args[2]), role.getName());</b>
+<i>121</i>&nbsp;                }
+<b class="nc"><i>122</i>&nbsp;                return &quot;invalid usage! see help for more info&quot;;</b>
+<i>123</i>&nbsp;            case &quot;remove&quot;://eg. !rr remove key &lt;emote&gt;
+<b class="nc"><i>124</i>&nbsp;                return &quot;invalid usage! see help for more info&quot;;</b>
+<i>125</i>&nbsp;            case &quot;message&quot;:
+<i>126</i>&nbsp;            case &quot;msg&quot;:
+<i>127</i>&nbsp;            case &quot;text&quot;://eg. !rr message key &lt;newtext&gt;
+<b class="nc"><i>128</i>&nbsp;                if (args.length &gt;= 2) {</b>
+<b class="nc"><i>129</i>&nbsp;                    OReactionRoleKey key = CReactionRole.findBy(t.getGuild().getIdLong(), args[1]);</b>
+<b class="nc"><i>130</i>&nbsp;                    if (key.id == 0) {</b>
+<b class="nc"><i>131</i>&nbsp;                        return String.format(&quot;key `%s` doesn&#39;t exist&quot;, args[1]);</b>
+<i>132</i>&nbsp;                    }
+<b class="nc"><i>133</i>&nbsp;                    key.message = Misc.joinStrings(args, 2);</b>
+<b class="nc"><i>134</i>&nbsp;                    if (key.message.length() &gt; 1500) {</b>
+<b class="nc"><i>135</i>&nbsp;                        key.message = key.message.substring(0, 1500);</b>
+<i>136</i>&nbsp;                    }
+<b class="nc"><i>137</i>&nbsp;                    CReactionRole.update(key);</b>
+<b class="nc"><i>138</i>&nbsp;                    updateText(t, key);</b>
+<b class="nc"><i>139</i>&nbsp;                    return String.format(&quot;Text for %s updated!&quot;, args[1]);</b>
+<i>140</i>&nbsp;                }
+<b class="nc"><i>141</i>&nbsp;                return &quot;invalid usage! see help for more info&quot;;</b>
+<i>142</i>&nbsp;            case &quot;display&quot;://spams the message here
+<b class="nc"><i>143</i>&nbsp;                if (args.length &lt; 2) {</b>
+<b class="nc"><i>144</i>&nbsp;                    return &quot;invalid usage! see help for more info&quot;;</b>
+<i>145</i>&nbsp;                }
+<b class="nc"><i>146</i>&nbsp;                OReactionRoleKey key = CReactionRole.findBy(t.getGuild().getIdLong(), args[1]);</b>
+<b class="nc"><i>147</i>&nbsp;                if (key.id == 0) {</b>
+<b class="nc"><i>148</i>&nbsp;                    return String.format(&quot;key `%s` not found!&quot;, args[1]);</b>
+<i>149</i>&nbsp;                }
+<b class="nc"><i>150</i>&nbsp;                if (args.length == 3) {</b>
+<b class="nc"><i>151</i>&nbsp;                    if (DisUtil.isChannelMention(args[2])) {</b>
+<b class="nc"><i>152</i>&nbsp;                        t = ((TextChannel) channel).getGuild().getTextChannelById(DisUtil.extractId(args[2]));</b>
+<b class="nc"><i>153</i>&nbsp;                        if (t == null) {</b>
+<b class="nc"><i>154</i>&nbsp;                            return Templates.config.cant_talk_in_channel.formatGuild(channel, args[2]);</b>
+<i>155</i>&nbsp;                        }
+<i>156</i>&nbsp;                    }
+<i>157</i>&nbsp;                }
+<b class="nc"><i>158</i>&nbsp;                displayMessage(bot, t, key);</b>
+<b class="nc"><i>159</i>&nbsp;                return &quot;&quot;;</b>
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;        }
+<i>162</i>&nbsp;
+<b class="nc"><i>163</i>&nbsp;        return Templates.no_permission.formatGuild(channel);</b>
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    private void updateText(TextChannel channel, OReactionRoleKey key) {
+<b class="nc"><i>167</i>&nbsp;        if (key.messageId &gt; 0 &amp;&amp; key.channelId &gt; 0) {</b>
+<b class="nc"><i>168</i>&nbsp;            TextChannel tchan = channel.getGuild().getTextChannelById(key.channelId);</b>
+<b class="nc"><i>169</i>&nbsp;            if (tchan != null &amp;&amp; tchan.canTalk()) {</b>
+<b class="nc"><i>170</i>&nbsp;                tchan.editMessageById(String.valueOf(key.messageId), buildMessage(channel, key, CReactionRole.getReactionsForKey(key.id))).queue();</b>
+<i>171</i>&nbsp;            }
+<i>172</i>&nbsp;        }
+<i>173</i>&nbsp;    }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    private String buildMessage(TextChannel channel, OReactionRoleKey key, List&lt;OReactionRoleMessage&gt; reactions) {
+<b class="nc"><i>176</i>&nbsp;        StringBuilder msg = new StringBuilder(key.message);</b>
+<b class="nc"><i>177</i>&nbsp;        msg.append(&quot;\n Use the reactions below to give/remove the role\n&quot;);</b>
+<b class="nc"><i>178</i>&nbsp;        for (OReactionRoleMessage reaction : reactions) {</b>
+<b class="nc"><i>179</i>&nbsp;            msg.append(String.format(&quot;%s %s %s\n&quot;,</b>
+<b class="nc"><i>180</i>&nbsp;                    reaction.isNormalEmote ? reaction.emoji : channel.getJDA().getEmoteById(reaction.emoji),</b>
+<i>181</i>&nbsp;                    Emojibet.THUMBS_RIGHT,
+<b class="nc"><i>182</i>&nbsp;                    channel.getGuild().getRoleById(reaction.roleId)));</b>
+<b class="nc"><i>183</i>&nbsp;        }</b>
+<b class="nc"><i>184</i>&nbsp;        return msg.toString();</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    private void displayMessage(DiscordBot bot, TextChannel channel, OReactionRoleKey key) {
+<b class="nc"><i>188</i>&nbsp;        if (key.channelId &gt; 0 &amp;&amp; key.messageId &gt; 0) {</b>
+<b class="nc"><i>189</i>&nbsp;            TextChannel tchan = channel.getGuild().getTextChannelById(key.channelId);</b>
+<b class="nc"><i>190</i>&nbsp;            if (tchan != null &amp;&amp; tchan.canTalk()) {</b>
+<b class="nc"><i>191</i>&nbsp;                tchan.deleteMessageById(key.messageId).queue();</b>
+<i>192</i>&nbsp;            }
+<i>193</i>&nbsp;        }
+<b class="nc"><i>194</i>&nbsp;        List&lt;OReactionRoleMessage&gt; reactions = CReactionRole.getReactionsForKey(key.id);</b>
+<b class="nc"><i>195</i>&nbsp;        channel.sendMessage(buildMessage(channel, key, reactions)).queue(message -&gt; {</b>
+<b class="nc"><i>196</i>&nbsp;            key.messageId = message.getIdLong();</b>
+<b class="nc"><i>197</i>&nbsp;            key.channelId = channel.getIdLong();</b>
+<b class="nc"><i>198</i>&nbsp;            CReactionRole.update(key);</b>
+<b class="nc"><i>199</i>&nbsp;            bot.roleReactionHandler.initGuild(message.getGuild().getIdLong(), true);</b>
+<b class="nc"><i>200</i>&nbsp;            for (OReactionRoleMessage reaction : reactions) {</b>
+<b class="nc"><i>201</i>&nbsp;                if (reaction.isNormalEmote) {</b>
+<b class="nc"><i>202</i>&nbsp;                    message.addReaction(reaction.emoji).queue();</b>
+<i>203</i>&nbsp;                } else {
+<b class="nc"><i>204</i>&nbsp;                    message.addReaction(message.getJDA().getEmoteById(reaction.emoji)).queue();</b>
+<i>205</i>&nbsp;                }
+<b class="nc"><i>206</i>&nbsp;            }</b>
+<i>207</i>&nbsp;        });
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

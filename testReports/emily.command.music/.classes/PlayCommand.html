@@ -1,0 +1,350 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PlayCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.music</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PlayCommand (emily.command.music)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PlayCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 123)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.music;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import com.google.api.client.repackaged.com.google.common.base.Joiner;
+<i>20</i>&nbsp;import emily.command.meta.CommandReactionListener;
+<i>21</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>22</i>&nbsp;import emily.command.meta.ICommandCleanup;
+<i>23</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>24</i>&nbsp;import emily.db.controllers.CMusic;
+<i>25</i>&nbsp;import emily.db.controllers.CPlaylist;
+<i>26</i>&nbsp;import emily.db.model.OMusic;
+<i>27</i>&nbsp;import emily.db.model.OPlaylist;
+<i>28</i>&nbsp;import emily.guildsettings.GSetting;
+<i>29</i>&nbsp;import emily.handler.CommandHandler;
+<i>30</i>&nbsp;import emily.handler.GuildSettings;
+<i>31</i>&nbsp;import emily.handler.MusicPlayerHandler;
+<i>32</i>&nbsp;import emily.main.BotConfig;
+<i>33</i>&nbsp;import emily.main.DiscordBot;
+<i>34</i>&nbsp;import emily.permission.SimpleRank;
+<i>35</i>&nbsp;import emily.templates.Templates;
+<i>36</i>&nbsp;import emily.util.Misc;
+<i>37</i>&nbsp;import emily.util.Pair;
+<i>38</i>&nbsp;import emily.util.YTSearch;
+<i>39</i>&nbsp;import emily.util.YTUtil;
+<i>40</i>&nbsp;import emoji4j.EmojiUtils;
+<i>41</i>&nbsp;import net.dv8tion.jda.core.Permission;
+<i>42</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>43</i>&nbsp;import net.dv8tion.jda.core.entities.Member;
+<i>44</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>45</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>46</i>&nbsp;import net.dv8tion.jda.core.entities.Role;
+<i>47</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>48</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>49</i>&nbsp;import net.dv8tion.jda.core.entities.VoiceChannel;
+<i>50</i>&nbsp;import net.dv8tion.jda.core.utils.PermissionUtil;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;import java.util.ArrayList;
+<i>53</i>&nbsp;import java.util.List;
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;/**
+<i>56</i>&nbsp; * !play
+<i>57</i>&nbsp; * plays a youtube link
+<i>58</i>&nbsp; * yea.. play is probably not a good name at the moment
+<i>59</i>&nbsp; */
+<i>60</i>&nbsp;public class PlayCommand extends AbstractCommand implements ICommandCleanup {
+<i>61</i>&nbsp;    private YTSearch ytSearch;
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public PlayCommand() {
+<b class="nc"><i>64</i>&nbsp;        super();</b>
+<b class="nc"><i>65</i>&nbsp;        ytSearch = new YTSearch();</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public static String processTrack(MusicPlayerHandler player, DiscordBot bot, TextChannel channel, User invoker, String videoCode, String videoTitle, boolean useTemplates) {
+<b class="nc"><i>69</i>&nbsp;        OMusic record = CMusic.findByYoutubeId(videoCode);</b>
+<i>70</i>&nbsp;        try {
+<b class="nc"><i>71</i>&nbsp;            CMusic.registerPlayRequest(record.id);</b>
+<b class="nc"><i>72</i>&nbsp;            player.addToQueue(videoCode, invoker);</b>
+<b class="nc"><i>73</i>&nbsp;            if (useTemplates) {</b>
+<b class="nc"><i>74</i>&nbsp;                return Templates.music.added_to_queue.formatGuild(channel, record.youtubeTitle);</b>
+<i>75</i>&nbsp;            }
+<b class="nc"><i>76</i>&nbsp;            return &quot;\u25AA &quot; + record.youtubeTitle;</b>
+<b class="nc"><i>77</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>78</i>&nbsp;            bot.getContainer().reportError(e, &quot;ytcode&quot;, videoCode);</b>
+<b class="nc"><i>79</i>&nbsp;            return Templates.music.file_error.formatGuild(channel);</b>
+<i>80</i>&nbsp;        }
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    @Override
+<i>84</i>&nbsp;    public void cleanup() {
+<b class="nc"><i>85</i>&nbsp;        ytSearch.resetCache();</b>
+<b class="nc"><i>86</i>&nbsp;        if (!ytSearch.hasValidKey()) {</b>
+<b class="nc"><i>87</i>&nbsp;            for (String key : BotConfig.GOOGLE_API_KEY) {</b>
+<b class="nc"><i>88</i>&nbsp;                ytSearch.addYoutubeKey(key);</b>
+<i>89</i>&nbsp;            }
+<i>90</i>&nbsp;        }
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    @Override
+<i>94</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>95</i>&nbsp;        return &quot;Plays a song from youtube&quot;;</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    @Override
+<i>99</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>100</i>&nbsp;        return &quot;play&quot;;</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @Override
+<i>104</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>105</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    @Override
+<i>109</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>110</i>&nbsp;        return new String[]{</b>
+<i>111</i>&nbsp;                &quot;play &lt;youtubelink&gt;    //download and plays song&quot;,
+<i>112</i>&nbsp;                &quot;play &lt;part of title&gt;  //shows search results&quot;,
+<i>113</i>&nbsp;                &quot;play                  //just start playing something&quot;
+<i>114</i>&nbsp;        };
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    @Override
+<i>118</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>119</i>&nbsp;        return new String[]{&quot;p&quot;};</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    private boolean isInVoiceWith(Guild guild, User author) {
+<b class="nc"><i>123</i>&nbsp;        VoiceChannel channel = guild.getMember(author).getVoiceState().getChannel();</b>
+<b class="nc"><i>124</i>&nbsp;        if (channel == null) {</b>
+<b class="nc"><i>125</i>&nbsp;            return false;</b>
+<i>126</i>&nbsp;        }
+<b class="nc"><i>127</i>&nbsp;        for (Member user : channel.getMembers()) {</b>
+<b class="nc"><i>128</i>&nbsp;            if (user.getUser().getId().equals(guild.getJDA().getSelfUser().getId())) {</b>
+<b class="nc"><i>129</i>&nbsp;                return true;</b>
+<i>130</i>&nbsp;            }
+<b class="nc"><i>131</i>&nbsp;        }</b>
+<b class="nc"><i>132</i>&nbsp;        return false;</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    @Override
+<i>136</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>137</i>&nbsp;        TextChannel txt = (TextChannel) channel;</b>
+<b class="nc"><i>138</i>&nbsp;        Guild guild = txt.getGuild();</b>
+<b class="nc"><i>139</i>&nbsp;        SimpleRank userRank = bot.security.getSimpleRank(author, channel);</b>
+<b class="nc"><i>140</i>&nbsp;        GuildSettings guildSettings = GuildSettings.get(guild);</b>
+<b class="nc"><i>141</i>&nbsp;        if (!guildSettings.canUseMusicCommands(author, userRank)) {</b>
+<b class="nc"><i>142</i>&nbsp;            Role role = guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT));</b>
+<b class="nc"><i>143</i>&nbsp;            return Templates.music.required_role_not_found.formatGuild(channel, role == null ? &quot;UNKNOWN&quot; : role.getName());</b>
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;
+<b class="nc"><i>146</i>&nbsp;        if (!PermissionUtil.checkPermission(txt, guild.getSelfMember(), Permission.MESSAGE_WRITE)) {</b>
+<b class="nc"><i>147</i>&nbsp;            return &quot;&quot;;</b>
+<i>148</i>&nbsp;        }
+<b class="nc"><i>149</i>&nbsp;        MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);</b>
+<b class="nc"><i>150</i>&nbsp;        if (!isInVoiceWith(guild, author)) {</b>
+<b class="nc"><i>151</i>&nbsp;            VoiceChannel vc = guild.getMember(author).getVoiceState().getChannel();</b>
+<b class="nc"><i>152</i>&nbsp;            if (vc == null) {</b>
+<b class="nc"><i>153</i>&nbsp;                return &quot;you are not in a voicechannel&quot;;</b>
+<i>154</i>&nbsp;            }
+<i>155</i>&nbsp;            try {
+<b class="nc"><i>156</i>&nbsp;                if (player.isConnected()) {</b>
+<b class="nc"><i>157</i>&nbsp;                    if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {</b>
+<b class="nc"><i>158</i>&nbsp;                        return Templates.music.not_same_voicechannel.formatGuild(channel);</b>
+<i>159</i>&nbsp;                    }
+<b class="nc"><i>160</i>&nbsp;                    player.leave();</b>
+<i>161</i>&nbsp;                }
+<b class="nc"><i>162</i>&nbsp;                if (!PermissionUtil.checkPermission(vc, guild.getSelfMember(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {</b>
+<b class="nc"><i>163</i>&nbsp;                    return Templates.music.join_no_permission.formatGuild(channel, vc.getName());</b>
+<i>164</i>&nbsp;                }
+<b class="nc"><i>165</i>&nbsp;                if (!PermissionUtil.checkPermission(vc, guild.getSelfMember(), Permission.MANAGE_CHANNEL)</b>
+<b class="nc"><i>166</i>&nbsp;                        &amp;&amp; vc.getUserLimit() != 0 &amp;&amp; vc.getUserLimit() &lt;= vc.getMembers().size()) {</b>
+<b class="nc"><i>167</i>&nbsp;                    return Templates.music.join_channel_full.formatGuild(channel, vc.getName());</b>
+<i>168</i>&nbsp;                }
+<b class="nc"><i>169</i>&nbsp;                player.connectTo(vc);</b>
+<b class="nc"><i>170</i>&nbsp;            } catch (Exception e) {</b>
+<b class="nc"><i>171</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>172</i>&nbsp;                return &quot;Can&#39;t connect to you&quot;;</b>
+<b class="nc"><i>173</i>&nbsp;            }</b>
+<b class="nc"><i>174</i>&nbsp;        } else if (MusicPlayerHandler.getFor(guild, bot).getUsersInVoiceChannel().size() == 0) {</b>
+<b class="nc"><i>175</i>&nbsp;            return Templates.music.no_users_in_channel.formatGuild(channel);</b>
+<i>176</i>&nbsp;        }
+<b class="nc"><i>177</i>&nbsp;        if (args.length &gt; 0) {</b>
+<i>178</i>&nbsp;            final String videoTitle;
+<b class="nc"><i>179</i>&nbsp;            String videoCode = YTUtil.isValidYoutubeCode(args[0]) ? args[0] : YTUtil.extractCodeFromUrl(args[0]);</b>
+<b class="nc"><i>180</i>&nbsp;            String playlistCode = YTUtil.getPlayListCode(args[0]);</b>
+<b class="nc"><i>181</i>&nbsp;            if (playlistCode != null) {</b>
+<b class="nc"><i>182</i>&nbsp;                if (!ytSearch.hasValidKey()) {</b>
+<b class="nc"><i>183</i>&nbsp;                    return Templates.music.no_valid_youtube_key.formatGuild(channel, YTUtil.nextApiResetTime());</b>
+<i>184</i>&nbsp;                }
+<b class="nc"><i>185</i>&nbsp;                if (userRank.isAtLeast(SimpleRank.BOT_ADMIN)) {</b>
+<b class="nc"><i>186</i>&nbsp;                    List&lt;YTSearch.SimpleResult&gt; items = ytSearch.getPlayListItems(playlistCode);</b>
+<b class="nc"><i>187</i>&nbsp;                    int playCount = 0;</b>
+<b class="nc"><i>188</i>&nbsp;                    for (YTSearch.SimpleResult track : items) {</b>
+<b class="nc"><i>189</i>&nbsp;                        processTrack(player, bot, (TextChannel) channel, author, track.getCode(), track.getTitle(), false);</b>
+<b class="nc"><i>190</i>&nbsp;                        if (++playCount == BotConfig.MUSIC_MAX_PLAYLIST_SIZE) {</b>
+<b class="nc"><i>191</i>&nbsp;                            break;</b>
+<i>192</i>&nbsp;                        }
+<b class="nc"><i>193</i>&nbsp;                    }</b>
+<b class="nc"><i>194</i>&nbsp;                    return String.format(&quot;Added **%s** items to the queue&quot;, playCount);</b>
+<i>195</i>&nbsp;                }
+<i>196</i>&nbsp;            }
+<b class="nc"><i>197</i>&nbsp;            if (!YTUtil.isValidYoutubeCode(videoCode)) {</b>
+<b class="nc"><i>198</i>&nbsp;                if (!ytSearch.hasValidKey()) {</b>
+<b class="nc"><i>199</i>&nbsp;                    return Templates.music.no_valid_youtube_key.formatGuild(channel, YTUtil.nextApiResetTime());</b>
+<i>200</i>&nbsp;                }
+<b class="nc"><i>201</i>&nbsp;                int maxResultCount = Integer.parseInt(guildSettings.getOrDefault(GSetting.MUSIC_RESULT_PICKER));</b>
+<b class="nc"><i>202</i>&nbsp;                String searchCriteria = Joiner.on(&quot; &quot;).join(args);</b>
+<b class="nc"><i>203</i>&nbsp;                if (maxResultCount &gt; 1 &amp;&amp; PermissionUtil.checkPermission(txt, guild.getSelfMember(), Permission.MESSAGE_ADD_REACTION)) {</b>
+<b class="nc"><i>204</i>&nbsp;                    List&lt;YTSearch.SimpleResult&gt; results = ytSearch.getResults(searchCriteria, maxResultCount);</b>
+<b class="nc"><i>205</i>&nbsp;                    String ret = &quot;Results for: &quot; + searchCriteria + &quot;\n\n&quot;;</b>
+<b class="nc"><i>206</i>&nbsp;                    int i = 0;</b>
+<b class="nc"><i>207</i>&nbsp;                    final ArrayList&lt;Pair&lt;String, String&gt;&gt; reactions = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>208</i>&nbsp;                    for (YTSearch.SimpleResult result : results) {</b>
+<b class="nc"><i>209</i>&nbsp;                        ++i;</b>
+<b class="nc"><i>210</i>&nbsp;                        ret += String.format(&quot;%s %s\n&quot;, Misc.numberToEmote(i), result.getTitle());</b>
+<b class="nc"><i>211</i>&nbsp;                        reactions.add(new Pair&lt;&gt;(Misc.numberToEmote(i), result.getCode()));</b>
+<b class="nc"><i>212</i>&nbsp;                    }</b>
+<b class="nc"><i>213</i>&nbsp;                    ret += &quot;\nYou can pick a song by clicking one of the reactions&quot;;</b>
+<b class="nc"><i>214</i>&nbsp;                    txt.sendMessage(ret).queue(msg -&gt; {</b>
+<b class="nc"><i>215</i>&nbsp;                        CommandReactionListener&lt;Integer&gt; listener = new CommandReactionListener&lt;&gt;(author.getIdLong(), null);</b>
+<b class="nc"><i>216</i>&nbsp;                        for (Pair&lt;String, String&gt; reaction : reactions) {</b>
+<b class="nc"><i>217</i>&nbsp;                            listener.registerReaction(reaction.getKey(),</b>
+<i>218</i>&nbsp;                                    message -&gt; {
+<b class="nc"><i>219</i>&nbsp;                                        listener.disable();</b>
+<b class="nc"><i>220</i>&nbsp;                                        message.editMessage(message.getContentRaw() + &quot;\n\nyou picked &quot; + reaction.getKey()).queue();</b>
+<b class="nc"><i>221</i>&nbsp;                                        AbstractCommand play = CommandHandler.getCommand(&quot;play&quot;);</b>
+<b class="nc"><i>222</i>&nbsp;                                        if (play != null) {</b>
+<b class="nc"><i>223</i>&nbsp;                                            play.execute(bot, new String[]{reaction.getValue()}, channel, author, null);</b>
+<i>224</i>&nbsp;                                        }
+<i>225</i>&nbsp;                                    });
+<b class="nc"><i>226</i>&nbsp;                        }</b>
+<b class="nc"><i>227</i>&nbsp;                        bot.commandReactionHandler.addReactionListener(guild.getIdLong(), msg, listener);</b>
+<i>228</i>&nbsp;                    });
+<b class="nc"><i>229</i>&nbsp;                    return &quot;&quot;;</b>
+<i>230</i>&nbsp;                }
+<b class="nc"><i>231</i>&nbsp;                YTSearch.SimpleResult results = ytSearch.getResults(searchCriteria);</b>
+<b class="nc"><i>232</i>&nbsp;                if (results != null) {</b>
+<b class="nc"><i>233</i>&nbsp;                    videoCode = results.getCode();</b>
+<b class="nc"><i>234</i>&nbsp;                    videoTitle = EmojiUtils.shortCodify(results.getTitle());</b>
+<i>235</i>&nbsp;                } else {
+<b class="nc"><i>236</i>&nbsp;                    videoCode = null;</b>
+<b class="nc"><i>237</i>&nbsp;                    videoTitle = &quot;&quot;;</b>
+<i>238</i>&nbsp;                }
+<b class="nc"><i>239</i>&nbsp;            } else {</b>
+<b class="nc"><i>240</i>&nbsp;                videoTitle = videoCode;</b>
+<i>241</i>&nbsp;            }
+<b class="nc"><i>242</i>&nbsp;            if (videoCode != null &amp;&amp; YTUtil.isValidYoutubeCode(videoCode)) {</b>
+<b class="nc"><i>243</i>&nbsp;                return processTrack(player, bot, (TextChannel) channel, author, videoCode, videoTitle, true);</b>
+<i>244</i>&nbsp;            } else {
+<b class="nc"><i>245</i>&nbsp;                return Templates.command.play_no_results.formatGuild(channel);</b>
+<i>246</i>&nbsp;            }
+<i>247</i>&nbsp;        } else {
+<b class="nc"><i>248</i>&nbsp;            if (player.isPlaying()) {</b>
+<b class="nc"><i>249</i>&nbsp;                if (player.isPaused()) {</b>
+<b class="nc"><i>250</i>&nbsp;                    player.togglePause();</b>
+<i>251</i>&nbsp;                }
+<b class="nc"><i>252</i>&nbsp;                return &quot;&quot;;</b>
+<i>253</i>&nbsp;            }
+<b class="nc"><i>254</i>&nbsp;            if (player.playRandomSong()) {</b>
+<b class="nc"><i>255</i>&nbsp;                return Templates.music.started_playing_random.formatGuild(channel);</b>
+<i>256</i>&nbsp;            } else {
+<b class="nc"><i>257</i>&nbsp;                OPlaylist pl = CPlaylist.findById(player.getActivePLaylistId());</b>
+<b class="nc"><i>258</i>&nbsp;                if (!pl.isGlobalList()) {</b>
+<b class="nc"><i>259</i>&nbsp;                    if (CPlaylist.getMusicCount(pl.id) == 0) {</b>
+<b class="nc"><i>260</i>&nbsp;                        return Templates.music.failed_playlist_empty.formatGuild(channel, pl.title);</b>
+<i>261</i>&nbsp;                    }
+<i>262</i>&nbsp;                }
+<b class="nc"><i>263</i>&nbsp;                return Templates.music.failed_to_start.formatGuild(channel);</b>
+<i>264</i>&nbsp;            }
+<i>265</i>&nbsp;        }
+<i>266</i>&nbsp;    }
+<i>267</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,380 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GSetting</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.guildsettings</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GSetting (emily.guildsettings)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GSetting</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 53)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.guildsettings;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.guildsettings.types.EnumSettingType;
+<i>20</i>&nbsp;import emily.guildsettings.types.NumberBetweenSettingType;
+<i>21</i>&nbsp;import emily.guildsettings.types.StringLengthSettingType;
+<i>22</i>&nbsp;import emily.main.BotConfig;
+<i>23</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;import java.util.Collections;
+<i>26</i>&nbsp;import java.util.HashSet;
+<i>27</i>&nbsp;
+<b class="nc"><i>28</i>&nbsp;public enum GSetting {</b>
+<i>29</i>&nbsp;    //General settings
+<b class="nc"><i>30</i>&nbsp;    AUTO_REPLY(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>31</i>&nbsp;            &quot;use the auto reply feature?\n&quot; +
+<i>32</i>&nbsp;                    &quot;Looks for patterns in messages and replies to them (with a cooldown)\n&quot; +
+<i>33</i>&nbsp;                    &quot;true -&gt; enable auto replying to matched messages\n&quot; +
+<i>34</i>&nbsp;                    &quot;false -&gt; disable auto replying&quot;,
+<i>35</i>&nbsp;            GSettingTag.MODERATION),
+<b class="nc"><i>36</i>&nbsp;    BOT_LANGUAGE(&quot;en&quot;, new EnumSettingType(&quot;en&quot;, &quot;nl&quot;, &quot;de&quot;),</b>
+<i>37</i>&nbsp;            &quot;The output language of the bot&quot;),
+<b class="nc"><i>38</i>&nbsp;    BOT_CHANNEL(&quot;general&quot;, GuildSettingType.TEXT_CHANNEL_MANDATORY,</b>
+<i>39</i>&nbsp;            &quot;Channel where the bots default output goes to&quot;,
+<i>40</i>&nbsp;            GSettingTag.CHANNEL),
+<b class="nc"><i>41</i>&nbsp;    BOT_ADMIN_ROLE(&quot;&quot;, GuildSettingType.ROLE_OPTIONAL,</b>
+<i>42</i>&nbsp;            &quot;Users with this role are considered admins for the bot&quot;,
+<i>43</i>&nbsp;            GSettingTag.ROLE),
+<b class="nc"><i>44</i>&nbsp;    SHOW_TEMPLATES(BotConfig.SHOW_KEYPHRASE ? &quot;true&quot; : &quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>45</i>&nbsp;            &quot;Show which templates are being used on places.\n\n&quot; +
+<i>46</i>&nbsp;                    &quot;valid values: \n&quot; +
+<i>47</i>&nbsp;                    &quot;true       -&gt; Shows the keyphrases being used\n &quot; +
+<i>48</i>&nbsp;                    &quot;false      -&gt; Shows normal text \n\n&quot; +
+<i>49</i>&nbsp;                    &quot;for instance if you don&#39;t have permission to access a command:\n\n&quot; +
+<i>50</i>&nbsp;                    &quot;setting this to true would show:\n&quot; +
+<i>51</i>&nbsp;                    &quot;no_permission\n\n&quot; +
+<i>52</i>&nbsp;                    &quot;false would show:\n&quot; +
+<i>53</i>&nbsp;                    &quot;You don&#39;t have permission to use that!&quot;,
+<i>54</i>&nbsp;            GSettingTag.DEBUG),
+<b class="nc"><i>55</i>&nbsp;    DEBUG(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>56</i>&nbsp;            &quot;Show some debug information.\n\n&quot; +
+<i>57</i>&nbsp;                    &quot;valid values: \n&quot; +
+<i>58</i>&nbsp;                    &quot;true       -&gt; Show a lot more additional information\n &quot; +
+<i>59</i>&nbsp;                    &quot;false      -&gt; don&#39;t \n\n&quot; +
+<i>60</i>&nbsp;                    &quot;If you want to check if certain things are (not) working.\n\n&quot;,
+<i>61</i>&nbsp;            GSettingTag.DEBUG),
+<b class="nc"><i>62</i>&nbsp;    BOT_UPDATE_WARNING(&quot;playing&quot;, new EnumSettingType(&quot;always&quot;, &quot;playing&quot;, &quot;off&quot;),</b>
+<i>63</i>&nbsp;            &quot;Show a warning that there is an update and that the bot will be updating soon.\n&quot; +
+<i>64</i>&nbsp;                    &quot;always  -&gt; always show the message in the bot&#39;s configured default channel\n&quot; +
+<i>65</i>&nbsp;                    &quot;playing -&gt; only announce when the bot is playing music and in the bot&#39;s configured music channel\n&quot; +
+<i>66</i>&nbsp;                    &quot;off     -&gt; don&#39;t announce when the bot is going down for an update&quot;,
+<i>67</i>&nbsp;            GSettingTag.META),
+<b class="nc"><i>68</i>&nbsp;    CLEANUP_MESSAGES(&quot;no&quot;, new EnumSettingType(&quot;yes&quot;, &quot;no&quot;, &quot;nonstandard&quot;),</b>
+<i>69</i>&nbsp;            &quot;Delete messages after a while?\n&quot; +
+<i>70</i>&nbsp;                    &quot;yes         -&gt; Always delete messages\n&quot; +
+<i>71</i>&nbsp;                    &quot;no          -&gt; Never delete messages\n&quot; +
+<i>72</i>&nbsp;                    &quot;nonstandard -&gt; delete messages outside of bot&#39;s default channel&quot;,
+<i>73</i>&nbsp;            GSettingTag.MODERATION, GSettingTag.META),
+<b class="nc"><i>74</i>&nbsp;    COMMAND_PREFIX(BotConfig.BOT_COMMAND_PREFIX, new StringLengthSettingType(1, 4),</b>
+<i>75</i>&nbsp;            &quot;Prefix for commands (between 1 and 4 characters)&quot;,
+<i>76</i>&nbsp;            GSettingTag.COMMAND, GSettingTag.MODERATION),
+<b class="nc"><i>77</i>&nbsp;    CHAT_BOT_ENABLED(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>78</i>&nbsp;            &quot;Setting this to true will make it so that it responds to every message in the configured bot_channel&quot;,
+<i>79</i>&nbsp;            GSettingTag.META),
+<b class="nc"><i>80</i>&nbsp;    COMMAND_LOGGING_CHANNEL(&quot;false&quot;, GuildSettingType.TEXT_CHANNEL_OPTIONAL,</b>
+<i>81</i>&nbsp;            &quot;The channel command usage will be logged to\n\n&quot; +
+<i>82</i>&nbsp;                    &quot;Example output:\n&quot; +
+<i>83</i>&nbsp;                    &quot;Kaaz#9436 has used `say` in #general\n&quot; +
+<i>84</i>&nbsp;                    &quot;arguments: this is not a test\n&quot; +
+<i>85</i>&nbsp;                    &quot;output: this is not a test\n\n&quot; +
+<i>86</i>&nbsp;                    &quot;Setting this to &#39;false&#39; will disable it (without the quotes)\n&quot; +
+<i>87</i>&nbsp;                    &quot;To enable it, set this setting to match the channel name where you want the command logging to happen\n&quot; +
+<i>88</i>&nbsp;                    &quot;If you specify an invalid channel, this setting will disable itself&quot;,
+<i>89</i>&nbsp;            GSettingTag.COMMAND, GSettingTag.LOGGING, GSettingTag.CHANNEL),
+<b class="nc"><i>90</i>&nbsp;    BOT_LOGGING_CHANNEL(&quot;false&quot;, GuildSettingType.TEXT_CHANNEL_OPTIONAL,</b>
+<i>91</i>&nbsp;            &quot;The channel where the logging of events happens. Such as users joining/leaving\n\n&quot; +
+<i>92</i>&nbsp;                    &quot;Setting this to &#39;false&#39; will disable it (without the quotes)\n\n&quot; +
+<i>93</i>&nbsp;                    &quot;To enable it, set this setting to match the channel name where you want the logging to happen\n&quot; +
+<i>94</i>&nbsp;                    &quot;If you specify an invalid channel, this setting will disable itself&quot;,
+<i>95</i>&nbsp;            GSettingTag.CHANNEL, GSettingTag.LOGGING),
+<b class="nc"><i>96</i>&nbsp;    BOT_MODLOG_CHANNEL(&quot;false&quot;, GuildSettingType.TEXT_CHANNEL_OPTIONAL,</b>
+<i>97</i>&nbsp;            &quot;The channel where mod-logging happens.\n&quot; +
+<i>98</i>&nbsp;                    &quot;A case will appear if a user has been banned/kicked/warned/muted\n\n&quot; +
+<i>99</i>&nbsp;                    &quot;Setting this to &#39;false&#39; will disable it (without the quotes)\n\n&quot; +
+<i>100</i>&nbsp;                    &quot;To enable it, set this setting to match the channel name where you want the moderation-cases to go\n&quot; +
+<i>101</i>&nbsp;                    &quot;If you specify an invalid channel, this setting will disable itself&quot;,
+<i>102</i>&nbsp;            GSettingTag.CHANNEL, GSettingTag.LOGGING),
+<b class="nc"><i>103</i>&nbsp;    BOT_MUTE_ROLE(&quot;false&quot;, GuildSettingType.ROLE_OPTIONAL,</b>
+<i>104</i>&nbsp;            &quot;This is the role which is applied to those who you use the mute command on\n\n&quot; +
+<i>105</i>&nbsp;                    &quot;Setting this value to false will disable the role applied with the mute command&quot;,
+<i>106</i>&nbsp;            GSettingTag.MODERATION, GSettingTag.ROLE),
+<b class="nc"><i>107</i>&nbsp;    MODULE_GAMES(&quot;true&quot;, GuildSettingType.TOGGLE,</b>
+<i>108</i>&nbsp;            &quot;Let people play games against each other&quot;, GSettingTag.META),
+<b class="nc"><i>109</i>&nbsp;    MODULE_ECONOMY(&quot;true&quot;, GuildSettingType.TOGGLE,</b>
+<i>110</i>&nbsp;            &quot;Use the economy feature?\n&quot; +
+<i>111</i>&nbsp;                    &quot;false -&gt; nope!\n&quot; +
+<i>112</i>&nbsp;                    &quot;true -&gt; yep!&quot;, GSettingTag.META),
+<b class="nc"><i>113</i>&nbsp;    HELP_IN_PM(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>114</i>&nbsp;            &quot;show help in a private message?\n&quot; +
+<i>115</i>&nbsp;                    &quot;true  -&gt; send a message to the user requesting help\n&quot; +
+<i>116</i>&nbsp;                    &quot;false -&gt; output help to the channel where requested&quot;,
+<i>117</i>&nbsp;            GSettingTag.META),
+<b class="nc"><i>118</i>&nbsp;    PM_USER_EVENTS(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>119</i>&nbsp;            &quot;Send a private message to owner when something happens to a user?\n&quot; +
+<i>120</i>&nbsp;                    &quot;true  -&gt; sends a private message to guild-owner\n&quot; +
+<i>121</i>&nbsp;                    &quot;false -&gt; does absolutely nothing&quot;,
+<i>122</i>&nbsp;            GSettingTag.META, GSettingTag.MODERATION),
+<b class="nc"><i>123</i>&nbsp;    USER_TIME_RANKS(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>124</i>&nbsp;            &quot;This setting will require me to have the manage role permission!\n&quot; +
+<i>125</i>&nbsp;                    &quot;Users are given a role based on their time spend in the discord server\n&quot; +
+<i>126</i>&nbsp;                    &quot;If you&#39;d like to use the time based ranks, be sure to check out the other settings first!\n&quot; +
+<i>127</i>&nbsp;                    &quot;Setting:  Use time based ranks?\n&quot; +
+<i>128</i>&nbsp;                    &quot;true  -&gt; yes\n&quot; +
+<i>129</i>&nbsp;                    &quot;false -&gt; no&quot;,
+<i>130</i>&nbsp;            GSettingTag.META, GSettingTag.MODERATION),
+<b class="nc"><i>131</i>&nbsp;    USER_TIME_RANKS_PREFIX(&quot;[rank]&quot;, new StringLengthSettingType(3, 8),</b>
+<i>132</i>&nbsp;            &quot;The prefix of the role name for the time based role ranking\n&quot; +
+<i>133</i>&nbsp;                    &quot;Using this prefix to manage roles so make sure its somewhat unique! Or you&#39;ll have to cleanup yourself :)\n&quot; +
+<i>134</i>&nbsp;                    &quot;If you&#39;d like to use the time based ranks make sure to set this first!\n\n&quot; +
+<i>135</i>&nbsp;                    &quot;The prefix can be between 3 and 8 in length&quot;,
+<i>136</i>&nbsp;            GSettingTag.META, GSettingTag.MODERATION),
+<b class="nc"><i>137</i>&nbsp;    SHOW_UNKNOWN_COMMANDS(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>138</i>&nbsp;            &quot;Show message on nonexistent commands and blacklisted commands\n&quot; +
+<i>139</i>&nbsp;                    &quot;true -&gt; returns a help message\n&quot; +
+<i>140</i>&nbsp;                    &quot;false -&gt; stays silent&quot;,
+<i>141</i>&nbsp;            GSettingTag.META),
+<b class="nc"><i>142</i>&nbsp;    WELCOME_NEW_USERS(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>143</i>&nbsp;            &quot;Show a welcome message to new users?\n&quot; +
+<i>144</i>&nbsp;                    &quot;Valid options:\n&quot; +
+<i>145</i>&nbsp;                    &quot;true  -&gt; shows a welcome when a user joins or leaves the guild\n&quot; +
+<i>146</i>&nbsp;                    &quot;false -&gt; Disabled, doesn&#39;t say anything\n\n&quot; +
+<i>147</i>&nbsp;                    &quot;The welcome message can be set with the template: \n&quot; +
+<i>148</i>&nbsp;                    &quot;welcome_new_user\n\n&quot; +
+<i>149</i>&nbsp;                    &quot;The welcome back message can be set with the template (if the user had joined before): \n&quot; +
+<i>150</i>&nbsp;                    &quot;welcome_back_user\n\n&quot; +
+<i>151</i>&nbsp;                    &quot;The leave message can be set with the template: \n&quot; +
+<i>152</i>&nbsp;                    &quot;message_user_leaves\n\n&quot; +
+<i>153</i>&nbsp;                    &quot;If multiple templates are set a random one will be chosen\n&quot; +
+<i>154</i>&nbsp;                    &quot;See the template command for more details&quot;,
+<i>155</i>&nbsp;            GSettingTag.META),
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    //Music related stuff
+<b class="nc"><i>158</i>&nbsp;    MUSIC_CHANNEL_AUTO(&quot;false&quot;, GuildSettingType.VOICE_CHANNEL_OPTIONAL,</b>
+<i>159</i>&nbsp;            &quot;The channel where I automatically connect to if a user joins\n\n&quot; +
+<i>160</i>&nbsp;                    &quot;false:\n&quot; +
+<i>161</i>&nbsp;                    &quot;Not using this setting, wont auto-connect to anything.\n\n&quot; +
+<i>162</i>&nbsp;                    &quot;setting this to match a voice channel name:\n&quot; +
+<i>163</i>&nbsp;                    &quot;The moment a user connects to the specified channel I connect too and start to play music.\n\n&quot; +
+<i>164</i>&nbsp;                    &quot;Important to note: \n&quot; +
+<i>165</i>&nbsp;                    &quot;* If the configured channel does not exist, this setting will be turned off\n&quot; +
+<i>166</i>&nbsp;                    &quot;* If I&#39;m already connected to a different voice-channel I won&#39;t use this setting\n&quot;,
+<i>167</i>&nbsp;            GSettingTag.CHANNEL, GSettingTag.MUSIC),
+<b class="nc"><i>168</i>&nbsp;    MUSIC_CHANNEL(&quot;false&quot;, GuildSettingType.TEXT_CHANNEL_MANDATORY,</b>
+<i>169</i>&nbsp;            &quot;Channel where the bots music-related output goes to&quot;,
+<i>170</i>&nbsp;            GSettingTag.MUSIC, GSettingTag.CHANNEL),
+<b class="nc"><i>171</i>&nbsp;    MUSIC_CHANNEL_TITLE(&quot;false&quot;, new EnumSettingType(&quot;auto&quot;, &quot;true&quot;, &quot;false&quot;),</b>
+<i>172</i>&nbsp;            &quot;Updates the music channel&#39;s topic with the currently playing song\n\n&quot; +
+<i>173</i>&nbsp;                    &quot;auto  -&gt; update the title every 10 seconds with the track its playing\n&quot; +
+<i>174</i>&nbsp;                    &quot;true  -&gt; yes change the topic at the beginning of every song\n&quot; +
+<i>175</i>&nbsp;                    &quot;false -&gt; leave the channel topic title alone!&quot;,
+<i>176</i>&nbsp;            GSettingTag.MUSIC, GSettingTag.CHANNEL),
+<b class="nc"><i>177</i>&nbsp;    MUSIC_CLEAR_ADMIN_ONLY(&quot;true&quot;, GuildSettingType.TOGGLE,</b>
+<i>178</i>&nbsp;            &quot;Only allow admins to clear the music add?\n\n&quot; +
+<i>179</i>&nbsp;                    &quot;true\n&quot; +
+<i>180</i>&nbsp;                    &quot;Only admins can clear the music add\n\n&quot; +
+<i>181</i>&nbsp;                    &quot;false\n&quot; +
+<i>182</i>&nbsp;                    &quot;Everyone can clear the add&quot;
+<i>183</i>&nbsp;            , GSettingTag.MUSIC, GSettingTag.ADMIN),
+<b class="nc"><i>184</i>&nbsp;    MUSIC_PLAYLIST_ID(&quot;0&quot;, GuildSettingType.INTERNAL,</b>
+<i>185</i>&nbsp;            &quot;stores the last used playlist&quot;,
+<i>186</i>&nbsp;            GSettingTag.INTERNAL),
+<b class="nc"><i>187</i>&nbsp;    MUSIC_PLAYING_MESSAGE(&quot;clear&quot;, new EnumSettingType(&quot;clear&quot;, &quot;normal&quot;, &quot;off&quot;),</b>
+<i>188</i>&nbsp;            &quot;Clear the now playing message?\n&quot; +
+<i>189</i>&nbsp;                    &quot;clear  -&gt; sends a message and deletes it when the song is over or skipped\n&quot; +
+<i>190</i>&nbsp;                    &quot;normal -&gt; send the message and just leave it be\n&quot; +
+<i>191</i>&nbsp;                    &quot;off    -&gt; don&#39;t send now playing messages&quot;,
+<i>192</i>&nbsp;            GSettingTag.MUSIC),
+<b class="nc"><i>193</i>&nbsp;    MUSIC_QUEUE_ONLY(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>194</i>&nbsp;            &quot;Stop playing music once the add is empty?\n\n&quot; +
+<i>195</i>&nbsp;                    &quot;true\n&quot; +
+<i>196</i>&nbsp;                    &quot;once the add is empty I stop playing music and leave the voice channel\n\n&quot; +
+<i>197</i>&nbsp;                    &quot;false\n&quot; +
+<i>198</i>&nbsp;                    &quot;If the add is empty, I&#39;m gonna pick the track.&quot;,
+<i>199</i>&nbsp;            GSettingTag.MUSIC),
+<b class="nc"><i>200</i>&nbsp;    MUSIC_RESULT_PICKER(&quot;1&quot;, new NumberBetweenSettingType(1, 5),</b>
+<i>201</i>&nbsp;            &quot;the amount of results the `play` command returns\n\n&quot; +
+<i>202</i>&nbsp;                    &quot;If its set to 1, it will always use the first result (no manual choice)\n\n&quot; +
+<i>203</i>&nbsp;                    &quot;If its set higher (max 5) it will respond with reactions where each button is a choice\n&quot; +
+<i>204</i>&nbsp;                    &quot;Note: This setting does require the add reactions permission&quot;,
+<i>205</i>&nbsp;            GSettingTag.MUSIC),
+<b class="nc"><i>206</i>&nbsp;    MUSIC_ROLE_REQUIREMENT(&quot;false&quot;, GuildSettingType.ROLE_OPTIONAL,</b>
+<i>207</i>&nbsp;            &quot;In order to use music commands you need this role!\n&quot; +
+<i>208</i>&nbsp;                    &quot;Setting this value to false will disable the requirement&quot;,
+<i>209</i>&nbsp;            GSettingTag.MUSIC, GSettingTag.ROLE),
+<b class="nc"><i>210</i>&nbsp;    MUSIC_SHOW_LISTENERS(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>211</i>&nbsp;            &quot;Show who&#39;s listening in the *current* command\n&quot; +
+<i>212</i>&nbsp;                    &quot;true  -&gt; List all the people who are currently listening to music\n&quot; +
+<i>213</i>&nbsp;                    &quot;false -&gt; Don&#39;t show listeners&quot;,
+<i>214</i>&nbsp;            GSettingTag.MUSIC),
+<b class="nc"><i>215</i>&nbsp;    MUSIC_SKIP_ADMIN_ONLY(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>216</i>&nbsp;            &quot;Only allow admins to use the skip command?\n\n&quot; +
+<i>217</i>&nbsp;                    &quot;true\n&quot; +
+<i>218</i>&nbsp;                    &quot;Only admins have permission to use the skip command\n\n&quot; +
+<i>219</i>&nbsp;                    &quot;false\n&quot; +
+<i>220</i>&nbsp;                    &quot;Everyone can use the skip command&quot;,
+<i>221</i>&nbsp;            GSettingTag.MUSIC, GSettingTag.ADMIN),
+<b class="nc"><i>222</i>&nbsp;    MUSIC_VOLUME(&quot;100&quot;, GuildSettingType.VOLUME,</b>
+<i>223</i>&nbsp;            &quot;sets the default volume of the music player\n&quot; +
+<i>224</i>&nbsp;                    &quot;So the next time the bot connects it starts with this volume\n\n&quot; +
+<i>225</i>&nbsp;                    &quot;Accepts a value between 0 and 100&quot;,
+<i>226</i>&nbsp;            GSettingTag.MUSIC),
+<b class="nc"><i>227</i>&nbsp;    MUSIC_VOLUME_ADMIN(&quot;false&quot;, GuildSettingType.TOGGLE,</b>
+<i>228</i>&nbsp;            &quot;Require a guild admin to change the volume\n\n&quot; +
+<i>229</i>&nbsp;                    &quot;true -&gt; only allow guild admins to change the bot&#39;s volume\n&quot; +
+<i>230</i>&nbsp;                    &quot;false -&gt; allow all users to change the bot&#39;s volume&quot;,
+<i>231</i>&nbsp;            GSettingTag.MODERATION, GSettingTag.MUSIC),
+<b class="nc"><i>232</i>&nbsp;    MUSIC_VOTE_PERCENT(&quot;40&quot;, GuildSettingType.PERCENTAGE,</b>
+<i>233</i>&nbsp;            &quot;Percentage of users (rounded down) required to skip the currently playing track\n\n&quot; +
+<i>234</i>&nbsp;                    &quot;eg; when set to 25, and 5 listeners it would require 2 users to vote skip\n\n&quot; +
+<i>235</i>&nbsp;                    &quot;Accepts a value between 1 and 100&quot;,
+<i>236</i>&nbsp;            GSettingTag.MUSIC),;
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    private final String defaultValue;
+<i>239</i>&nbsp;    private final IGuildSettingType settingType;
+<i>240</i>&nbsp;    private final String description;
+<i>241</i>&nbsp;    private final HashSet&lt;GSettingTag&gt; tags;
+<i>242</i>&nbsp;
+<b class="nc"><i>243</i>&nbsp;    GSetting(String defaultValue, IGuildSettingType settingType, String description, GSettingTag... tags) {</b>
+<i>244</i>&nbsp;
+<b class="nc"><i>245</i>&nbsp;        this.defaultValue = defaultValue;</b>
+<b class="nc"><i>246</i>&nbsp;        this.settingType = settingType;</b>
+<b class="nc"><i>247</i>&nbsp;        this.description = description;</b>
+<b class="nc"><i>248</i>&nbsp;        this.tags = new HashSet&lt;&gt;();</b>
+<b class="nc"><i>249</i>&nbsp;        Collections.addAll(this.tags, tags);</b>
+<i>250</i>&nbsp;    }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    public boolean isInternal() {
+<b class="nc"><i>253</i>&nbsp;        return tags.contains(GSettingTag.INTERNAL);</b>
+<i>254</i>&nbsp;    }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    public String getDefaultValue() {
+<b class="nc"><i>257</i>&nbsp;        return defaultValue;</b>
+<i>258</i>&nbsp;    }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>261</i>&nbsp;        return description;</b>
+<i>262</i>&nbsp;    }
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;    public boolean hasTag(String tag) {
+<b class="nc"><i>265</i>&nbsp;        return tags.contains(GSettingTag.valueOf(tag));</b>
+<i>266</i>&nbsp;    }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    public boolean hasTag(GSettingTag tag) {
+<b class="nc"><i>269</i>&nbsp;        return tags.contains(tag);</b>
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    public HashSet&lt;GSettingTag&gt; getTags() {
+<b class="nc"><i>273</i>&nbsp;        return tags;</b>
+<i>274</i>&nbsp;    }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;    /**
+<i>277</i>&nbsp;     * Checks if the value is a valid setting
+<i>278</i>&nbsp;     *
+<i>279</i>&nbsp;     * @param input value to check
+<i>280</i>&nbsp;     * @return is it a valid value
+<i>281</i>&nbsp;     */
+<i>282</i>&nbsp;    public boolean isValidValue(Guild guild, String input) {
+<b class="nc"><i>283</i>&nbsp;        return settingType.validate(guild, input);</b>
+<i>284</i>&nbsp;    }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    public String getValue(Guild guild, String input) {
+<b class="nc"><i>287</i>&nbsp;        return settingType.fromInput(guild, input);</b>
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    public String toDisplay(Guild guild, String value) {
+<b class="nc"><i>291</i>&nbsp;        return settingType.toDisplay(guild, value);</b>
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    public IGuildSettingType getSettingType() {
+<b class="nc"><i>295</i>&nbsp;        return settingType;</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

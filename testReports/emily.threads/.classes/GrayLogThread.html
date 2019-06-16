@@ -1,0 +1,182 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GrayLogThread</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.threads</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GrayLogThread (emily.threads)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GrayLogThread</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.threads;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.main.BotConfig;
+<i>20</i>&nbsp;import emily.main.Launcher;
+<i>21</i>&nbsp;import org.graylog2.gelfclient.GelfConfiguration;
+<i>22</i>&nbsp;import org.graylog2.gelfclient.GelfMessage;
+<i>23</i>&nbsp;import org.graylog2.gelfclient.GelfMessageBuilder;
+<i>24</i>&nbsp;import org.graylog2.gelfclient.GelfMessageLevel;
+<i>25</i>&nbsp;import org.graylog2.gelfclient.GelfTransports;
+<i>26</i>&nbsp;import org.graylog2.gelfclient.transport.GelfTransport;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.net.InetSocketAddress;
+<i>29</i>&nbsp;import java.util.concurrent.LinkedBlockingQueue;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * Sending messages to graylog
+<i>33</i>&nbsp; */
+<i>34</i>&nbsp;public class GrayLogThread extends Thread {
+<b class="nc"><i>35</i>&nbsp;    private LinkedBlockingQueue&lt;GelfMessage&gt; itemsToLog = new LinkedBlockingQueue&lt;&gt;();</b>
+<b class="nc"><i>36</i>&nbsp;    private volatile boolean loggerTerminated = false;</b>
+<i>37</i>&nbsp;    private GelfTransport transport;
+<i>38</i>&nbsp;    private GelfMessageBuilder builder;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public GrayLogThread() throws InterruptedException {
+<b class="nc"><i>41</i>&nbsp;        super(&quot;graylog-writer&quot;);</b>
+<b class="nc"><i>42</i>&nbsp;        connect();</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    private void connect() throws InterruptedException {
+<b class="nc"><i>46</i>&nbsp;        GelfConfiguration config = new GelfConfiguration(new InetSocketAddress(BotConfig.BOT_GRAYLOG_HOST, BotConfig.BOT_GRAYLOG_PORT))</b>
+<b class="nc"><i>47</i>&nbsp;                .transport(GelfTransports.UDP)</b>
+<b class="nc"><i>48</i>&nbsp;                .queueSize(512)</b>
+<b class="nc"><i>49</i>&nbsp;                .connectTimeout(5000)</b>
+<b class="nc"><i>50</i>&nbsp;                .reconnectDelay(1000)</b>
+<b class="nc"><i>51</i>&nbsp;                .tcpNoDelay(true)</b>
+<b class="nc"><i>52</i>&nbsp;                .sendBufferSize(32768);</b>
+<b class="nc"><i>53</i>&nbsp;        transport = GelfTransports.create(config);</b>
+<b class="nc"><i>54</i>&nbsp;        builder = new GelfMessageBuilder(&quot;??&quot;, BotConfig.BOT_WEBSITE)</b>
+<b class="nc"><i>55</i>&nbsp;                .level(GelfMessageLevel.INFO)</b>
+<b class="nc"><i>56</i>&nbsp;                .additionalField(&quot;env&quot;, BotConfig.BOT_ENV);</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public void run() {
+<i>60</i>&nbsp;        try {
+<i>61</i>&nbsp;            GelfMessage logMessage;
+<b class="nc"><i>62</i>&nbsp;            while (!loggerTerminated &amp;&amp; !Launcher.isBeingKilled) {</b>
+<b class="nc"><i>63</i>&nbsp;                logMessage = itemsToLog.take();</b>
+<b class="nc"><i>64</i>&nbsp;                transport.trySend(logMessage);</b>
+<i>65</i>&nbsp;            }
+<b class="nc"><i>66</i>&nbsp;        } catch (InterruptedException iex) {</b>
+<i>67</i>&nbsp;        } finally {
+<b class="nc"><i>68</i>&nbsp;            loggerTerminated = true;</b>
+<b class="nc"><i>69</i>&nbsp;        }</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * @param message the log message
+<i>74</i>&nbsp;     * @param type    the category of the log message
+<i>75</i>&nbsp;     * @param subtype the subcategory of a logmessage
+<i>76</i>&nbsp;     * @param args    optional extra arguments
+<i>77</i>&nbsp;     */
+<i>78</i>&nbsp;    public void log(String message, String type, String subtype, Object... args) {
+<b class="nc"><i>79</i>&nbsp;        if (loggerTerminated) return;</b>
+<i>80</i>&nbsp;        try {
+<b class="nc"><i>81</i>&nbsp;            GelfMessage msg = builder.message(message).build();</b>
+<b class="nc"><i>82</i>&nbsp;            msg.setFullMessage(message);</b>
+<b class="nc"><i>83</i>&nbsp;            for (int i = 0; i &lt; args.length; i += 2) {</b>
+<b class="nc"><i>84</i>&nbsp;                if (args[i] == null || args[i + 1] == null) {</b>
+<b class="nc"><i>85</i>&nbsp;                    break;</b>
+<i>86</i>&nbsp;                }
+<b class="nc"><i>87</i>&nbsp;                msg.addAdditionalField(String.valueOf(args[i]), args[i + 1]);</b>
+<i>88</i>&nbsp;            }
+<b class="nc"><i>89</i>&nbsp;            msg.addAdditionalField(&quot;event&quot;, type);</b>
+<b class="nc"><i>90</i>&nbsp;            msg.addAdditionalField(&quot;sub-event&quot;, subtype);</b>
+<i>91</i>&nbsp;
+<b class="nc"><i>92</i>&nbsp;            msg.setTimestamp(System.currentTimeMillis() / 1000L);</b>
+<b class="nc"><i>93</i>&nbsp;            itemsToLog.put(msg);</b>
+<b class="nc"><i>94</i>&nbsp;        } catch (InterruptedException iex) {</b>
+<b class="nc"><i>95</i>&nbsp;            Thread.currentThread().interrupt();</b>
+<b class="nc"><i>96</i>&nbsp;            throw new RuntimeException(&quot;Unexpected interruption&quot;);</b>
+<b class="nc"><i>97</i>&nbsp;        }</b>
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

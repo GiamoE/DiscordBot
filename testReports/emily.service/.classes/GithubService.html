@@ -1,0 +1,239 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GithubService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.service</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GithubService (emily.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GithubService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 68)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.service;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.AbstractService;
+<i>20</i>&nbsp;import emily.main.BotContainer;
+<i>21</i>&nbsp;import emily.modules.github.GitHub;
+<i>22</i>&nbsp;import emily.modules.github.GithubConstants;
+<i>23</i>&nbsp;import emily.modules.github.pojo.RepositoryCommit;
+<i>24</i>&nbsp;import emily.util.GfxUtil;
+<i>25</i>&nbsp;import net.dv8tion.jda.core.EmbedBuilder;
+<i>26</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.text.ParseException;
+<i>29</i>&nbsp;import java.util.ArrayList;
+<i>30</i>&nbsp;import java.util.Arrays;
+<i>31</i>&nbsp;import java.util.LinkedHashMap;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;import java.util.Map;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;/**
+<i>36</i>&nbsp; * check for news on github
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;public class GithubService extends AbstractService {
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    private final static int MAX_COMMITS_PER_POST = 10;
+<i>41</i>&nbsp;    private final static String gitUser = &quot;Kaaz&quot;;
+<i>42</i>&nbsp;    private final static String gitRepo = &quot;discordbot&quot;;
+<i>43</i>&nbsp;    private final static String commitUrl = &quot;https://github.com/%s/%s/commit/%s&quot;;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public GithubService(BotContainer b) {
+<b class="nc"><i>46</i>&nbsp;        super(b);</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    @Override
+<i>50</i>&nbsp;    public String getIdentifier() {
+<b class="nc"><i>51</i>&nbsp;        return &quot;bot_code_updates&quot;;</b>
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    @Override
+<i>55</i>&nbsp;    public long getDelayBetweenRuns() {
+<b class="nc"><i>56</i>&nbsp;        return 900_000;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    @Override
+<i>60</i>&nbsp;    public boolean shouldIRun() {
+<b class="nc"><i>61</i>&nbsp;        return true;</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    @Override
+<i>65</i>&nbsp;    public void beforeRun() {
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    @Override
+<i>69</i>&nbsp;    public void run() {
+<b class="nc"><i>70</i>&nbsp;        long lastKnownCommitTimestamp = Long.parseLong(&quot;0&quot; + getData(&quot;last_date&quot;));</b>
+<b class="nc"><i>71</i>&nbsp;        long newLastKnownCommitTimestamp = lastKnownCommitTimestamp;</b>
+<b class="nc"><i>72</i>&nbsp;        RepositoryCommit[] changesSinceHash = GitHub.getChangesSinceTimestamp(gitUser, gitRepo, lastKnownCommitTimestamp);</b>
+<b class="nc"><i>73</i>&nbsp;        int commitCount = 0;//probably changesSinceHash.length - 1</b>
+<b class="nc"><i>74</i>&nbsp;        LinkedHashMap&lt;String, String&gt; commitMap = new LinkedHashMap&lt;&gt;();</b>
+<b class="nc"><i>75</i>&nbsp;        String committerName = &quot;??&quot;;</b>
+<b class="nc"><i>76</i>&nbsp;        String committerAvatar = &quot;&quot;;</b>
+<b class="nc"><i>77</i>&nbsp;        String committerUrl = &quot;&quot;;</b>
+<b class="nc"><i>78</i>&nbsp;        if (changesSinceHash == null || changesSinceHash.length == 0) {</b>
+<i>79</i>&nbsp;            return;
+<i>80</i>&nbsp;        }
+<b class="nc"><i>81</i>&nbsp;        for (int i = changesSinceHash.length - 1; i &gt;= 0; i--) {</b>
+<b class="nc"><i>82</i>&nbsp;            RepositoryCommit commit = changesSinceHash[i];</b>
+<b class="nc"><i>83</i>&nbsp;            Long timestamp = 0L;</b>
+<i>84</i>&nbsp;            try {
+<b class="nc"><i>85</i>&nbsp;                timestamp = GithubConstants.githubDate.parse(commit.getCommit().getCommitterShort().getDate()).getTime();</b>
+<b class="nc"><i>86</i>&nbsp;            } catch (ParseException ignored) {</b>
+<b class="nc"><i>87</i>&nbsp;            }</b>
+<b class="nc"><i>88</i>&nbsp;            String message = commit.getCommit().getMessage();</b>
+<b class="nc"><i>89</i>&nbsp;            committerName = commit.getAuthor().getLogin();</b>
+<b class="nc"><i>90</i>&nbsp;            committerUrl = &quot;https://github.com/&quot; + commit.getAuthor().getLogin();</b>
+<b class="nc"><i>91</i>&nbsp;            committerAvatar = commit.getAuthor().getAvatarUrl();</b>
+<b class="nc"><i>92</i>&nbsp;            if (timestamp &gt; lastKnownCommitTimestamp) {</b>
+<i>93</i>&nbsp;//				commitsMessage += commitOutputFormat(timestamp, message, committer, commit.getSha());
+<b class="nc"><i>94</i>&nbsp;                newLastKnownCommitTimestamp = timestamp;</b>
+<b class="nc"><i>95</i>&nbsp;                commitCount++;</b>
+<b class="nc"><i>96</i>&nbsp;                if (commitCount &gt;= MAX_COMMITS_PER_POST) {</b>
+<b class="nc"><i>97</i>&nbsp;                    break;</b>
+<i>98</i>&nbsp;                }
+<b class="nc"><i>99</i>&nbsp;                commitMap.put(commit.getSha(), message);</b>
+<i>100</i>&nbsp;            }
+<i>101</i>&nbsp;        }
+<b class="nc"><i>102</i>&nbsp;        if (commitCount &gt; 0) {</b>
+<b class="nc"><i>103</i>&nbsp;            EmbedBuilder embed = new EmbedBuilder();</b>
+<b class="nc"><i>104</i>&nbsp;            embed.setColor(GfxUtil.getAverageColor(committerAvatar));</b>
+<b class="nc"><i>105</i>&nbsp;            embed.setAuthor(committerName, committerUrl, committerAvatar);</b>
+<b class="nc"><i>106</i>&nbsp;            if (commitCount == 1) {</b>
+<b class="nc"><i>107</i>&nbsp;                embed.setTitle(&quot;There has been a commit to my repository&quot;, null);</b>
+<i>108</i>&nbsp;            } else {
+<b class="nc"><i>109</i>&nbsp;                embed.setTitle(String.format(&quot;There have been **%s** commits to my repository&quot;, commitCount), null);</b>
+<i>110</i>&nbsp;            }
+<b class="nc"><i>111</i>&nbsp;            StringBuilder description = new StringBuilder(&quot;** Hash**          **Description**\n&quot;);</b>
+<b class="nc"><i>112</i>&nbsp;            int maxCharsPerline = 65;</b>
+<b class="nc"><i>113</i>&nbsp;            for (Map.Entry&lt;String, String&gt; entry : commitMap.entrySet()) {</b>
+<b class="nc"><i>114</i>&nbsp;                String cmt = String.format(&quot;[`%s`](&quot; + commitUrl + &quot;)&quot;, entry.getKey().substring(0, 7), gitUser, gitRepo, entry.getKey());</b>
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;                List&lt;String&gt; strings = Arrays.asList(entry.getValue().split(&quot;\\r?\\n&quot;, 0));</b>
+<b class="nc"><i>117</i>&nbsp;                boolean first = true;</b>
+<b class="nc"><i>118</i>&nbsp;                for (String commitLine : strings) {</b>
+<b class="nc"><i>119</i>&nbsp;                    List&lt;String&gt; subCommitLine = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>120</i>&nbsp;                    while (!commitLine.isEmpty()) {</b>
+<b class="nc"><i>121</i>&nbsp;                        if (commitLine.length() &lt;= maxCharsPerline) {</b>
+<b class="nc"><i>122</i>&nbsp;                            subCommitLine.add(commitLine.trim());</b>
+<b class="nc"><i>123</i>&nbsp;                            commitLine = &quot;&quot;;</b>
+<i>124</i>&nbsp;                        } else {
+<b class="nc"><i>125</i>&nbsp;                            int index = commitLine.lastIndexOf(&quot; &quot;, maxCharsPerline);</b>
+<b class="nc"><i>126</i>&nbsp;                            if (index == -1) {</b>
+<b class="nc"><i>127</i>&nbsp;                                index = maxCharsPerline;</b>
+<i>128</i>&nbsp;                            }
+<b class="nc"><i>129</i>&nbsp;                            subCommitLine.add(commitLine.substring(0, index).trim());</b>
+<b class="nc"><i>130</i>&nbsp;                            commitLine = commitLine.substring(index);</b>
+<b class="nc"><i>131</i>&nbsp;                        }</b>
+<i>132</i>&nbsp;                    }
+<i>133</i>&nbsp;
+<b class="nc"><i>134</i>&nbsp;                    for (String s : subCommitLine) {</b>
+<b class="nc"><i>135</i>&nbsp;                        if (first) {</b>
+<b class="nc"><i>136</i>&nbsp;                            first = false;</b>
+<b class="nc"><i>137</i>&nbsp;                            description.append(cmt).append(&quot;     &quot;).append(s).append(&quot;\n&quot;);</b>
+<i>138</i>&nbsp;                        } else {
+<b class="nc"><i>139</i>&nbsp;                            description.append(&quot;`.......`     &quot;).append(s).append(&quot;\n&quot;);</b>
+<i>140</i>&nbsp;                        }
+<b class="nc"><i>141</i>&nbsp;                    }</b>
+<b class="nc"><i>142</i>&nbsp;                }</b>
+<b class="nc"><i>143</i>&nbsp;                description.append(&quot;\n&quot;);</b>
+<b class="nc"><i>144</i>&nbsp;            }</b>
+<b class="nc"><i>145</i>&nbsp;            embed.setDescription(description.toString());</b>
+<b class="nc"><i>146</i>&nbsp;            for (TextChannel chan : getSubscribedChannels()) {</b>
+<b class="nc"><i>147</i>&nbsp;                sendTo(chan, embed.build());</b>
+<b class="nc"><i>148</i>&nbsp;            }</b>
+<i>149</i>&nbsp;        }
+<b class="nc"><i>150</i>&nbsp;        saveData(&quot;last_date&quot;, newLastKnownCommitTimestamp);</b>
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    @Override
+<i>154</i>&nbsp;    public void afterRun() {
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

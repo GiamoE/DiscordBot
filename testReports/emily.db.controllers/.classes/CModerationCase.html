@@ -1,0 +1,244 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CModerationCase</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.db.controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CModerationCase (emily.db.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CModerationCase</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 74)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.db.controllers;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.Logger;
+<i>20</i>&nbsp;import emily.db.WebDb;
+<i>21</i>&nbsp;import emily.db.model.OModerationCase;
+<i>22</i>&nbsp;import emily.util.DisUtil;
+<i>23</i>&nbsp;import net.dv8tion.jda.core.EmbedBuilder;
+<i>24</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>25</i>&nbsp;import net.dv8tion.jda.core.entities.MessageEmbed;
+<i>26</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.sql.ResultSet;
+<i>29</i>&nbsp;import java.sql.SQLException;
+<i>30</i>&nbsp;import java.sql.Timestamp;
+<i>31</i>&nbsp;import java.text.SimpleDateFormat;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * data communication with the controllers `moderation_case`
+<i>35</i>&nbsp; */
+<b class="nc"><i>36</i>&nbsp;public class CModerationCase {</b>
+<i>37</i>&nbsp;
+<b class="nc"><i>38</i>&nbsp;    private static final SimpleDateFormat banDateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public static OModerationCase findById(int caseId) {
+<b class="nc"><i>41</i>&nbsp;        OModerationCase record = new OModerationCase();</b>
+<b class="nc"><i>42</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>43</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>44</i>&nbsp;                        &quot;FROM moderation_case &quot; +
+<b class="nc"><i>45</i>&nbsp;                        &quot;WHERE id = ? &quot;, caseId)) {</b>
+<b class="nc"><i>46</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>47</i>&nbsp;                record = fillRecord(rs);</b>
+<i>48</i>&nbsp;            }
+<b class="nc"><i>49</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>50</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>51</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>52</i>&nbsp;        }</b>
+<b class="nc"><i>53</i>&nbsp;        return record;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    /**
+<i>57</i>&nbsp;     * Finds the last case for a moderator within a guild
+<i>58</i>&nbsp;     *
+<i>59</i>&nbsp;     * @param guildId     internal guild id
+<i>60</i>&nbsp;     * @param moderatorId internal user id
+<i>61</i>&nbsp;     * @return case
+<i>62</i>&nbsp;     */
+<i>63</i>&nbsp;    public static OModerationCase findLastFor(int guildId, int moderatorId) {
+<b class="nc"><i>64</i>&nbsp;        OModerationCase record = new OModerationCase();</b>
+<b class="nc"><i>65</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>66</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>67</i>&nbsp;                        &quot;FROM moderation_case &quot; +
+<b class="nc"><i>68</i>&nbsp;                        &quot;WHERE guild_id = ? AND moderator = ? ORDER BY id DESC LIMIT 1&quot;, guildId, moderatorId)) {</b>
+<b class="nc"><i>69</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>70</i>&nbsp;                record = fillRecord(rs);</b>
+<i>71</i>&nbsp;            }
+<b class="nc"><i>72</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>73</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>74</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>75</i>&nbsp;        }</b>
+<b class="nc"><i>76</i>&nbsp;        return record;</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    private static OModerationCase fillRecord(ResultSet resultset) throws SQLException {
+<b class="nc"><i>80</i>&nbsp;        OModerationCase record = new OModerationCase();</b>
+<b class="nc"><i>81</i>&nbsp;        record.id = resultset.getInt(&quot;id&quot;);</b>
+<b class="nc"><i>82</i>&nbsp;        record.guildId = resultset.getInt(&quot;guild_id&quot;);</b>
+<b class="nc"><i>83</i>&nbsp;        record.userId = resultset.getInt(&quot;user_id&quot;);</b>
+<b class="nc"><i>84</i>&nbsp;        record.userName = resultset.getString(&quot;user_name&quot;);</b>
+<b class="nc"><i>85</i>&nbsp;        record.moderatorId = resultset.getInt(&quot;moderator&quot;);</b>
+<b class="nc"><i>86</i>&nbsp;        record.moderatorName = resultset.getString(&quot;moderator_name&quot;);</b>
+<b class="nc"><i>87</i>&nbsp;        record.active = resultset.getInt(&quot;active&quot;);</b>
+<b class="nc"><i>88</i>&nbsp;        record.messageId = resultset.getString(&quot;message_id&quot;);</b>
+<b class="nc"><i>89</i>&nbsp;        record.reason = resultset.getString(&quot;reason&quot;);</b>
+<b class="nc"><i>90</i>&nbsp;        record.createdAt = resultset.getTimestamp(&quot;created_at&quot;);</b>
+<b class="nc"><i>91</i>&nbsp;        record.expires = resultset.getTimestamp(&quot;expires&quot;);</b>
+<b class="nc"><i>92</i>&nbsp;        record.setPunishment(resultset.getInt(&quot;punishment&quot;));</b>
+<b class="nc"><i>93</i>&nbsp;        return record;</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    public static int insert(Guild guild, User targetUser, User moderator, OModerationCase.PunishType punishType, Timestamp expires) {
+<b class="nc"><i>97</i>&nbsp;        OModerationCase rec = new OModerationCase();</b>
+<b class="nc"><i>98</i>&nbsp;        rec.guildId = CGuild.getCachedId(guild.getIdLong());</b>
+<b class="nc"><i>99</i>&nbsp;        rec.userId = CUser.getCachedId(targetUser.getIdLong());</b>
+<b class="nc"><i>100</i>&nbsp;        rec.userName = targetUser.getName() + &quot;\\#&quot; + targetUser.getDiscriminator();</b>
+<b class="nc"><i>101</i>&nbsp;        rec.moderatorId = CUser.getCachedId(moderator.getIdLong());</b>
+<b class="nc"><i>102</i>&nbsp;        rec.moderatorName = moderator.getName() + &quot;\\#&quot; + moderator.getDiscriminator();</b>
+<b class="nc"><i>103</i>&nbsp;        rec.punishment = punishType;</b>
+<b class="nc"><i>104</i>&nbsp;        rec.expires = expires;</b>
+<b class="nc"><i>105</i>&nbsp;        rec.createdAt = new Timestamp(System.currentTimeMillis());</b>
+<b class="nc"><i>106</i>&nbsp;        rec.active = 1;</b>
+<b class="nc"><i>107</i>&nbsp;        rec.messageId = &quot;1&quot;;</b>
+<b class="nc"><i>108</i>&nbsp;        return insert(rec);</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    public static int insert(OModerationCase record) {
+<i>112</i>&nbsp;        try {
+<b class="nc"><i>113</i>&nbsp;            return WebDb.get().insert(</b>
+<i>114</i>&nbsp;                    &quot;INSERT INTO moderation_case(guild_id, user_id,user_name, moderator,moderator_name, message_id, created_at, reason, punishment, expires, active) &quot; +
+<i>115</i>&nbsp;                            &quot;VALUES (?,?,?,?,?,?,?,?,?,?,?)&quot;,
+<b class="nc"><i>116</i>&nbsp;                    record.guildId, record.userId, record.userName, record.moderatorId, record.moderatorName, record.messageId, record.createdAt, record.reason, record.punishment.getId(), record.expires, record.active);</b>
+<b class="nc"><i>117</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>118</i>&nbsp;            e.printStackTrace();</b>
+<i>119</i>&nbsp;        }
+<b class="nc"><i>120</i>&nbsp;        return -1;</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    public static void update(OModerationCase record) {
+<i>124</i>&nbsp;        try {
+<b class="nc"><i>125</i>&nbsp;            WebDb.get().insert(</b>
+<i>126</i>&nbsp;                    &quot;UPDATE moderation_case SET guild_id = ?, user_id = ?, &quot; +
+<i>127</i>&nbsp;                            &quot;moderator = ?, message_id = ?, created_at = ?, reason = ?, punishment = ?, &quot; +
+<i>128</i>&nbsp;                            &quot;expires =?, active = ? &quot; +
+<i>129</i>&nbsp;                            &quot;WHERE id = ?&quot;,
+<b class="nc"><i>130</i>&nbsp;                    record.guildId, record.userId,</b>
+<b class="nc"><i>131</i>&nbsp;                    record.moderatorId, record.messageId, record.createdAt, record.reason, record.punishment.getId(),</b>
+<b class="nc"><i>132</i>&nbsp;                    record.expires, record.active, record.id);</b>
+<b class="nc"><i>133</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>134</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>135</i>&nbsp;        }</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    public static MessageEmbed buildCase(Guild guild, int caseId) {
+<b class="nc"><i>139</i>&nbsp;        return buildCase(guild, findById(caseId));</b>
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    public static MessageEmbed buildCase(Guild guild, OModerationCase modcase) {
+<b class="nc"><i>143</i>&nbsp;        EmbedBuilder b = new EmbedBuilder();</b>
+<b class="nc"><i>144</i>&nbsp;        b.setTitle(String.format(&quot;%s | case #%s&quot;, modcase.punishment.getKeyword(), modcase.id), null);</b>
+<b class="nc"><i>145</i>&nbsp;        b.setColor(modcase.punishment.getColor());</b>
+<b class="nc"><i>146</i>&nbsp;        b.addField(&quot;User&quot;, modcase.userName + &quot;\n&quot; + CUser.getCachedDiscordId(modcase.userId) + &quot;\n&quot;, true);</b>
+<b class="nc"><i>147</i>&nbsp;        b.addField(&quot;Moderator&quot;, modcase.moderatorName + &quot;\n&quot; + CUser.getCachedDiscordId(modcase.moderatorId), true);</b>
+<b class="nc"><i>148</i>&nbsp;        b.addField(&quot;Issued&quot;, banDateFormat.format(modcase.createdAt), true);</b>
+<b class="nc"><i>149</i>&nbsp;        if (modcase.expires != null) {</b>
+<b class="nc"><i>150</i>&nbsp;            b.addField(&quot;Expires&quot;, modcase.expires.toString(), true);</b>
+<i>151</i>&nbsp;        }
+<b class="nc"><i>152</i>&nbsp;        String reason = modcase.reason;</b>
+<b class="nc"><i>153</i>&nbsp;        if (reason == null || reason.isEmpty()) {</b>
+<b class="nc"><i>154</i>&nbsp;            reason = &quot;Reason not set! use `&quot; + DisUtil.getCommandPrefix(guild) + &quot;case reason &quot; + modcase.id + &quot; &lt;message&gt;` to set the reason&quot;;</b>
+<i>155</i>&nbsp;        }
+<b class="nc"><i>156</i>&nbsp;        b.addField(&quot;Reason&quot;, reason, false);</b>
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;
+<b class="nc"><i>159</i>&nbsp;        return b.build();</b>
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

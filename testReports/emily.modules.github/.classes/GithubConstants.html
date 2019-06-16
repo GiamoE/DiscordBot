@@ -1,0 +1,126 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GithubConstants</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.modules.github</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GithubConstants (emily.modules.github)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GithubConstants</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.modules.github;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import java.text.SimpleDateFormat;
+<i>20</i>&nbsp;import java.util.Date;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;/**
+<i>23</i>&nbsp; * Created on 8-9-2016
+<i>24</i>&nbsp; */
+<b class="nc"><i>25</i>&nbsp;public class GithubConstants {</b>
+<i>26</i>&nbsp;
+<b class="nc"><i>27</i>&nbsp;    public static final SimpleDateFormat githubDate = new SimpleDateFormat(&quot;yyyy-MM-dd&#39;T&#39;HH:mm:ss&#39;Z&#39;&quot;);</b>
+<i>28</i>&nbsp;    private static final String ENDPOINT = &quot;https://api.github.com/&quot;;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    //username, repository
+<i>31</i>&nbsp;    private static final String COMMIT_ENDPOINT = ENDPOINT + &quot;repos/%s/%s/commits&quot;;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public static String getCommitEndPoint(String user, String repository, long timestamp) {
+<b class="nc"><i>34</i>&nbsp;        if (timestamp &lt;= 0L) {</b>
+<b class="nc"><i>35</i>&nbsp;            return getCommitEndPoint(user, repository);</b>
+<i>36</i>&nbsp;        }
+<b class="nc"><i>37</i>&nbsp;        return String.format(COMMIT_ENDPOINT, user, repository) + &quot;?since=&quot; + githubDate.format(new Date(timestamp));</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    private static String getCommitEndPoint(String user, String repository) {
+<b class="nc"><i>41</i>&nbsp;        return String.format(COMMIT_ENDPOINT, user, repository);</b>
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

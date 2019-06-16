@@ -1,0 +1,733 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: FightCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.fun</a> ]
+</div>
+
+<h1>Coverage Summary for Class: FightCommand (emily.command.fun)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FightCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 267)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FightCommand$GifPosition</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FightCommand$GifSequenceWriter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FightCommand$ImageFrame</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 323)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.fun;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>20</i>&nbsp;import emily.command.meta.CooldownScope;
+<i>21</i>&nbsp;import emily.command.meta.ICommandCooldown;
+<i>22</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>23</i>&nbsp;import emily.main.DiscordBot;
+<i>24</i>&nbsp;import emily.main.Launcher;
+<i>25</i>&nbsp;import emily.templates.Templates;
+<i>26</i>&nbsp;import emily.util.DisUtil;
+<i>27</i>&nbsp;import emily.util.Misc;
+<i>28</i>&nbsp;import net.dv8tion.jda.core.Permission;
+<i>29</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>30</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>31</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>32</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>33</i>&nbsp;import net.dv8tion.jda.core.utils.PermissionUtil;
+<i>34</i>&nbsp;import org.w3c.dom.NamedNodeMap;
+<i>35</i>&nbsp;import org.w3c.dom.Node;
+<i>36</i>&nbsp;import org.w3c.dom.NodeList;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;import javax.imageio.IIOException;
+<i>39</i>&nbsp;import javax.imageio.IIOImage;
+<i>40</i>&nbsp;import javax.imageio.ImageIO;
+<i>41</i>&nbsp;import javax.imageio.ImageReader;
+<i>42</i>&nbsp;import javax.imageio.ImageTypeSpecifier;
+<i>43</i>&nbsp;import javax.imageio.ImageWriteParam;
+<i>44</i>&nbsp;import javax.imageio.ImageWriter;
+<i>45</i>&nbsp;import javax.imageio.metadata.IIOMetadata;
+<i>46</i>&nbsp;import javax.imageio.metadata.IIOMetadataNode;
+<i>47</i>&nbsp;import javax.imageio.stream.FileImageOutputStream;
+<i>48</i>&nbsp;import javax.imageio.stream.ImageOutputStream;
+<i>49</i>&nbsp;import java.awt.*;
+<i>50</i>&nbsp;import java.awt.image.BufferedImage;
+<i>51</i>&nbsp;import java.awt.image.ColorModel;
+<i>52</i>&nbsp;import java.awt.image.RenderedImage;
+<i>53</i>&nbsp;import java.awt.image.WritableRaster;
+<i>54</i>&nbsp;import java.io.File;
+<i>55</i>&nbsp;import java.io.IOException;
+<i>56</i>&nbsp;import java.io.InputStream;
+<i>57</i>&nbsp;import java.util.ArrayList;
+<i>58</i>&nbsp;import java.util.Iterator;
+<i>59</i>&nbsp;import java.util.Random;
+<i>60</i>&nbsp;
+<b class="nc"><i>61</i>&nbsp;public class FightCommand extends AbstractCommand implements ICommandCooldown {</b>
+<i>62</i>&nbsp;    final private ImageFrame[] frames;
+<i>63</i>&nbsp;    final private GifPosition[] positions;
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;    public FightCommand() throws IOException {</b>
+<b class="nc"><i>66</i>&nbsp;        InputStream resource = Launcher.class.getClassLoader().getResourceAsStream(&quot;fight/stickman001.gif&quot;);</b>
+<b class="nc"><i>67</i>&nbsp;        frames = readGif(resource);</b>
+<b class="nc"><i>68</i>&nbsp;        positions = new GifPosition[frames.length];</b>
+<b class="nc"><i>69</i>&nbsp;        positions[0] = new GifPosition(19, 55, 22, 25);</b>
+<b class="nc"><i>70</i>&nbsp;        positions[1] = new GifPosition(19, 55, 22, 25);</b>
+<b class="nc"><i>71</i>&nbsp;        positions[2] = new GifPosition(19, 55, 22, 25);</b>
+<b class="nc"><i>72</i>&nbsp;        positions[3] = new GifPosition(19, 55, 22, 25);</b>
+<b class="nc"><i>73</i>&nbsp;        positions[4] = new GifPosition(19, 55, 22, 25);</b>
+<b class="nc"><i>74</i>&nbsp;        positions[5] = new GifPosition(19, 55, 22, 25);</b>
+<b class="nc"><i>75</i>&nbsp;        positions[6] = new GifPosition(19, 55, 22, 25);</b>
+<b class="nc"><i>76</i>&nbsp;        positions[7] = new GifPosition(20, 55, 22, 25);</b>
+<b class="nc"><i>77</i>&nbsp;        positions[8] = new GifPosition(20, 60, 22, 25);</b>
+<b class="nc"><i>78</i>&nbsp;        positions[9] = new GifPosition(19, 58, 22, 25);</b>
+<b class="nc"><i>79</i>&nbsp;        positions[10] = new GifPosition(19, 65, 22, 25);</b>
+<b class="nc"><i>80</i>&nbsp;        positions[11] = new GifPosition(29, 55, 22, 25);</b>
+<b class="nc"><i>81</i>&nbsp;        positions[12] = new GifPosition(38, 48, 22, 25);</b>
+<b class="nc"><i>82</i>&nbsp;        positions[13] = new GifPosition(44, 41, 22, 25);</b>
+<b class="nc"><i>83</i>&nbsp;        positions[14] = new GifPosition(60, 36, 22, 25);</b>
+<b class="nc"><i>84</i>&nbsp;        positions[15] = new GifPosition(77, 31, 22, 25);</b>
+<b class="nc"><i>85</i>&nbsp;        positions[16] = new GifPosition(108, 31, 22, 25);</b>
+<b class="nc"><i>86</i>&nbsp;        positions[17] = new GifPosition(105, 28, 22, 25);</b>
+<b class="nc"><i>87</i>&nbsp;        positions[18] = new GifPosition(110, 29, 22, 25);</b>
+<b class="nc"><i>88</i>&nbsp;        positions[19] = new GifPosition(110, 29, 22, 25);</b>
+<b class="nc"><i>89</i>&nbsp;        positions[20] = new GifPosition(109, 29, 22, 25);</b>
+<b class="nc"><i>90</i>&nbsp;        positions[21] = new GifPosition(99, 20, 22, 25);</b>
+<b class="nc"><i>91</i>&nbsp;        positions[22] = new GifPosition(82, 28, 22, 25);</b>
+<b class="nc"><i>92</i>&nbsp;        positions[23] = new GifPosition(38, 53, 22, 25);</b>
+<b class="nc"><i>93</i>&nbsp;        positions[24] = new GifPosition(27, 72, 22, 25);</b>
+<b class="nc"><i>94</i>&nbsp;        positions[25] = new GifPosition(11, 88, 22, 25);</b>
+<b class="nc"><i>95</i>&nbsp;        positions[26] = new GifPosition(56, 85, 22, 25);</b>
+<b class="nc"><i>96</i>&nbsp;        positions[27] = new GifPosition(36, 68, 22, 25);</b>
+<b class="nc"><i>97</i>&nbsp;        positions[28] = new GifPosition(8, 48, 22, 25);</b>
+<b class="nc"><i>98</i>&nbsp;        positions[29] = new GifPosition(6, 60, 22, 25);</b>
+<b class="nc"><i>99</i>&nbsp;        positions[30] = new GifPosition(6, 60, 22, 25);</b>
+<b class="nc"><i>100</i>&nbsp;        positions[31] = new GifPosition(13, 50, 22, 25);</b>
+<b class="nc"><i>101</i>&nbsp;        positions[32] = new GifPosition(25, 43, 22, 25);</b>
+<b class="nc"><i>102</i>&nbsp;        positions[33] = new GifPosition(33, 35, 22, 25);</b>
+<b class="nc"><i>103</i>&nbsp;        positions[34] = new GifPosition(45, 26, 22, 25);</b>
+<b class="nc"><i>104</i>&nbsp;        positions[35] = new GifPosition(45, 26, 22, 25);</b>
+<b class="nc"><i>105</i>&nbsp;        positions[36] = new GifPosition(30, 30, 22, 25);</b>
+<b class="nc"><i>106</i>&nbsp;        positions[37] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>107</i>&nbsp;        positions[38] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>108</i>&nbsp;        positions[39] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>109</i>&nbsp;        positions[40] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>110</i>&nbsp;        positions[41] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>111</i>&nbsp;        positions[42] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>112</i>&nbsp;        positions[43] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>113</i>&nbsp;        positions[44] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>114</i>&nbsp;        positions[45] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>115</i>&nbsp;        positions[46] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>116</i>&nbsp;        positions[47] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>117</i>&nbsp;        positions[48] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>118</i>&nbsp;        positions[49] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>119</i>&nbsp;        positions[50] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>120</i>&nbsp;        positions[51] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>121</i>&nbsp;        positions[52] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>122</i>&nbsp;        positions[53] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>123</i>&nbsp;        positions[54] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>124</i>&nbsp;        positions[55] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>125</i>&nbsp;        positions[56] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>126</i>&nbsp;        positions[57] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>127</i>&nbsp;        positions[58] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>128</i>&nbsp;        positions[59] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>129</i>&nbsp;        positions[60] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>130</i>&nbsp;        positions[61] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>131</i>&nbsp;        positions[62] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>132</i>&nbsp;        positions[63] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>133</i>&nbsp;        positions[64] = new GifPosition(19, 68, 22, 25);</b>
+<b class="nc"><i>134</i>&nbsp;        positions[65] = new GifPosition(15, 68, 22, 25);</b>
+<b class="nc"><i>135</i>&nbsp;        positions[66] = new GifPosition(15, 68, 22, 25);</b>
+<b class="nc"><i>136</i>&nbsp;        positions[67] = new GifPosition(15, 68, 22, 25);</b>
+<b class="nc"><i>137</i>&nbsp;        positions[68] = new GifPosition(15, 68, 22, 25);</b>
+<b class="nc"><i>138</i>&nbsp;        positions[69] = new GifPosition(15, 68, 22, 25);</b>
+<b class="nc"><i>139</i>&nbsp;        positions[70] = new GifPosition(15, 68, 22, 25);</b>
+<b class="nc"><i>140</i>&nbsp;        positions[71] = new GifPosition(15, 68, 22, 25);</b>
+<b class="nc"><i>141</i>&nbsp;        positions[72] = new GifPosition(22, 62, 22, 25);</b>
+<b class="nc"><i>142</i>&nbsp;        positions[73] = new GifPosition(40, 59, 22, 25);</b>
+<b class="nc"><i>143</i>&nbsp;        positions[74] = new GifPosition(51, 66, 22, 25);</b>
+<b class="nc"><i>144</i>&nbsp;        positions[75] = new GifPosition(-1, 68, 22, 25);</b>
+<b class="nc"><i>145</i>&nbsp;        positions[76] = new GifPosition(51, 61, 22, 25);</b>
+<b class="nc"><i>146</i>&nbsp;        positions[77] = new GifPosition(37, 67, 22, 25);</b>
+<b class="nc"><i>147</i>&nbsp;        positions[78] = new GifPosition(28, 73, 22, 25);</b>
+<b class="nc"><i>148</i>&nbsp;        positions[79] = new GifPosition(22, 78, 22, 25);</b>
+<b class="nc"><i>149</i>&nbsp;        positions[80] = new GifPosition(22, 79, 22, 25);</b>
+<b class="nc"><i>150</i>&nbsp;        positions[81] = new GifPosition(35, 77, 22, 25);</b>
+<b class="nc"><i>151</i>&nbsp;        positions[82] = new GifPosition(48, 78, 22, 25);</b>
+<b class="nc"><i>152</i>&nbsp;        positions[83] = new GifPosition(48, 78, 22, 25);</b>
+<b class="nc"><i>153</i>&nbsp;        positions[84] = new GifPosition(45, 75, 22, 25);</b>
+<b class="nc"><i>154</i>&nbsp;        positions[85] = new GifPosition(68, 73, 22, 25);</b>
+<b class="nc"><i>155</i>&nbsp;        positions[86] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>156</i>&nbsp;        positions[87] = new GifPosition(68, 72, 22, 25);</b>
+<b class="nc"><i>157</i>&nbsp;        positions[88] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>158</i>&nbsp;        positions[89] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>159</i>&nbsp;        positions[90] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>160</i>&nbsp;        positions[91] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>161</i>&nbsp;        positions[92] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>162</i>&nbsp;        positions[93] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>163</i>&nbsp;        positions[94] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>164</i>&nbsp;        positions[95] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>165</i>&nbsp;        positions[96] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>166</i>&nbsp;        positions[97] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>167</i>&nbsp;        positions[98] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>168</i>&nbsp;        positions[99] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>169</i>&nbsp;        positions[100] = new GifPosition(68, 75, 22, 25);</b>
+<b class="nc"><i>170</i>&nbsp;        positions[101] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>171</i>&nbsp;        positions[102] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>172</i>&nbsp;        positions[103] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>173</i>&nbsp;        positions[104] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>174</i>&nbsp;        positions[105] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>175</i>&nbsp;        positions[106] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>176</i>&nbsp;        positions[107] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>177</i>&nbsp;        positions[108] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>178</i>&nbsp;        positions[109] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>179</i>&nbsp;        positions[110] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>180</i>&nbsp;        positions[111] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>181</i>&nbsp;        positions[112] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>182</i>&nbsp;        positions[113] = new GifPosition(68, 74, 22, 25);</b>
+<b class="nc"><i>183</i>&nbsp;        positions[114] = new GifPosition(62, 78, 22, 25);</b>
+<b class="nc"><i>184</i>&nbsp;        positions[115] = new GifPosition(62, 78, 22, 25);</b>
+<b class="nc"><i>185</i>&nbsp;        positions[116] = new GifPosition(62, 78, 22, 25);</b>
+<b class="nc"><i>186</i>&nbsp;        positions[117] = new GifPosition(62, 78, 22, 25);</b>
+<b class="nc"><i>187</i>&nbsp;        positions[118] = new GifPosition(62, 78, 22, 25);</b>
+<b class="nc"><i>188</i>&nbsp;        positions[119] = new GifPosition(62, 78, 22, 25);</b>
+<b class="nc"><i>189</i>&nbsp;        positions[120] = new GifPosition(14, 100, 22, 25);</b>
+<b class="nc"><i>190</i>&nbsp;        positions[121] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>191</i>&nbsp;        positions[122] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>192</i>&nbsp;        positions[123] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>193</i>&nbsp;        positions[124] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>194</i>&nbsp;        positions[125] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>195</i>&nbsp;        positions[126] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>196</i>&nbsp;        positions[127] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>197</i>&nbsp;        positions[128] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>198</i>&nbsp;        positions[129] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>199</i>&nbsp;        positions[130] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>200</i>&nbsp;        positions[131] = new GifPosition(-6, 153, 22, 25);</b>
+<b class="nc"><i>201</i>&nbsp;        positions[132] = new GifPosition(-6, 153, 22, 25);</b>
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    private static IIOMetadataNode getNode(
+<i>205</i>&nbsp;            IIOMetadataNode rootNode,
+<i>206</i>&nbsp;            String nodeName) {
+<b class="nc"><i>207</i>&nbsp;        int nNodes = rootNode.getLength();</b>
+<b class="nc"><i>208</i>&nbsp;        for (int i = 0; i &lt; nNodes; i++) {</b>
+<b class="nc"><i>209</i>&nbsp;            if (rootNode.item(i).getNodeName().compareToIgnoreCase(nodeName)</b>
+<i>210</i>&nbsp;                    == 0) {
+<b class="nc"><i>211</i>&nbsp;                return ((IIOMetadataNode) rootNode.item(i));</b>
+<i>212</i>&nbsp;            }
+<i>213</i>&nbsp;        }
+<b class="nc"><i>214</i>&nbsp;        IIOMetadataNode node = new IIOMetadataNode(nodeName);</b>
+<b class="nc"><i>215</i>&nbsp;        rootNode.appendChild(node);</b>
+<b class="nc"><i>216</i>&nbsp;        return (node);</b>
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    @Override
+<i>220</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>221</i>&nbsp;        return &quot;get in an epic fight; (gif fight)&quot;;</b>
+<i>222</i>&nbsp;    }
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    @Override
+<i>225</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>226</i>&nbsp;        return &quot;fight&quot;;</b>
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    @Override
+<i>230</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>231</i>&nbsp;        return new String[]{</b>
+<i>232</i>&nbsp;                &quot;fight         //random user fights&quot;,
+<i>233</i>&nbsp;                &quot;fight &lt;user&gt;  //&lt;user&gt; fights&quot;,
+<i>234</i>&nbsp;        };
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    @Override
+<i>238</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>239</i>&nbsp;        return new String[0];</b>
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    @Override
+<i>243</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>244</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    @Override
+<i>248</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>249</i>&nbsp;        TextChannel txt = (TextChannel) channel;</b>
+<b class="nc"><i>250</i>&nbsp;        if (!PermissionUtil.checkPermission(txt, txt.getGuild().getSelfMember(), Permission.MESSAGE_ATTACH_FILES)) {</b>
+<b class="nc"><i>251</i>&nbsp;            return Templates.permission_missing.formatGuild(channel, &quot;MESSAGE_ATTACH_FILES&quot;);</b>
+<i>252</i>&nbsp;        }
+<b class="nc"><i>253</i>&nbsp;        User user = author;</b>
+<b class="nc"><i>254</i>&nbsp;        if (args.length &gt; 0) {</b>
+<b class="nc"><i>255</i>&nbsp;            user = DisUtil.findUser(txt, Misc.joinStrings(args, 0));</b>
+<i>256</i>&nbsp;        }
+<b class="nc"><i>257</i>&nbsp;        if (user == null) {</b>
+<b class="nc"><i>258</i>&nbsp;            return Templates.config.cant_find_user.formatGuild(channel, args[0]);</b>
+<i>259</i>&nbsp;        }
+<b class="nc"><i>260</i>&nbsp;        txt.sendTyping().queue(); //since it might take a while</b>
+<i>261</i>&nbsp;        try {
+<b class="nc"><i>262</i>&nbsp;            Random rng = new Random();</b>
+<b class="nc"><i>263</i>&nbsp;            BufferedImage avatar = DisUtil.getUserAvatar(user);</b>
+<b class="nc"><i>264</i>&nbsp;            new File(&quot;tmp/&quot;).mkdirs();</b>
+<b class="nc"><i>265</i>&nbsp;            File f = new File(&quot;tmp/fight_&quot; + channel.getId() + &quot;.gif&quot;);</b>
+<b class="nc"><i>266</i>&nbsp;            ImageOutputStream output = new FileImageOutputStream(f);</b>
+<b class="nc"><i>267</i>&nbsp;            GifSequenceWriter writer =</b>
+<b class="nc"><i>268</i>&nbsp;                    new GifSequenceWriter(output, frames[0].getImage().getType(), 100, false);</b>
+<b class="nc"><i>269</i>&nbsp;            for (int i = 0; i &lt; frames.length; i++) {</b>
+<b class="nc"><i>270</i>&nbsp;                ImageFrame frame = frames[i];</b>
+<b class="nc"><i>271</i>&nbsp;                GifPosition pos = positions[i];</b>
+<b class="nc"><i>272</i>&nbsp;                Graphics2D g = (Graphics2D) frame.getImage().getGraphics();</b>
+<b class="nc"><i>273</i>&nbsp;                if (pos != null &amp;&amp; pos.x != -1) {</b>
+<b class="nc"><i>274</i>&nbsp;                    g.drawImage(avatar, pos.x, pos.y, pos.x + pos.height, pos.y + pos.width, 0, 0, avatar.getWidth(), avatar.getHeight(), null);</b>
+<i>275</i>&nbsp;                }
+<b class="nc"><i>276</i>&nbsp;                writer.writeToSequence(frame.getImage());</b>
+<b class="nc"><i>277</i>&nbsp;                if (pos == null) {</b>
+<b class="nc"><i>278</i>&nbsp;                    break;</b>
+<i>279</i>&nbsp;                }
+<i>280</i>&nbsp;            }
+<b class="nc"><i>281</i>&nbsp;            bot.queue.add(channel.sendFile(f), message -&gt; f.delete());</b>
+<b class="nc"><i>282</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>283</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>284</i>&nbsp;            return e.getMessage();</b>
+<b class="nc"><i>285</i>&nbsp;        }</b>
+<b class="nc"><i>286</i>&nbsp;        return &quot;&quot;;</b>
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    @Override
+<i>290</i>&nbsp;    public long getCooldownDuration() {
+<b class="nc"><i>291</i>&nbsp;        return 15;</b>
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    @Override
+<i>295</i>&nbsp;    public CooldownScope getScope() {
+<b class="nc"><i>296</i>&nbsp;        return CooldownScope.USER;</b>
+<i>297</i>&nbsp;    }
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    private ImageFrame[] readGif(InputStream in) throws IOException {
+<b class="nc"><i>300</i>&nbsp;        ArrayList&lt;ImageFrame&gt; frames = new ArrayList&lt;&gt;(2);</b>
+<b class="nc"><i>301</i>&nbsp;        ImageReader reader = ImageIO.getImageReadersByFormatName(&quot;gif&quot;).next();</b>
+<b class="nc"><i>302</i>&nbsp;        reader.setInput(ImageIO.createImageInputStream(in));</b>
+<i>303</i>&nbsp;
+<b class="nc"><i>304</i>&nbsp;        int lastx = 0;</b>
+<b class="nc"><i>305</i>&nbsp;        int lasty = 0;</b>
+<i>306</i>&nbsp;
+<b class="nc"><i>307</i>&nbsp;        int width = -1;</b>
+<b class="nc"><i>308</i>&nbsp;        int height = -1;</b>
+<i>309</i>&nbsp;
+<b class="nc"><i>310</i>&nbsp;        IIOMetadata metadata = reader.getStreamMetadata();</b>
+<i>311</i>&nbsp;
+<b class="nc"><i>312</i>&nbsp;        Color backgroundColor = null;</b>
+<i>313</i>&nbsp;
+<b class="nc"><i>314</i>&nbsp;        if (metadata != null) {</b>
+<b class="nc"><i>315</i>&nbsp;            IIOMetadataNode globalRoot = (IIOMetadataNode) metadata.getAsTree(metadata.getNativeMetadataFormatName());</b>
+<i>316</i>&nbsp;
+<b class="nc"><i>317</i>&nbsp;            NodeList globalColorTable = globalRoot.getElementsByTagName(&quot;GlobalColorTable&quot;);</b>
+<b class="nc"><i>318</i>&nbsp;            NodeList globalScreeDescriptor = globalRoot.getElementsByTagName(&quot;LogicalScreenDescriptor&quot;);</b>
+<i>319</i>&nbsp;
+<b class="nc"><i>320</i>&nbsp;            if (globalScreeDescriptor != null &amp;&amp; globalScreeDescriptor.getLength() &gt; 0) {</b>
+<b class="nc"><i>321</i>&nbsp;                IIOMetadataNode screenDescriptor = (IIOMetadataNode) globalScreeDescriptor.item(0);</b>
+<i>322</i>&nbsp;
+<b class="nc"><i>323</i>&nbsp;                if (screenDescriptor != null) {</b>
+<b class="nc"><i>324</i>&nbsp;                    width = Integer.parseInt(screenDescriptor.getAttribute(&quot;logicalScreenWidth&quot;));</b>
+<b class="nc"><i>325</i>&nbsp;                    height = Integer.parseInt(screenDescriptor.getAttribute(&quot;logicalScreenHeight&quot;));</b>
+<i>326</i>&nbsp;                }
+<i>327</i>&nbsp;            }
+<i>328</i>&nbsp;
+<b class="nc"><i>329</i>&nbsp;            if (globalColorTable != null &amp;&amp; globalColorTable.getLength() &gt; 0) {</b>
+<b class="nc"><i>330</i>&nbsp;                IIOMetadataNode colorTable = (IIOMetadataNode) globalColorTable.item(0);</b>
+<i>331</i>&nbsp;
+<b class="nc"><i>332</i>&nbsp;                if (colorTable != null) {</b>
+<b class="nc"><i>333</i>&nbsp;                    String bgIndex = colorTable.getAttribute(&quot;backgroundColorIndex&quot;);</b>
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;                    IIOMetadataNode colorEntry = (IIOMetadataNode) colorTable.getFirstChild();</b>
+<b class="nc"><i>336</i>&nbsp;                    while (colorEntry != null) {</b>
+<b class="nc"><i>337</i>&nbsp;                        if (colorEntry.getAttribute(&quot;index&quot;).equals(bgIndex)) {</b>
+<b class="nc"><i>338</i>&nbsp;                            int red = Integer.parseInt(colorEntry.getAttribute(&quot;red&quot;));</b>
+<b class="nc"><i>339</i>&nbsp;                            int green = Integer.parseInt(colorEntry.getAttribute(&quot;green&quot;));</b>
+<b class="nc"><i>340</i>&nbsp;                            int blue = Integer.parseInt(colorEntry.getAttribute(&quot;blue&quot;));</b>
+<i>341</i>&nbsp;
+<b class="nc"><i>342</i>&nbsp;                            backgroundColor = new Color(red, green, blue);</b>
+<b class="nc"><i>343</i>&nbsp;                            break;</b>
+<i>344</i>&nbsp;                        }
+<i>345</i>&nbsp;
+<b class="nc"><i>346</i>&nbsp;                        colorEntry = (IIOMetadataNode) colorEntry.getNextSibling();</b>
+<i>347</i>&nbsp;                    }
+<i>348</i>&nbsp;                }
+<i>349</i>&nbsp;            }
+<i>350</i>&nbsp;        }
+<i>351</i>&nbsp;
+<b class="nc"><i>352</i>&nbsp;        BufferedImage master = null;</b>
+<b class="nc"><i>353</i>&nbsp;        boolean hasBackround = false;</b>
+<i>354</i>&nbsp;
+<b class="nc"><i>355</i>&nbsp;        for (int frameIndex = 0; ; frameIndex++) {</b>
+<i>356</i>&nbsp;            BufferedImage image;
+<i>357</i>&nbsp;            try {
+<b class="nc"><i>358</i>&nbsp;                image = reader.read(frameIndex);</b>
+<b class="nc"><i>359</i>&nbsp;            } catch (IndexOutOfBoundsException io) {</b>
+<b class="nc"><i>360</i>&nbsp;                break;</b>
+<b class="nc"><i>361</i>&nbsp;            }</b>
+<i>362</i>&nbsp;
+<b class="nc"><i>363</i>&nbsp;            if (width == -1 || height == -1) {</b>
+<b class="nc"><i>364</i>&nbsp;                width = image.getWidth();</b>
+<b class="nc"><i>365</i>&nbsp;                height = image.getHeight();</b>
+<i>366</i>&nbsp;            }
+<i>367</i>&nbsp;
+<b class="nc"><i>368</i>&nbsp;            IIOMetadataNode root = (IIOMetadataNode) reader.getImageMetadata(frameIndex).getAsTree(&quot;javax_imageio_gif_image_1.0&quot;);</b>
+<b class="nc"><i>369</i>&nbsp;            IIOMetadataNode gce = (IIOMetadataNode) root.getElementsByTagName(&quot;GraphicControlExtension&quot;).item(0);</b>
+<b class="nc"><i>370</i>&nbsp;            NodeList children = root.getChildNodes();</b>
+<i>371</i>&nbsp;
+<b class="nc"><i>372</i>&nbsp;            int delay = Integer.valueOf(gce.getAttribute(&quot;delayTime&quot;));</b>
+<i>373</i>&nbsp;
+<b class="nc"><i>374</i>&nbsp;            String disposal = gce.getAttribute(&quot;disposalMethod&quot;);</b>
+<i>375</i>&nbsp;
+<b class="nc"><i>376</i>&nbsp;            if (master == null) {</b>
+<b class="nc"><i>377</i>&nbsp;                master = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);</b>
+<b class="nc"><i>378</i>&nbsp;                master.createGraphics().setColor(backgroundColor);</b>
+<b class="nc"><i>379</i>&nbsp;                master.createGraphics().fillRect(0, 0, master.getWidth(), master.getHeight());</b>
+<i>380</i>&nbsp;
+<b class="nc"><i>381</i>&nbsp;                hasBackround = image.getWidth() == width &amp;&amp; image.getHeight() == height;</b>
+<i>382</i>&nbsp;
+<b class="nc"><i>383</i>&nbsp;                master.createGraphics().drawImage(image, 0, 0, null);</b>
+<i>384</i>&nbsp;            } else {
+<b class="nc"><i>385</i>&nbsp;                int x = 0;</b>
+<b class="nc"><i>386</i>&nbsp;                int y = 0;</b>
+<i>387</i>&nbsp;
+<b class="nc"><i>388</i>&nbsp;                for (int nodeIndex = 0; nodeIndex &lt; children.getLength(); nodeIndex++) {</b>
+<b class="nc"><i>389</i>&nbsp;                    Node nodeItem = children.item(nodeIndex);</b>
+<i>390</i>&nbsp;
+<b class="nc"><i>391</i>&nbsp;                    if (nodeItem.getNodeName().equals(&quot;ImageDescriptor&quot;)) {</b>
+<b class="nc"><i>392</i>&nbsp;                        NamedNodeMap map = nodeItem.getAttributes();</b>
+<i>393</i>&nbsp;
+<b class="nc"><i>394</i>&nbsp;                        x = Integer.valueOf(map.getNamedItem(&quot;imageLeftPosition&quot;).getNodeValue());</b>
+<b class="nc"><i>395</i>&nbsp;                        y = Integer.valueOf(map.getNamedItem(&quot;imageTopPosition&quot;).getNodeValue());</b>
+<i>396</i>&nbsp;                    }
+<i>397</i>&nbsp;                }
+<i>398</i>&nbsp;
+<b class="nc"><i>399</i>&nbsp;                if (disposal.equals(&quot;restoreToPrevious&quot;)) {</b>
+<b class="nc"><i>400</i>&nbsp;                    BufferedImage from = null;</b>
+<b class="nc"><i>401</i>&nbsp;                    for (int i = frameIndex - 1; i &gt;= 0; i--) {</b>
+<b class="nc"><i>402</i>&nbsp;                        if (!frames.get(i).getDisposal().equals(&quot;restoreToPrevious&quot;) || frameIndex == 0) {</b>
+<b class="nc"><i>403</i>&nbsp;                            from = frames.get(i).getImage();</b>
+<b class="nc"><i>404</i>&nbsp;                            break;</b>
+<i>405</i>&nbsp;                        }
+<i>406</i>&nbsp;                    }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;                    {
+<b class="nc"><i>409</i>&nbsp;                        ColorModel model = from.getColorModel();</b>
+<b class="nc"><i>410</i>&nbsp;                        boolean alpha = from.isAlphaPremultiplied();</b>
+<b class="nc"><i>411</i>&nbsp;                        WritableRaster raster = from.copyData(null);</b>
+<b class="nc"><i>412</i>&nbsp;                        master = new BufferedImage(model, raster, alpha, null);</b>
+<i>413</i>&nbsp;                    }
+<b class="nc"><i>414</i>&nbsp;                } else if (disposal.equals(&quot;restoreToBackgroundColor&quot;) &amp;&amp; backgroundColor != null) {</b>
+<b class="nc"><i>415</i>&nbsp;                    if (!hasBackround || frameIndex &gt; 1) {</b>
+<b class="nc"><i>416</i>&nbsp;                        master.createGraphics().fillRect(lastx, lasty, frames.get(frameIndex - 1).getWidth(), frames.get(frameIndex - 1).getHeight());</b>
+<i>417</i>&nbsp;                    }
+<i>418</i>&nbsp;                }
+<b class="nc"><i>419</i>&nbsp;                master.createGraphics().drawImage(image, x, y, null);</b>
+<i>420</i>&nbsp;
+<b class="nc"><i>421</i>&nbsp;                lastx = x;</b>
+<b class="nc"><i>422</i>&nbsp;                lasty = y;</b>
+<i>423</i>&nbsp;            }
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;            {
+<i>426</i>&nbsp;                BufferedImage copy;
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;                {
+<b class="nc"><i>429</i>&nbsp;                    ColorModel model = master.getColorModel();</b>
+<b class="nc"><i>430</i>&nbsp;                    boolean alpha = master.isAlphaPremultiplied();</b>
+<b class="nc"><i>431</i>&nbsp;                    WritableRaster raster = master.copyData(null);</b>
+<b class="nc"><i>432</i>&nbsp;                    copy = new BufferedImage(model, raster, alpha, null);</b>
+<i>433</i>&nbsp;                }
+<b class="nc"><i>434</i>&nbsp;                frames.add(new ImageFrame(copy, delay, disposal, image.getWidth(), image.getHeight()));</b>
+<i>435</i>&nbsp;            }
+<i>436</i>&nbsp;
+<b class="nc"><i>437</i>&nbsp;            master.flush();</b>
+<i>438</i>&nbsp;        }
+<b class="nc"><i>439</i>&nbsp;        reader.dispose();</b>
+<i>440</i>&nbsp;
+<b class="nc"><i>441</i>&nbsp;        return frames.toArray(new ImageFrame[frames.size()]);</b>
+<i>442</i>&nbsp;    }
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;    public class GifPosition {
+<i>445</i>&nbsp;        final int x;
+<i>446</i>&nbsp;        final int y;
+<i>447</i>&nbsp;        final int height;
+<i>448</i>&nbsp;        final int width;
+<i>449</i>&nbsp;
+<b class="nc"><i>450</i>&nbsp;        GifPosition(int x, int y, int height, int width) {</b>
+<i>451</i>&nbsp;
+<b class="nc"><i>452</i>&nbsp;            this.x = x;</b>
+<b class="nc"><i>453</i>&nbsp;            this.y = y;</b>
+<b class="nc"><i>454</i>&nbsp;            this.height = height;</b>
+<b class="nc"><i>455</i>&nbsp;            this.width = width;</b>
+<i>456</i>&nbsp;        }
+<i>457</i>&nbsp;    }
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;    public class ImageFrame {
+<i>460</i>&nbsp;        private final int delay;
+<i>461</i>&nbsp;        private final BufferedImage image;
+<i>462</i>&nbsp;        private final String disposal;
+<i>463</i>&nbsp;        private final int width, height;
+<i>464</i>&nbsp;
+<b class="nc"><i>465</i>&nbsp;        public ImageFrame(BufferedImage image, int delay, String disposal, int width, int height) {</b>
+<b class="nc"><i>466</i>&nbsp;            this.image = image;</b>
+<b class="nc"><i>467</i>&nbsp;            this.delay = delay;</b>
+<b class="nc"><i>468</i>&nbsp;            this.disposal = disposal;</b>
+<b class="nc"><i>469</i>&nbsp;            this.width = width;</b>
+<b class="nc"><i>470</i>&nbsp;            this.height = height;</b>
+<i>471</i>&nbsp;        }
+<i>472</i>&nbsp;
+<b class="nc"><i>473</i>&nbsp;        public ImageFrame(BufferedImage image) {</b>
+<b class="nc"><i>474</i>&nbsp;            this.image = image;</b>
+<b class="nc"><i>475</i>&nbsp;            this.delay = -1;</b>
+<b class="nc"><i>476</i>&nbsp;            this.disposal = null;</b>
+<b class="nc"><i>477</i>&nbsp;            this.width = -1;</b>
+<b class="nc"><i>478</i>&nbsp;            this.height = -1;</b>
+<i>479</i>&nbsp;        }
+<i>480</i>&nbsp;
+<i>481</i>&nbsp;        public BufferedImage getImage() {
+<b class="nc"><i>482</i>&nbsp;            return image;</b>
+<i>483</i>&nbsp;        }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;        public int getDelay() {
+<b class="nc"><i>486</i>&nbsp;            return delay;</b>
+<i>487</i>&nbsp;        }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;        public String getDisposal() {
+<b class="nc"><i>490</i>&nbsp;            return disposal;</b>
+<i>491</i>&nbsp;        }
+<i>492</i>&nbsp;
+<i>493</i>&nbsp;        public int getWidth() {
+<b class="nc"><i>494</i>&nbsp;            return width;</b>
+<i>495</i>&nbsp;        }
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;        public int getHeight() {
+<b class="nc"><i>498</i>&nbsp;            return height;</b>
+<i>499</i>&nbsp;        }
+<i>500</i>&nbsp;    }
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;    public class GifSequenceWriter {
+<i>503</i>&nbsp;        protected ImageWriter gifWriter;
+<i>504</i>&nbsp;        protected ImageWriteParam imageWriteParam;
+<i>505</i>&nbsp;        protected IIOMetadata imageMetaData;
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;        public GifSequenceWriter(
+<i>508</i>&nbsp;                ImageOutputStream outputStream,
+<i>509</i>&nbsp;                int imageType,
+<i>510</i>&nbsp;                int timeBetweenFramesMS,
+<b class="nc"><i>511</i>&nbsp;                boolean loopContinuously) throws IIOException, IOException {</b>
+<i>512</i>&nbsp;            // my method to create a writer
+<b class="nc"><i>513</i>&nbsp;            gifWriter = getWriter();</b>
+<b class="nc"><i>514</i>&nbsp;            imageWriteParam = gifWriter.getDefaultWriteParam();</b>
+<b class="nc"><i>515</i>&nbsp;            ImageTypeSpecifier imageTypeSpecifier =</b>
+<b class="nc"><i>516</i>&nbsp;                    ImageTypeSpecifier.createFromBufferedImageType(imageType);</b>
+<i>517</i>&nbsp;
+<b class="nc"><i>518</i>&nbsp;            imageMetaData =</b>
+<b class="nc"><i>519</i>&nbsp;                    gifWriter.getDefaultImageMetadata(imageTypeSpecifier,</b>
+<i>520</i>&nbsp;                            imageWriteParam);
+<i>521</i>&nbsp;
+<b class="nc"><i>522</i>&nbsp;            String metaFormatName = imageMetaData.getNativeMetadataFormatName();</b>
+<i>523</i>&nbsp;
+<b class="nc"><i>524</i>&nbsp;            IIOMetadataNode root = (IIOMetadataNode)</b>
+<b class="nc"><i>525</i>&nbsp;                    imageMetaData.getAsTree(metaFormatName);</b>
+<i>526</i>&nbsp;
+<b class="nc"><i>527</i>&nbsp;            IIOMetadataNode graphicsControlExtensionNode = getNode(</b>
+<i>528</i>&nbsp;                    root,
+<i>529</i>&nbsp;                    &quot;GraphicControlExtension&quot;);
+<i>530</i>&nbsp;
+<b class="nc"><i>531</i>&nbsp;            graphicsControlExtensionNode.setAttribute(&quot;disposalMethod&quot;, &quot;none&quot;);</b>
+<b class="nc"><i>532</i>&nbsp;            graphicsControlExtensionNode.setAttribute(&quot;userInputFlag&quot;, &quot;FALSE&quot;);</b>
+<b class="nc"><i>533</i>&nbsp;            graphicsControlExtensionNode.setAttribute(</b>
+<i>534</i>&nbsp;                    &quot;transparentColorFlag&quot;,
+<i>535</i>&nbsp;                    &quot;FALSE&quot;);
+<b class="nc"><i>536</i>&nbsp;            graphicsControlExtensionNode.setAttribute(</b>
+<i>537</i>&nbsp;                    &quot;delayTime&quot;,
+<b class="nc"><i>538</i>&nbsp;                    Integer.toString(timeBetweenFramesMS / 10));</b>
+<b class="nc"><i>539</i>&nbsp;            graphicsControlExtensionNode.setAttribute(</b>
+<i>540</i>&nbsp;                    &quot;transparentColorIndex&quot;,
+<i>541</i>&nbsp;                    &quot;0&quot;);
+<i>542</i>&nbsp;
+<b class="nc"><i>543</i>&nbsp;            IIOMetadataNode commentsNode = getNode(root, &quot;CommentExtensions&quot;);</b>
+<b class="nc"><i>544</i>&nbsp;            commentsNode.setAttribute(&quot;CommentExtension&quot;, &quot;Created by MAH&quot;);</b>
+<i>545</i>&nbsp;
+<b class="nc"><i>546</i>&nbsp;            IIOMetadataNode appEntensionsNode = getNode(</b>
+<i>547</i>&nbsp;                    root,
+<i>548</i>&nbsp;                    &quot;ApplicationExtensions&quot;);
+<i>549</i>&nbsp;
+<b class="nc"><i>550</i>&nbsp;            IIOMetadataNode child = new IIOMetadataNode(&quot;ApplicationExtension&quot;);</b>
+<i>551</i>&nbsp;
+<b class="nc"><i>552</i>&nbsp;            child.setAttribute(&quot;applicationID&quot;, &quot;NETSCAPE&quot;);</b>
+<b class="nc"><i>553</i>&nbsp;            child.setAttribute(&quot;authenticationCode&quot;, &quot;2.0&quot;);</b>
+<i>554</i>&nbsp;
+<b class="nc"><i>555</i>&nbsp;            int loop = loopContinuously ? 0 : 1;</b>
+<i>556</i>&nbsp;
+<b class="nc"><i>557</i>&nbsp;            child.setUserObject(new byte[]{0x1, (byte) (loop &amp; 0xFF), (byte)</b>
+<i>558</i>&nbsp;                    ((loop &gt;&gt; 8) &amp; 0xFF)});
+<b class="nc"><i>559</i>&nbsp;            appEntensionsNode.appendChild(child);</b>
+<i>560</i>&nbsp;
+<b class="nc"><i>561</i>&nbsp;            imageMetaData.setFromTree(metaFormatName, root);</b>
+<i>562</i>&nbsp;
+<b class="nc"><i>563</i>&nbsp;            gifWriter.setOutput(outputStream);</b>
+<i>564</i>&nbsp;
+<b class="nc"><i>565</i>&nbsp;            gifWriter.prepareWriteSequence(null);</b>
+<i>566</i>&nbsp;        }
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;        public void writeToSequence(RenderedImage img) throws IOException {
+<b class="nc"><i>569</i>&nbsp;            gifWriter.writeToSequence(</b>
+<i>570</i>&nbsp;                    new IIOImage(
+<i>571</i>&nbsp;                            img,
+<i>572</i>&nbsp;                            null,
+<i>573</i>&nbsp;                            imageMetaData),
+<i>574</i>&nbsp;                    imageWriteParam);
+<i>575</i>&nbsp;        }
+<i>576</i>&nbsp;
+<i>577</i>&nbsp;        private ImageWriter getWriter() throws IIOException {
+<b class="nc"><i>578</i>&nbsp;            Iterator&lt;ImageWriter&gt; iter = ImageIO.getImageWritersBySuffix(&quot;gif&quot;);</b>
+<b class="nc"><i>579</i>&nbsp;            if (!iter.hasNext()) {</b>
+<b class="nc"><i>580</i>&nbsp;                throw new IIOException(&quot;No GIF Image Writers Exist&quot;);</b>
+<i>581</i>&nbsp;            } else {
+<b class="nc"><i>582</i>&nbsp;                return iter.next();</b>
+<i>583</i>&nbsp;            }
+<i>584</i>&nbsp;        }
+<i>585</i>&nbsp;    }
+<i>586</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,176 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SystemCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.administrative</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SystemCommand (emily.command.administrative)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SystemCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.administrative;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>20</i>&nbsp;import emily.main.DiscordBot;
+<i>21</i>&nbsp;import emily.main.Launcher;
+<i>22</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>23</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>24</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;/**
+<i>27</i>&nbsp; * !system
+<i>28</i>&nbsp; * shows status of the bot&#39;s system
+<i>29</i>&nbsp; */
+<i>30</i>&nbsp;public class SystemCommand extends AbstractCommand {
+<i>31</i>&nbsp;    public SystemCommand() {
+<b class="nc"><i>32</i>&nbsp;        super();</b>
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    @Override
+<i>36</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>37</i>&nbsp;        return &quot;Shows memory usage&quot;;</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    @Override
+<i>41</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>42</i>&nbsp;        return &quot;system&quot;;</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    @Override
+<i>46</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>47</i>&nbsp;        return new String[]{};</b>
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    @Override
+<i>51</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>52</i>&nbsp;        return new String[]{</b>
+<i>53</i>&nbsp;                &quot;sysinfo&quot;,
+<i>54</i>&nbsp;                &quot;sys&quot;
+<i>55</i>&nbsp;        };
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    @Override
+<i>59</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>60</i>&nbsp;        final Runtime runtime = Runtime.getRuntime();</b>
+<b class="nc"><i>61</i>&nbsp;        StringBuilder sb = new StringBuilder();</b>
+<b class="nc"><i>62</i>&nbsp;        long memoryLimit = runtime.maxMemory();</b>
+<b class="nc"><i>63</i>&nbsp;        long memoryInUse = runtime.totalMemory() - runtime.freeMemory();</b>
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;        sb.append(&quot;System information: &quot;).append(&quot;\n&quot;);</b>
+<b class="nc"><i>66</i>&nbsp;        sb.append(&quot;Running version: &quot;).append(&quot;\n&quot;).append(Launcher.getVersion()).append(&quot;\n&quot;);</b>
+<b class="nc"><i>67</i>&nbsp;        sb.append(&quot;Memory&quot;).append(&quot;\n&quot;);</b>
+<b class="nc"><i>68</i>&nbsp;        sb.append(getProgressbar(memoryInUse, memoryLimit));</b>
+<b class="nc"><i>69</i>&nbsp;        sb.append(&quot; [ &quot;).append(numberInMb(memoryInUse)).append(&quot; / &quot;).append(numberInMb(memoryLimit)).append(&quot; ]&quot;).append(&quot;\n&quot;);</b>
+<b class="nc"><i>70</i>&nbsp;        return sb.toString();</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    private String getProgressbar(long current, long max) {
+<b class="nc"><i>74</i>&nbsp;        StringBuilder bar = new StringBuilder();</b>
+<b class="nc"><i>75</i>&nbsp;        final String BLOCK_INACTIVE = &quot;?&quot;;</b>
+<b class="nc"><i>76</i>&nbsp;        final String BLOCK_ACTIVE = &quot;:large_blue_circle:&quot;;</b>
+<b class="nc"><i>77</i>&nbsp;        final int BLOCK_PARTS = 12;</b>
+<b class="nc"><i>78</i>&nbsp;        int activeBLock = (int) (((float) current / (float) max) * (float) BLOCK_PARTS);</b>
+<b class="nc"><i>79</i>&nbsp;        for (int i = 0; i &lt; BLOCK_PARTS; i++) {</b>
+<b class="nc"><i>80</i>&nbsp;            if (i == activeBLock) {</b>
+<b class="nc"><i>81</i>&nbsp;                bar.append(BLOCK_ACTIVE);</b>
+<i>82</i>&nbsp;            } else {
+<b class="nc"><i>83</i>&nbsp;                bar.append(BLOCK_INACTIVE);</b>
+<i>84</i>&nbsp;            }
+<i>85</i>&nbsp;        }
+<b class="nc"><i>86</i>&nbsp;        return bar.toString();</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    private String numberInMb(long number) {
+<b class="nc"><i>90</i>&nbsp;        return &quot;&quot; + (number / (1048576L)) + &quot; mb&quot;;</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

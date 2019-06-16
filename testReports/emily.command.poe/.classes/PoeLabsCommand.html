@@ -1,0 +1,193 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PoeLabsCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.poe</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PoeLabsCommand (emily.command.poe)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PoeLabsCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.poe;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>20</i>&nbsp;import emily.main.DiscordBot;
+<i>21</i>&nbsp;import emily.modules.reddit.RedditScraper;
+<i>22</i>&nbsp;import emily.modules.reddit.pojo.Comment;
+<i>23</i>&nbsp;import emily.modules.reddit.pojo.Post;
+<i>24</i>&nbsp;import emily.util.Misc;
+<i>25</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>26</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>27</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;import java.util.Arrays;
+<i>30</i>&nbsp;import java.util.HashSet;
+<i>31</i>&nbsp;import java.util.List;
+<i>32</i>&nbsp;import java.util.Set;
+<i>33</i>&nbsp;import java.util.regex.Matcher;
+<i>34</i>&nbsp;import java.util.regex.Pattern;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;/**
+<i>37</i>&nbsp; * !poeitem
+<i>38</i>&nbsp; * Analyzes an item from path of exile
+<i>39</i>&nbsp; */
+<i>40</i>&nbsp;public class PoeLabsCommand extends AbstractCommand {
+<b class="nc"><i>41</i>&nbsp;    private static final Set&lt;String&gt; validArgs = new HashSet&lt;&gt;(Arrays.asList(</b>
+<i>42</i>&nbsp;            &quot;normal&quot;, &quot;cruel&quot;, &quot;merciless&quot;, &quot;uber&quot;));
+<b class="nc"><i>43</i>&nbsp;    private Pattern imagePattern = Pattern.compile(&quot;(?m)(normal|uber|merciless|cruel) lab notes[\\s]*(https?:.*(png|jpg))&quot;, Pattern.MULTILINE);</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public PoeLabsCommand() {
+<b class="nc"><i>46</i>&nbsp;        super();</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    @Override
+<i>50</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>51</i>&nbsp;        return &quot;Attempts to find a description from reddit for the Labyrinth instance.&quot;;</b>
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    @Override
+<i>55</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>56</i>&nbsp;        return &quot;poelab&quot;;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    @Override
+<i>60</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>61</i>&nbsp;        return new String[]{</b>
+<i>62</i>&nbsp;                &quot;poelab              //lists for all difficulties&quot;,
+<i>63</i>&nbsp;                &quot;poelab &lt;difficulty&gt; //only for that difficulty&quot;,
+<i>64</i>&nbsp;        };
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    @Override
+<i>68</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>69</i>&nbsp;        return new String[]{};</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    @Override
+<i>73</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>74</i>&nbsp;        List&lt;Post&gt; search = RedditScraper.search(&quot;pathofexile&quot;, &quot;title%3ADaily+Labyrinth+author%3AAutoModerator&amp;sort=new&amp;restrict_sr=on&amp;t=day&quot;);</b>
+<i>75</i>&nbsp;
+<b class="nc"><i>76</i>&nbsp;        if (!search.isEmpty()) {</b>
+<b class="nc"><i>77</i>&nbsp;            Post post = search.get(0);</b>
+<b class="nc"><i>78</i>&nbsp;            List&lt;Comment&gt; comments = RedditScraper.getComments(post.data.getId());</b>
+<b class="nc"><i>79</i>&nbsp;            for (Comment comment : comments) {</b>
+<b class="nc"><i>80</i>&nbsp;                if (comment.data.isOp) {</b>
+<b class="nc"><i>81</i>&nbsp;                    continue;</b>
+<i>82</i>&nbsp;                }
+<b class="nc"><i>83</i>&nbsp;                String searchText = comment.data.body.toLowerCase();</b>
+<b class="nc"><i>84</i>&nbsp;                if (args.length &gt; 0) {</b>
+<b class="nc"><i>85</i>&nbsp;                    if (!validArgs.contains(args[0].toLowerCase())) {</b>
+<b class="nc"><i>86</i>&nbsp;                        return &quot;There is no such difficulty&quot;;</b>
+<i>87</i>&nbsp;                    }
+<b class="nc"><i>88</i>&nbsp;                    if (!searchText.contains(args[0].toLowerCase())) {</b>
+<b class="nc"><i>89</i>&nbsp;                        continue;</b>
+<i>90</i>&nbsp;                    }
+<b class="nc"><i>91</i>&nbsp;                    Matcher m = imagePattern.matcher(searchText);</b>
+<b class="nc"><i>92</i>&nbsp;                    while (m.find()) {</b>
+<b class="nc"><i>93</i>&nbsp;                        if (m.group(1).equals(args[0].toLowerCase())) {</b>
+<b class="nc"><i>94</i>&nbsp;                            return &quot;Path of Exile - Labyrinth\n\n&quot; +</b>
+<b class="nc"><i>95</i>&nbsp;                                    post.data.title + &quot; - **&quot; + args[0].toLowerCase() + &quot;**\n&quot; + m.group(2);</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;                        }
+<i>98</i>&nbsp;                    }
+<b class="nc"><i>99</i>&nbsp;                } else {</b>
+<b class="nc"><i>100</i>&nbsp;                    if (searchText.contains(&quot;normal&quot;) &amp;&amp; searchText.contains(&quot;cruel&quot;) &amp;&amp; searchText.contains(&quot;merciless&quot;)) {</b>
+<b class="nc"><i>101</i>&nbsp;                        return &quot;Path of Exile -  Labyrinth\n\n&quot; +</b>
+<i>102</i>&nbsp;                                post.data.title + &quot;\n&quot; +
+<b class="nc"><i>103</i>&nbsp;                                Misc.makeTable(comment.data.body);</b>
+<i>104</i>&nbsp;                    }
+<i>105</i>&nbsp;                }
+<b class="nc"><i>106</i>&nbsp;            }</b>
+<i>107</i>&nbsp;        }
+<b class="nc"><i>108</i>&nbsp;        return &quot;Can&#39;t find labdetails :(&quot;;</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

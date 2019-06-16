@@ -1,0 +1,238 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AutoReplyHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.handler</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AutoReplyHandler (emily.handler)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AutoReplyHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 49)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AutoReplyHandler$AutoReply</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 50)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.handler;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.db.controllers.CGuild;
+<i>20</i>&nbsp;import emily.db.controllers.CReplyPattern;
+<i>21</i>&nbsp;import emily.db.model.OReplyPattern;
+<i>22</i>&nbsp;import emily.main.DiscordBot;
+<i>23</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>24</i>&nbsp;import net.dv8tion.jda.core.entities.PrivateChannel;
+<i>25</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import java.util.ArrayList;
+<i>28</i>&nbsp;import java.util.Arrays;
+<i>29</i>&nbsp;import java.util.List;
+<i>30</i>&nbsp;import java.util.Map;
+<i>31</i>&nbsp;import java.util.concurrent.ConcurrentHashMap;
+<i>32</i>&nbsp;import java.util.regex.Matcher;
+<i>33</i>&nbsp;import java.util.regex.Pattern;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;/**
+<i>36</i>&nbsp; * Handles the automatic responses to messages
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;public class AutoReplyHandler {
+<i>39</i>&nbsp;    private final Map&lt;Long, Long[]&gt; cooldowns;
+<i>40</i>&nbsp;    private DiscordBot bot;
+<i>41</i>&nbsp;    private volatile AutoReply[] replies;
+<i>42</i>&nbsp;
+<b class="nc"><i>43</i>&nbsp;    public AutoReplyHandler(DiscordBot bot) {</b>
+<b class="nc"><i>44</i>&nbsp;        this.bot = bot;</b>
+<b class="nc"><i>45</i>&nbsp;        cooldowns = new ConcurrentHashMap&lt;&gt;();</b>
+<b class="nc"><i>46</i>&nbsp;        reload();</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public void removeGuild(long discordGuildId) {
+<b class="nc"><i>50</i>&nbsp;        if (cooldowns.containsKey(discordGuildId)) {</b>
+<b class="nc"><i>51</i>&nbsp;            cooldowns.remove(discordGuildId);</b>
+<i>52</i>&nbsp;        }
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public boolean autoReplied(Message message) {
+<b class="nc"><i>56</i>&nbsp;        if (message.getChannel() instanceof PrivateChannel) {</b>
+<b class="nc"><i>57</i>&nbsp;            return false;</b>
+<i>58</i>&nbsp;        }
+<b class="nc"><i>59</i>&nbsp;        if (!(message.getChannel() instanceof TextChannel)) {</b>
+<b class="nc"><i>60</i>&nbsp;            return false;</b>
+<i>61</i>&nbsp;        }
+<b class="nc"><i>62</i>&nbsp;        TextChannel channel = (TextChannel) message.getChannel();</b>
+<b class="nc"><i>63</i>&nbsp;        long guildId = channel.getGuild().getIdLong();</b>
+<b class="nc"><i>64</i>&nbsp;        int internalGuildId = CGuild.getCachedId(guildId);</b>
+<b class="nc"><i>65</i>&nbsp;        Long now = System.currentTimeMillis();</b>
+<b class="nc"><i>66</i>&nbsp;        for (int index = 0; index &lt; replies.length; index++) {</b>
+<b class="nc"><i>67</i>&nbsp;            if (replies[index].guildId == 0 || replies[index].guildId == internalGuildId) {</b>
+<b class="nc"><i>68</i>&nbsp;                Long lastUse = getCooldown(guildId, index);</b>
+<b class="nc"><i>69</i>&nbsp;                if (lastUse + replies[index].cooldown &lt; now) {</b>
+<b class="nc"><i>70</i>&nbsp;                    Matcher matcher = replies[index].pattern.matcher(message.getContentRaw());</b>
+<b class="nc"><i>71</i>&nbsp;                    if (matcher.find()) {</b>
+<b class="nc"><i>72</i>&nbsp;                        saveCooldown(guildId, index, now);</b>
+<b class="nc"><i>73</i>&nbsp;                        bot.out.sendAsyncMessage(channel, message.getAuthor().getAsMention() + &quot;, &quot; + replies[index].reply, null);</b>
+<b class="nc"><i>74</i>&nbsp;                        return true;</b>
+<i>75</i>&nbsp;                    }
+<i>76</i>&nbsp;                }
+<i>77</i>&nbsp;            }
+<i>78</i>&nbsp;        }
+<b class="nc"><i>79</i>&nbsp;        return false;</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    private long getCooldown(long guildId, int index) {
+<b class="nc"><i>83</i>&nbsp;        if (!cooldowns.containsKey(guildId)) {</b>
+<b class="nc"><i>84</i>&nbsp;            cooldowns.put(guildId, new Long[replies.length]);</b>
+<i>85</i>&nbsp;        }
+<b class="nc"><i>86</i>&nbsp;        if (index &gt;= cooldowns.get(guildId).length || cooldowns.get(guildId)[index] == null) {</b>
+<b class="nc"><i>87</i>&nbsp;            return 0;</b>
+<i>88</i>&nbsp;        }
+<b class="nc"><i>89</i>&nbsp;        return cooldowns.get(guildId)[index];</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    private void saveCooldown(long guildId, int index, long value) {
+<b class="nc"><i>93</i>&nbsp;        if (!cooldowns.containsKey(guildId)) {</b>
+<b class="nc"><i>94</i>&nbsp;            cooldowns.put(guildId, new Long[replies.length]);</b>
+<i>95</i>&nbsp;        }
+<b class="nc"><i>96</i>&nbsp;        if (cooldowns.get(guildId).length != replies.length) {</b>
+<b class="nc"><i>97</i>&nbsp;            cooldowns.put(guildId, Arrays.copyOf(cooldowns.get(guildId), replies.length));</b>
+<i>98</i>&nbsp;        }
+<b class="nc"><i>99</i>&nbsp;        cooldowns.get(guildId)[index] = value;</b>
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public void reload() {
+<b class="nc"><i>103</i>&nbsp;        List&lt;OReplyPattern&gt; all = CReplyPattern.getAll();</b>
+<b class="nc"><i>104</i>&nbsp;        List&lt;AutoReply&gt; list = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>105</i>&nbsp;        int index = 0;</b>
+<b class="nc"><i>106</i>&nbsp;        for (OReplyPattern reply : all) {</b>
+<b class="nc"><i>107</i>&nbsp;            AutoReply ar = new AutoReply();</b>
+<b class="nc"><i>108</i>&nbsp;            if (reply.pattern == null || reply.pattern.length() &lt; 5) {</b>
+<b class="nc"><i>109</i>&nbsp;                continue;</b>
+<i>110</i>&nbsp;            }
+<b class="nc"><i>111</i>&nbsp;            ar.pattern = Pattern.compile(reply.pattern, Pattern.DOTALL + Pattern.CASE_INSENSITIVE);</b>
+<b class="nc"><i>112</i>&nbsp;            ar.tag = reply.tag;</b>
+<b class="nc"><i>113</i>&nbsp;            ar.cooldown = reply.cooldown;</b>
+<b class="nc"><i>114</i>&nbsp;            ar.reply = reply.reply;</b>
+<b class="nc"><i>115</i>&nbsp;            ar.guildId = reply.guildId;</b>
+<b class="nc"><i>116</i>&nbsp;            list.add(ar);</b>
+<b class="nc"><i>117</i>&nbsp;        }</b>
+<b class="nc"><i>118</i>&nbsp;        replies = list.toArray(new AutoReply[list.size()]);</b>
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<b class="nc"><i>121</i>&nbsp;    private class AutoReply {</b>
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;        public Pattern pattern;
+<i>124</i>&nbsp;        public String tag;
+<i>125</i>&nbsp;        public long cooldown;
+<i>126</i>&nbsp;        public String reply;
+<i>127</i>&nbsp;        public int guildId;
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

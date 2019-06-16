@@ -1,0 +1,238 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RotateCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.fun</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RotateCommand (emily.command.fun)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RotateCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 83)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.fun;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>20</i>&nbsp;import emily.main.DiscordBot;
+<i>21</i>&nbsp;import emily.templates.Templates;
+<i>22</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>23</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>24</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;import java.util.ArrayList;
+<i>27</i>&nbsp;import java.util.Collections;
+<i>28</i>&nbsp;import java.util.HashMap;
+<i>29</i>&nbsp;import java.util.List;
+<i>30</i>&nbsp;import java.util.Map;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * Created on 2016-09-14.
+<i>34</i>&nbsp; */
+<i>35</i>&nbsp;public class RotateCommand extends AbstractCommand {
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    private static final Map&lt;String, String&gt; charMap;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    static {
+<b class="nc"><i>40</i>&nbsp;        charMap = new HashMap&lt;&gt;();</b>
+<b class="nc"><i>41</i>&nbsp;        charMap.put(&quot;a&quot;, &quot;\u0250&quot;);</b>
+<b class="nc"><i>42</i>&nbsp;        charMap.put(&quot;b&quot;, &quot;q&quot;);</b>
+<b class="nc"><i>43</i>&nbsp;        charMap.put(&quot;c&quot;, &quot;\u0254&quot;);</b>
+<b class="nc"><i>44</i>&nbsp;        charMap.put(&quot;d&quot;, &quot;p&quot;);</b>
+<b class="nc"><i>45</i>&nbsp;        charMap.put(&quot;e&quot;, &quot;\u01DD&quot;);</b>
+<b class="nc"><i>46</i>&nbsp;        charMap.put(&quot;f&quot;, &quot;\u025F&quot;);</b>
+<b class="nc"><i>47</i>&nbsp;        charMap.put(&quot;g&quot;, &quot;\u0183&quot;);</b>
+<b class="nc"><i>48</i>&nbsp;        charMap.put(&quot;h&quot;, &quot;\u0265&quot;);</b>
+<b class="nc"><i>49</i>&nbsp;        charMap.put(&quot;i&quot;, &quot;\u1D09&quot;);</b>
+<b class="nc"><i>50</i>&nbsp;        charMap.put(&quot;j&quot;, &quot;\u027E&quot;);</b>
+<b class="nc"><i>51</i>&nbsp;        charMap.put(&quot;k&quot;, &quot;\u029E&quot;);</b>
+<b class="nc"><i>52</i>&nbsp;        charMap.put(&quot;m&quot;, &quot;\u026F&quot;);</b>
+<b class="nc"><i>53</i>&nbsp;        charMap.put(&quot;n&quot;, &quot;u&quot;);</b>
+<b class="nc"><i>54</i>&nbsp;        charMap.put(&quot;r&quot;, &quot;\u0279&quot;);</b>
+<b class="nc"><i>55</i>&nbsp;        charMap.put(&quot;t&quot;, &quot;\u0287&quot;);</b>
+<b class="nc"><i>56</i>&nbsp;        charMap.put(&quot;v&quot;, &quot;\u028C&quot;);</b>
+<b class="nc"><i>57</i>&nbsp;        charMap.put(&quot;w&quot;, &quot;\u028D&quot;);</b>
+<b class="nc"><i>58</i>&nbsp;        charMap.put(&quot;y&quot;, &quot;\u028E&quot;);</b>
+<b class="nc"><i>59</i>&nbsp;        charMap.put(&quot;A&quot;, &quot;\u2200&quot;);</b>
+<b class="nc"><i>60</i>&nbsp;        charMap.put(&quot;C&quot;, &quot;\u0186&quot;);</b>
+<b class="nc"><i>61</i>&nbsp;        charMap.put(&quot;E&quot;, &quot;\u018E&quot;);</b>
+<b class="nc"><i>62</i>&nbsp;        charMap.put(&quot;F&quot;, &quot;\u2132&quot;);</b>
+<b class="nc"><i>63</i>&nbsp;        charMap.put(&quot;G&quot;, &quot;\u05E4&quot;);</b>
+<b class="nc"><i>64</i>&nbsp;        charMap.put(&quot;H&quot;, &quot;H&quot;);</b>
+<b class="nc"><i>65</i>&nbsp;        charMap.put(&quot;I&quot;, &quot;I&quot;);</b>
+<b class="nc"><i>66</i>&nbsp;        charMap.put(&quot;J&quot;, &quot;\u017F&quot;);</b>
+<b class="nc"><i>67</i>&nbsp;        charMap.put(&quot;L&quot;, &quot;\u02E5&quot;);</b>
+<b class="nc"><i>68</i>&nbsp;        charMap.put(&quot;M&quot;, &quot;W&quot;);</b>
+<b class="nc"><i>69</i>&nbsp;        charMap.put(&quot;N&quot;, &quot;N&quot;);</b>
+<b class="nc"><i>70</i>&nbsp;        charMap.put(&quot;P&quot;, &quot;\u0500&quot;);</b>
+<b class="nc"><i>71</i>&nbsp;        charMap.put(&quot;T&quot;, &quot;\u2534&quot;);</b>
+<b class="nc"><i>72</i>&nbsp;        charMap.put(&quot;U&quot;, &quot;\u2229&quot;);</b>
+<b class="nc"><i>73</i>&nbsp;        charMap.put(&quot;V&quot;, &quot;\u039B&quot;);</b>
+<b class="nc"><i>74</i>&nbsp;        charMap.put(&quot;Y&quot;, &quot;\u2144&quot;);</b>
+<b class="nc"><i>75</i>&nbsp;        charMap.put(&quot;1&quot;, &quot;\u0196&quot;);</b>
+<b class="nc"><i>76</i>&nbsp;        charMap.put(&quot;2&quot;, &quot;\u1105&quot;);</b>
+<b class="nc"><i>77</i>&nbsp;        charMap.put(&quot;3&quot;, &quot;\u0190&quot;);</b>
+<b class="nc"><i>78</i>&nbsp;        charMap.put(&quot;4&quot;, &quot;\u3123&quot;);</b>
+<b class="nc"><i>79</i>&nbsp;        charMap.put(&quot;5&quot;, &quot;\u03DB&quot;);</b>
+<b class="nc"><i>80</i>&nbsp;        charMap.put(&quot;6&quot;, &quot;9&quot;);</b>
+<b class="nc"><i>81</i>&nbsp;        charMap.put(&quot;7&quot;, &quot;\u3125&quot;);</b>
+<b class="nc"><i>82</i>&nbsp;        charMap.put(&quot;8&quot;, &quot;8&quot;);</b>
+<b class="nc"><i>83</i>&nbsp;        charMap.put(&quot;9&quot;, &quot;6&quot;);</b>
+<b class="nc"><i>84</i>&nbsp;        charMap.put(&quot;0&quot;, &quot;0&quot;);</b>
+<b class="nc"><i>85</i>&nbsp;        charMap.put(&quot;.&quot;, &quot;\u02D9&quot;);</b>
+<b class="nc"><i>86</i>&nbsp;        charMap.put(&quot;,&quot;, &quot; &#39;&quot;);</b>
+<b class="nc"><i>87</i>&nbsp;        charMap.put(&quot;&#39;&quot;, &quot;,&quot;);</b>
+<b class="nc"><i>88</i>&nbsp;        charMap.put(&quot;\&quot;&quot;, &quot;,,&quot;);</b>
+<b class="nc"><i>89</i>&nbsp;        charMap.put(&quot;`&quot;, &quot;,&quot;);</b>
+<b class="nc"><i>90</i>&nbsp;        charMap.put(&quot;?&quot;, &quot;\u00BF&quot;);</b>
+<b class="nc"><i>91</i>&nbsp;        charMap.put(&quot;!&quot;, &quot;\u00A1&quot;);</b>
+<b class="nc"><i>92</i>&nbsp;        charMap.put(&quot;[&quot;, &quot;]&quot;);</b>
+<b class="nc"><i>93</i>&nbsp;        charMap.put(&quot;]&quot;, &quot;[&quot;);</b>
+<b class="nc"><i>94</i>&nbsp;        charMap.put(&quot;(&quot;, &quot;)&quot;);</b>
+<b class="nc"><i>95</i>&nbsp;        charMap.put(&quot;)&quot;, &quot;(&quot;);</b>
+<b class="nc"><i>96</i>&nbsp;        charMap.put(&quot;{&quot;, &quot;}&quot;);</b>
+<b class="nc"><i>97</i>&nbsp;        charMap.put(&quot;}&quot;, &quot;{&quot;);</b>
+<b class="nc"><i>98</i>&nbsp;        charMap.put(&quot;&lt;&quot;, &quot;&gt;&quot;);</b>
+<b class="nc"><i>99</i>&nbsp;        charMap.put(&quot;&gt;&quot;, &quot;&lt;&quot;);</b>
+<b class="nc"><i>100</i>&nbsp;        charMap.put(&quot;&amp;&quot;, &quot;\u214B&quot;);</b>
+<b class="nc"><i>101</i>&nbsp;        charMap.put(&quot;_&quot;, &quot;\u203E&quot;);</b>
+<b class="nc"><i>102</i>&nbsp;        charMap.put(&quot;\u2234&quot;, &quot;\u2235&quot;);</b>
+<b class="nc"><i>103</i>&nbsp;        charMap.put(&quot;\u2045&quot;, &quot;\u2046&quot;);</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    public RotateCommand() {
+<b class="nc"><i>107</i>&nbsp;        super();</b>
+<i>108</i>&nbsp;    }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    @Override
+<i>111</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>112</i>&nbsp;        return &quot;Rotate text!&quot;;</b>
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    @Override
+<i>116</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>117</i>&nbsp;        return &quot;rotate&quot;;</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    @Override
+<i>121</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>122</i>&nbsp;        return new String[]{</b>
+<i>123</i>&nbsp;                &quot;rotate &lt;text..&gt; &quot;
+<i>124</i>&nbsp;        };
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    @Override
+<i>128</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>129</i>&nbsp;        return new String[]{};</b>
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    @Override
+<i>133</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>134</i>&nbsp;        List&lt;String&gt; inputArray = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>135</i>&nbsp;        StringBuilder output = new StringBuilder();</b>
+<b class="nc"><i>136</i>&nbsp;        for (String arg : args) {</b>
+<b class="nc"><i>137</i>&nbsp;            inputArray.add(&quot; &quot;);</b>
+<b class="nc"><i>138</i>&nbsp;            Collections.addAll(inputArray, arg.split(&quot;&quot;));</b>
+<i>139</i>&nbsp;        }
+<b class="nc"><i>140</i>&nbsp;        if (inputArray.size() &lt;= 3) {</b>
+<b class="nc"><i>141</i>&nbsp;            return Templates.command.rotate_too_short.formatGuild(channel);</b>
+<i>142</i>&nbsp;        }
+<b class="nc"><i>143</i>&nbsp;        for (int i = inputArray.size() - 1; i &gt;= 0; i--) {</b>
+<b class="nc"><i>144</i>&nbsp;            if (inputArray.get(i) == null) {</b>
+<b class="nc"><i>145</i>&nbsp;                continue;</b>
+<i>146</i>&nbsp;            }
+<b class="nc"><i>147</i>&nbsp;            if (charMap.containsKey(inputArray.get(i))) {</b>
+<b class="nc"><i>148</i>&nbsp;                output.append(charMap.get(inputArray.get(i)));</b>
+<i>149</i>&nbsp;            } else {
+<b class="nc"><i>150</i>&nbsp;                output.append(inputArray.get(i));</b>
+<i>151</i>&nbsp;            }
+<i>152</i>&nbsp;        }
+<b class="nc"><i>153</i>&nbsp;        return output.toString();</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

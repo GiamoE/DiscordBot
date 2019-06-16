@@ -1,0 +1,192 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: StopCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.music</a> ]
+</div>
+
+<h1>Coverage Summary for Class: StopCommand (emily.command.music)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StopCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.music;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>20</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>21</i>&nbsp;import emily.guildsettings.GSetting;
+<i>22</i>&nbsp;import emily.handler.GuildSettings;
+<i>23</i>&nbsp;import emily.handler.MusicPlayerHandler;
+<i>24</i>&nbsp;import emily.main.DiscordBot;
+<i>25</i>&nbsp;import emily.permission.SimpleRank;
+<i>26</i>&nbsp;import emily.templates.Templates;
+<i>27</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>28</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>29</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>30</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>31</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * !stop
+<i>35</i>&nbsp; * make the bot stop playing music
+<i>36</i>&nbsp; */
+<i>37</i>&nbsp;public class StopCommand extends AbstractCommand {
+<i>38</i>&nbsp;    public StopCommand() {
+<b class="nc"><i>39</i>&nbsp;        super();</b>
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    @Override
+<i>43</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>44</i>&nbsp;        return &quot;stops playing music&quot;;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    @Override
+<i>48</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>49</i>&nbsp;        return &quot;stop&quot;;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    @Override
+<i>53</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>54</i>&nbsp;        return new String[]{</b>
+<i>55</i>&nbsp;                &quot;stop          //stops playing and leaves the channel&quot;,
+<i>56</i>&nbsp;                &quot;stop force    //stops playing and leaves the channel (admin, debug)&quot;,
+<i>57</i>&nbsp;                &quot;stop afternp  //stops and leaves after the now playing track is over&quot;,
+<i>58</i>&nbsp;        };
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    @Override
+<i>62</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>63</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    @Override
+<i>67</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>68</i>&nbsp;        return new String[]{</b>
+<i>69</i>&nbsp;                &quot;leave&quot;
+<i>70</i>&nbsp;        };
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    @Override
+<i>74</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>75</i>&nbsp;        Guild guild = ((TextChannel) channel).getGuild();</b>
+<b class="nc"><i>76</i>&nbsp;        SimpleRank userRank = bot.security.getSimpleRank(author, channel);</b>
+<b class="nc"><i>77</i>&nbsp;        if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {</b>
+<b class="nc"><i>78</i>&nbsp;            return Templates.music.required_role_not_found.formatGuild(channel, guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));</b>
+<i>79</i>&nbsp;        }
+<b class="nc"><i>80</i>&nbsp;        MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);</b>
+<b class="nc"><i>81</i>&nbsp;        if (args.length &gt; 0) {</b>
+<b class="nc"><i>82</i>&nbsp;            if (args[0].equals(&quot;force&quot;) &amp;&amp; userRank.isAtLeast(SimpleRank.GUILD_ADMIN)) {</b>
+<b class="nc"><i>83</i>&nbsp;                player.leave();</b>
+<b class="nc"><i>84</i>&nbsp;                return Templates.command.stop_success.formatGuild(channel);</b>
+<i>85</i>&nbsp;            }
+<i>86</i>&nbsp;        }
+<b class="nc"><i>87</i>&nbsp;        if (!player.isPlaying()) {</b>
+<b class="nc"><i>88</i>&nbsp;            player.leave();</b>
+<b class="nc"><i>89</i>&nbsp;            return Templates.command.currentlyplaying.nosong.formatGuild(channel);</b>
+<i>90</i>&nbsp;        }
+<b class="nc"><i>91</i>&nbsp;        if (player.isConnected()) {</b>
+<b class="nc"><i>92</i>&nbsp;            if (!player.canUseVoiceCommands(author, userRank)) {</b>
+<b class="nc"><i>93</i>&nbsp;                return Templates.music.not_same_voicechannel.formatGuild(channel);</b>
+<i>94</i>&nbsp;            }
+<b class="nc"><i>95</i>&nbsp;            if (!userRank.isAtLeast(SimpleRank.GUILD_ADMIN) &amp;&amp; player.aListenerIsAtLeast(SimpleRank.GUILD_ADMIN)) {</b>
+<b class="nc"><i>96</i>&nbsp;                return Templates.music.not_while_admin_listening.formatGuild(channel);</b>
+<i>97</i>&nbsp;            }
+<b class="nc"><i>98</i>&nbsp;            if (args.length &gt; 0 &amp;&amp; args[0].equals(&quot;afternp&quot;)) {</b>
+<b class="nc"><i>99</i>&nbsp;                player.stopAfterTrack(true);</b>
+<b class="nc"><i>100</i>&nbsp;                return Templates.command.stop_after_track.formatGuild(channel);</b>
+<i>101</i>&nbsp;            } else {
+<b class="nc"><i>102</i>&nbsp;                player.leave();</b>
+<i>103</i>&nbsp;            }
+<b class="nc"><i>104</i>&nbsp;            return Templates.command.stop_success.formatGuild(channel);</b>
+<i>105</i>&nbsp;        }
+<b class="nc"><i>106</i>&nbsp;        return Templates.command.currentlyplaying.nosong.formatGuild(channel);</b>
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    }
+<i>109</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

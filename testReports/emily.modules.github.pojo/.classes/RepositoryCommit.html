@@ -1,0 +1,249 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RepositoryCommit</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.modules.github.pojo</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RepositoryCommit (emily.modules.github.pojo)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RepositoryCommit</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.modules.github.pojo;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import com.google.gson.annotations.Expose;
+<i>20</i>&nbsp;import com.google.gson.annotations.SerializedName;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;import javax.annotation.Generated;
+<i>23</i>&nbsp;import java.util.ArrayList;
+<i>24</i>&nbsp;import java.util.List;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;@Generated(&quot;org.jsonschema2pojo&quot;)
+<b class="nc"><i>27</i>&nbsp;public class RepositoryCommit {</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    @SerializedName(&quot;sha&quot;)
+<i>30</i>&nbsp;    @Expose
+<i>31</i>&nbsp;    private String sha;
+<i>32</i>&nbsp;    @SerializedName(&quot;commit&quot;)
+<i>33</i>&nbsp;    @Expose
+<i>34</i>&nbsp;    private Commit commit;
+<i>35</i>&nbsp;    @SerializedName(&quot;url&quot;)
+<i>36</i>&nbsp;    @Expose
+<i>37</i>&nbsp;    private String url;
+<i>38</i>&nbsp;    @SerializedName(&quot;html_url&quot;)
+<i>39</i>&nbsp;    @Expose
+<i>40</i>&nbsp;    private String htmlUrl;
+<i>41</i>&nbsp;    @SerializedName(&quot;comments_url&quot;)
+<i>42</i>&nbsp;    @Expose
+<i>43</i>&nbsp;    private String commentsUrl;
+<i>44</i>&nbsp;    @SerializedName(&quot;author&quot;)
+<i>45</i>&nbsp;    @Expose
+<i>46</i>&nbsp;    private Author author;
+<i>47</i>&nbsp;    @SerializedName(&quot;committer&quot;)
+<i>48</i>&nbsp;    @Expose
+<i>49</i>&nbsp;    private Committer committer;
+<b class="nc"><i>50</i>&nbsp;    @SerializedName(&quot;parents&quot;)</b>
+<i>51</i>&nbsp;    @Expose
+<i>52</i>&nbsp;    private List&lt;Parent&gt; parents = new ArrayList&lt;Parent&gt;();
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * @return The sha
+<i>56</i>&nbsp;     */
+<i>57</i>&nbsp;    public String getSha() {
+<b class="nc"><i>58</i>&nbsp;        return sha;</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     * @param sha The sha
+<i>63</i>&nbsp;     */
+<i>64</i>&nbsp;    public void setSha(String sha) {
+<b class="nc"><i>65</i>&nbsp;        this.sha = sha;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * @return The commit
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    public Commit getCommit() {
+<b class="nc"><i>72</i>&nbsp;        return commit;</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * @param commit The commit
+<i>77</i>&nbsp;     */
+<i>78</i>&nbsp;    public void setCommit(Commit commit) {
+<b class="nc"><i>79</i>&nbsp;        this.commit = commit;</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * @return The url
+<i>84</i>&nbsp;     */
+<i>85</i>&nbsp;    public String getUrl() {
+<b class="nc"><i>86</i>&nbsp;        return url;</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     * @param url The url
+<i>91</i>&nbsp;     */
+<i>92</i>&nbsp;    public void setUrl(String url) {
+<b class="nc"><i>93</i>&nbsp;        this.url = url;</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    /**
+<i>97</i>&nbsp;     * @return The htmlUrl
+<i>98</i>&nbsp;     */
+<i>99</i>&nbsp;    public String getHtmlUrl() {
+<b class="nc"><i>100</i>&nbsp;        return htmlUrl;</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    /**
+<i>104</i>&nbsp;     * @param htmlUrl The html_url
+<i>105</i>&nbsp;     */
+<i>106</i>&nbsp;    public void setHtmlUrl(String htmlUrl) {
+<b class="nc"><i>107</i>&nbsp;        this.htmlUrl = htmlUrl;</b>
+<i>108</i>&nbsp;    }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    /**
+<i>111</i>&nbsp;     * @return The commentsUrl
+<i>112</i>&nbsp;     */
+<i>113</i>&nbsp;    public String getCommentsUrl() {
+<b class="nc"><i>114</i>&nbsp;        return commentsUrl;</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    /**
+<i>118</i>&nbsp;     * @param commentsUrl The comments_url
+<i>119</i>&nbsp;     */
+<i>120</i>&nbsp;    public void setCommentsUrl(String commentsUrl) {
+<b class="nc"><i>121</i>&nbsp;        this.commentsUrl = commentsUrl;</b>
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    /**
+<i>125</i>&nbsp;     * @return The author
+<i>126</i>&nbsp;     */
+<i>127</i>&nbsp;    public Author getAuthor() {
+<b class="nc"><i>128</i>&nbsp;        return author;</b>
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    /**
+<i>132</i>&nbsp;     * @param author The author
+<i>133</i>&nbsp;     */
+<i>134</i>&nbsp;    public void setAuthor(Author author) {
+<b class="nc"><i>135</i>&nbsp;        this.author = author;</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    /**
+<i>139</i>&nbsp;     * @return The committer
+<i>140</i>&nbsp;     */
+<i>141</i>&nbsp;    public Committer getCommitter() {
+<b class="nc"><i>142</i>&nbsp;        return committer;</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    /**
+<i>146</i>&nbsp;     * @param committer The committer
+<i>147</i>&nbsp;     */
+<i>148</i>&nbsp;    public void setCommitter(Committer committer) {
+<b class="nc"><i>149</i>&nbsp;        this.committer = committer;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    /**
+<i>153</i>&nbsp;     * @return The parents
+<i>154</i>&nbsp;     */
+<i>155</i>&nbsp;    public List&lt;Parent&gt; getParents() {
+<b class="nc"><i>156</i>&nbsp;        return parents;</b>
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * @param parents The parents
+<i>161</i>&nbsp;     */
+<i>162</i>&nbsp;    public void setParents(List&lt;Parent&gt; parents) {
+<b class="nc"><i>163</i>&nbsp;        this.parents = parents;</b>
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

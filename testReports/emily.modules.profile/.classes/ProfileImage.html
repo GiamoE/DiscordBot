@@ -1,0 +1,138 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ProfileImage</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.modules.profile</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ProfileImage (emily.modules.profile)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProfileImage</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.modules.profile;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.main.Launcher;
+<i>20</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;import javax.imageio.ImageIO;
+<i>23</i>&nbsp;import java.awt.image.BufferedImage;
+<i>24</i>&nbsp;import java.io.IOException;
+<i>25</i>&nbsp;import java.net.URL;
+<i>26</i>&nbsp;import java.net.URLConnection;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * Created on 28-9-2016
+<i>30</i>&nbsp; */
+<i>31</i>&nbsp;public abstract class ProfileImage {
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    private final User user;
+<i>34</i>&nbsp;
+<b class="nc"><i>35</i>&nbsp;    public ProfileImage(User user) {</b>
+<b class="nc"><i>36</i>&nbsp;        this.user = user;</b>
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public BufferedImage getUserAvatar() throws IOException {
+<i>40</i>&nbsp;
+<b class="nc"><i>41</i>&nbsp;        URLConnection connection = new URL(getUser().getAvatarUrl() != null ? getUser().getAvatarUrl() : getUser().getDefaultAvatarUrl()).openConnection();</b>
+<b class="nc"><i>42</i>&nbsp;        connection.setRequestProperty(&quot;User-Agent&quot;, &quot;bot emily-bot&quot;);</b>
+<i>43</i>&nbsp;        BufferedImage profileImg;
+<i>44</i>&nbsp;        try {
+<b class="nc"><i>45</i>&nbsp;            profileImg = ImageIO.read(connection.getInputStream());</b>
+<b class="nc"><i>46</i>&nbsp;        } catch (Exception ignored) {</b>
+<b class="nc"><i>47</i>&nbsp;            profileImg = ImageIO.read(Launcher.class.getClassLoader().getResource(&quot;default_profile.jpg&quot;));</b>
+<b class="nc"><i>48</i>&nbsp;        }</b>
+<b class="nc"><i>49</i>&nbsp;        return profileImg;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public User getUser() {
+<b class="nc"><i>53</i>&nbsp;        return user;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CBotEvent</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.db.controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CBotEvent (emily.db.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CBotEvent</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.db.controllers;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.Logger;
+<i>20</i>&nbsp;import emily.db.WebDb;
+<i>21</i>&nbsp;import emily.db.model.OBotEvent;
+<i>22</i>&nbsp;import emily.main.Launcher;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;import java.sql.ResultSet;
+<i>25</i>&nbsp;import java.sql.SQLException;
+<i>26</i>&nbsp;import java.sql.Timestamp;
+<i>27</i>&nbsp;import java.util.ArrayList;
+<i>28</i>&nbsp;import java.util.List;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * data communication with the controllers `bot_events`
+<i>32</i>&nbsp; */
+<b class="nc"><i>33</i>&nbsp;public class CBotEvent {</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public static OBotEvent findBy(String id) {
+<b class="nc"><i>36</i>&nbsp;        OBotEvent s = new OBotEvent();</b>
+<b class="nc"><i>37</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>38</i>&nbsp;                &quot;SELECT id, created_on, event_group, log_level, sub_group, data &quot; +
+<i>39</i>&nbsp;                        &quot;FROM bot_events &quot; +
+<i>40</i>&nbsp;                        &quot;WHERE id = ? &quot;, id)) {
+<b class="nc"><i>41</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>42</i>&nbsp;                s = fillRecord(rs);</b>
+<i>43</i>&nbsp;            }
+<b class="nc"><i>44</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>45</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>46</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>47</i>&nbsp;        }</b>
+<b class="nc"><i>48</i>&nbsp;        return s;</b>
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    private static OBotEvent fillRecord(ResultSet rs) throws SQLException {
+<b class="nc"><i>52</i>&nbsp;        OBotEvent s = new OBotEvent();</b>
+<b class="nc"><i>53</i>&nbsp;        s.id = rs.getInt(&quot;id&quot;);</b>
+<b class="nc"><i>54</i>&nbsp;        s.createdOn = rs.getTimestamp(&quot;created_on&quot;);</b>
+<b class="nc"><i>55</i>&nbsp;        s.group = rs.getString(&quot;event_group&quot;);</b>
+<b class="nc"><i>56</i>&nbsp;        s.subGroup = rs.getString(&quot;sub_group&quot;);</b>
+<b class="nc"><i>57</i>&nbsp;        s.data = rs.getString(&quot;data&quot;);</b>
+<b class="nc"><i>58</i>&nbsp;        s.logLevel = OBotEvent.Level.fromId(rs.getInt(&quot;log_level&quot;));</b>
+<b class="nc"><i>59</i>&nbsp;        return s;</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public static List&lt;OBotEvent&gt; getEventsAfter(int id) {
+<b class="nc"><i>63</i>&nbsp;        List&lt;OBotEvent&gt; list = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>64</i>&nbsp;        try (ResultSet rs = WebDb.get().select(&quot;SELECT * FROM bot_events WHERE id &gt; ? &quot;, id)) {</b>
+<b class="nc"><i>65</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>66</i>&nbsp;                list.add(fillRecord(rs));</b>
+<i>67</i>&nbsp;            }
+<b class="nc"><i>68</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>69</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>70</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>71</i>&nbsp;        }</b>
+<b class="nc"><i>72</i>&nbsp;        return list;</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    public static void insert(String group, String subGroup, String data) {
+<b class="nc"><i>76</i>&nbsp;        insert(OBotEvent.Level.INFO, group, subGroup, data);</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public static void insert(OBotEvent.Level logLevel, String group, String subGroup, String data) {
+<b class="nc"><i>80</i>&nbsp;        OBotEvent oBotEvent = new OBotEvent();</b>
+<b class="nc"><i>81</i>&nbsp;        oBotEvent.group = group;</b>
+<b class="nc"><i>82</i>&nbsp;        oBotEvent.subGroup = subGroup;</b>
+<b class="nc"><i>83</i>&nbsp;        oBotEvent.data = data;</b>
+<b class="nc"><i>84</i>&nbsp;        oBotEvent.logLevel = logLevel;</b>
+<b class="nc"><i>85</i>&nbsp;        insert(oBotEvent);</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    public static void insert(OBotEvent record) {
+<i>90</i>&nbsp;        try {
+<b class="nc"><i>91</i>&nbsp;            record.id = WebDb.get().insert(</b>
+<i>92</i>&nbsp;                    &quot;INSERT INTO bot_events(created_on, log_level, event_group, sub_group, data) &quot; +
+<i>93</i>&nbsp;                            &quot;VALUES (?,?,?,?,?)&quot;,
+<b class="nc"><i>94</i>&nbsp;                    new Timestamp(System.currentTimeMillis()), record.logLevel.getId(), record.group, record.subGroup, record.data);</b>
+<b class="nc"><i>95</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>96</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>97</i>&nbsp;            Launcher.logToDiscord(e, &quot;data&quot;, record.data);</b>
+<b class="nc"><i>98</i>&nbsp;        }</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

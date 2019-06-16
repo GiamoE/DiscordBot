@@ -1,0 +1,157 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ServiceHandlerThread</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.threads</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ServiceHandlerThread (emily.threads)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ServiceHandlerThread</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.threads;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.AbstractService;
+<i>20</i>&nbsp;import emily.main.BotContainer;
+<i>21</i>&nbsp;import emily.main.Launcher;
+<i>22</i>&nbsp;import org.reflections.Reflections;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;import java.lang.reflect.InvocationTargetException;
+<i>25</i>&nbsp;import java.util.ArrayList;
+<i>26</i>&nbsp;import java.util.List;
+<i>27</i>&nbsp;import java.util.Set;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;public class ServiceHandlerThread extends Thread {
+<i>30</i>&nbsp;    private BotContainer bot;
+<i>31</i>&nbsp;    private List&lt;AbstractService&gt; instances;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public ServiceHandlerThread(BotContainer bot) {
+<b class="nc"><i>34</i>&nbsp;        super(&quot;ServiceHandler&quot;);</b>
+<b class="nc"><i>35</i>&nbsp;        instances = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>36</i>&nbsp;        this.bot = bot;</b>
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private void initServices() {
+<b class="nc"><i>40</i>&nbsp;        Reflections reflections = new Reflections(&quot;emily.service&quot;);</b>
+<b class="nc"><i>41</i>&nbsp;        Set&lt;Class&lt;? extends AbstractService&gt;&gt; classes = reflections.getSubTypesOf(AbstractService.class);</b>
+<b class="nc"><i>42</i>&nbsp;        for (Class&lt;? extends AbstractService&gt; serviceClass : classes) {</b>
+<i>43</i>&nbsp;            try {
+<b class="nc"><i>44</i>&nbsp;                instances.add(serviceClass.getConstructor(BotContainer.class).newInstance(bot));</b>
+<b class="nc"><i>45</i>&nbsp;            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {</b>
+<b class="nc"><i>46</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>47</i>&nbsp;            }</b>
+<b class="nc"><i>48</i>&nbsp;        }</b>
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    @Override
+<i>52</i>&nbsp;    public void run() {
+<b class="nc"><i>53</i>&nbsp;        boolean initialized = false;</b>
+<b class="nc"><i>54</i>&nbsp;        while (!Launcher.isBeingKilled) {</b>
+<i>55</i>&nbsp;            try {
+<b class="nc"><i>56</i>&nbsp;                if (bot.allShardsReady()) {</b>
+<b class="nc"><i>57</i>&nbsp;                    if (bot != null) {</b>
+<b class="nc"><i>58</i>&nbsp;                        if (!initialized) {</b>
+<b class="nc"><i>59</i>&nbsp;                            initServices();</b>
+<i>60</i>&nbsp;                        }
+<b class="nc"><i>61</i>&nbsp;                        initialized = true;</b>
+<i>62</i>&nbsp;                    }
+<b class="nc"><i>63</i>&nbsp;                    for (AbstractService instance : instances) {</b>
+<b class="nc"><i>64</i>&nbsp;                        instance.start();</b>
+<b class="nc"><i>65</i>&nbsp;                    }</b>
+<i>66</i>&nbsp;                }
+<b class="nc"><i>67</i>&nbsp;                sleep(10_000L);</b>
+<b class="nc"><i>68</i>&nbsp;            } catch (Exception e) {</b>
+<b class="nc"><i>69</i>&nbsp;                Launcher.logToDiscord(e);</b>
+<b class="nc"><i>70</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>71</i>&nbsp;            }</b>
+<i>72</i>&nbsp;        }
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

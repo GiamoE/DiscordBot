@@ -1,0 +1,196 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TwoZeroFourZeroCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.fun</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TwoZeroFourZeroCommand (emily.command.fun)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TwoZeroFourZeroCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.fun;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.CommandReactionListener;
+<i>20</i>&nbsp;import emily.command.meta.CooldownScope;
+<i>21</i>&nbsp;import emily.command.meta.ICommandCooldown;
+<i>22</i>&nbsp;import emily.command.meta.ICommandReactionListener;
+<i>23</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>24</i>&nbsp;import emily.games.meta.GameState;
+<i>25</i>&nbsp;import emily.games.game2048.Game2048;
+<i>26</i>&nbsp;import emily.games.game2048.Game2048Turn;
+<i>27</i>&nbsp;import emily.main.DiscordBot;
+<i>28</i>&nbsp;import emily.templates.Templates;
+<i>29</i>&nbsp;import emily.util.DisUtil;
+<i>30</i>&nbsp;import emily.util.Emojibet;
+<i>31</i>&nbsp;import net.dv8tion.jda.core.Permission;
+<i>32</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>33</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>34</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>35</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;
+<b class="nc"><i>40</i>&nbsp;public class TwoZeroFourZeroCommand extends AbstractCommand implements ICommandReactionListener&lt;Game2048&gt;, ICommandCooldown {</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    @Override
+<i>43</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>44</i>&nbsp;        return &quot;play a game of 2048&quot;;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    @Override
+<i>48</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>49</i>&nbsp;        return &quot;2048&quot;;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    @Override
+<i>53</i>&nbsp;    public boolean isListed() {
+<b class="nc"><i>54</i>&nbsp;        return false;</b>
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    @Override
+<i>58</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>59</i>&nbsp;        return new String[]{</b>
+<i>60</i>&nbsp;                &quot;2048       //play the game&quot;
+<i>61</i>&nbsp;        };
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    @Override
+<i>65</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>66</i>&nbsp;        return new String[0];</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    @Override
+<i>70</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>71</i>&nbsp;        if (!DisUtil.hasPermission(channel, channel.getJDA().getSelfUser(), Permission.MESSAGE_ADD_REACTION)) {</b>
+<b class="nc"><i>72</i>&nbsp;            return Templates.permission_missing.formatGuild(channel, Permission.MESSAGE_ADD_REACTION.toString());</b>
+<i>73</i>&nbsp;        }
+<b class="nc"><i>74</i>&nbsp;        Game2048 game = new Game2048();</b>
+<b class="nc"><i>75</i>&nbsp;        game.addPlayer(author);</b>
+<b class="nc"><i>76</i>&nbsp;        bot.queue.add(channel.sendMessage(game.toString()), message -&gt; bot.commandReactionHandler.addReactionListener(((TextChannel) channel).getGuild().getIdLong(), message, getReactionListener(author.getIdLong(), game)));</b>
+<b class="nc"><i>77</i>&nbsp;        return &quot;&quot;;</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    @Override
+<i>82</i>&nbsp;    public CommandReactionListener&lt;Game2048&gt; getReactionListener(long userId, Game2048 game) {
+<b class="nc"><i>83</i>&nbsp;        CommandReactionListener&lt;Game2048&gt; listener = new CommandReactionListener&lt;&gt;(userId, game);</b>
+<b class="nc"><i>84</i>&nbsp;        listener.setExpiresIn(TimeUnit.MINUTES, 5);</b>
+<b class="nc"><i>85</i>&nbsp;        for (String reaction : game.getReactions()) {</b>
+<b class="nc"><i>86</i>&nbsp;            listener.registerReaction(Emojibet.getEmojiFor(reaction), message -&gt; {</b>
+<b class="nc"><i>87</i>&nbsp;                Game2048Turn turn = new Game2048Turn();</b>
+<b class="nc"><i>88</i>&nbsp;                turn.parseInput(reaction);</b>
+<b class="nc"><i>89</i>&nbsp;                if (!game.isValidMove(message.getJDA().getUserById(userId), turn)) {</b>
+<b class="nc"><i>90</i>&nbsp;                    message.editMessage(game.toString() + &quot;\n&quot; + Templates.playmode_not_a_valid_move.format()).complete();</b>
+<i>91</i>&nbsp;                } else {
+<b class="nc"><i>92</i>&nbsp;                    game.playTurn(message.getJDA().getUserById(userId), turn);</b>
+<b class="nc"><i>93</i>&nbsp;                    message.editMessage(game.toString()).complete();</b>
+<i>94</i>&nbsp;                }
+<b class="nc"><i>95</i>&nbsp;                if (game.getGameState().equals(GameState.OVER)) {</b>
+<b class="nc"><i>96</i>&nbsp;                    listener.disable();</b>
+<b class="nc"><i>97</i>&nbsp;                    message.clearReactions().complete();</b>
+<i>98</i>&nbsp;                }
+<i>99</i>&nbsp;            });
+<i>100</i>&nbsp;        }
+<b class="nc"><i>101</i>&nbsp;        return listener;</b>
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    @Override
+<i>105</i>&nbsp;    public long getCooldownDuration() {
+<b class="nc"><i>106</i>&nbsp;        return 300;</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    @Override
+<i>110</i>&nbsp;    public CooldownScope getScope() {
+<b class="nc"><i>111</i>&nbsp;        return CooldownScope.USER;</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

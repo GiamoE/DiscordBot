@@ -1,0 +1,513 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DiscordBot</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.main</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DiscordBot (emily.main)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DiscordBot</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 161)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.main;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import com.mashape.unirest.http.Unirest;
+<i>20</i>&nbsp;import emily.db.controllers.CBanks;
+<i>21</i>&nbsp;import emily.db.controllers.CGuild;
+<i>22</i>&nbsp;import emily.event.JDAEventManager;
+<i>23</i>&nbsp;import emily.event.JDAEvents;
+<i>24</i>&nbsp;import emily.guildsettings.GSetting;
+<i>25</i>&nbsp;import emily.handler.*;
+<i>26</i>&nbsp;import emily.handler.discord.RestQueue;
+<i>27</i>&nbsp;import emily.role.RoleRankings;
+<i>28</i>&nbsp;import emily.templates.Templates;
+<i>29</i>&nbsp;import emily.util.DisUtil;
+<i>30</i>&nbsp;import emily.util.Misc;
+<i>31</i>&nbsp;import net.dv8tion.jda.core.AccountType;
+<i>32</i>&nbsp;import net.dv8tion.jda.core.JDA;
+<i>33</i>&nbsp;import net.dv8tion.jda.core.JDABuilder;
+<i>34</i>&nbsp;import net.dv8tion.jda.core.Permission;
+<i>35</i>&nbsp;import net.dv8tion.jda.core.entities.*;
+<i>36</i>&nbsp;import net.dv8tion.jda.core.exceptions.RateLimitedException;
+<i>37</i>&nbsp;import net.dv8tion.jda.core.utils.PermissionUtil;
+<i>38</i>&nbsp;import org.apache.logging.log4j.LogManager;
+<i>39</i>&nbsp;import org.apache.logging.log4j.Logger;
+<i>40</i>&nbsp;import org.json.JSONObject;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;import javax.security.auth.login.LoginException;
+<i>43</i>&nbsp;import java.util.List;
+<i>44</i>&nbsp;import java.util.concurrent.Executors;
+<i>45</i>&nbsp;import java.util.concurrent.ScheduledExecutorService;
+<i>46</i>&nbsp;import java.util.concurrent.ScheduledFuture;
+<i>47</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>48</i>&nbsp;import java.util.concurrent.atomic.AtomicReference;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;public class DiscordBot {
+<i>51</i>&nbsp;
+<b class="nc"><i>52</i>&nbsp;    public static final Logger LOGGER = LogManager.getLogger(DiscordBot.class);</b>
+<i>53</i>&nbsp;    public final long startupTimeStamp;
+<i>54</i>&nbsp;    public final RestQueue queue;
+<i>55</i>&nbsp;    private final int totShards;
+<i>56</i>&nbsp;    private final ScheduledExecutorService scheduler;
+<i>57</i>&nbsp;    private final AtomicReference&lt;JDA&gt; jda;
+<i>58</i>&nbsp;    public String mentionMe;
+<i>59</i>&nbsp;    public String mentionMeAlias;
+<b class="nc"><i>60</i>&nbsp;    public ChatBotHandler chatBotHandler = null;</b>
+<b class="nc"><i>61</i>&nbsp;    public SecurityHandler security = null;</b>
+<b class="nc"><i>62</i>&nbsp;    public OutgoingContentHandler out = null;</b>
+<b class="nc"><i>63</i>&nbsp;    public MusicReactionHandler musicReactionHandler = null;</b>
+<b class="nc"><i>64</i>&nbsp;    public RoleReactionHandler roleReactionHandler = null;</b>
+<b class="nc"><i>65</i>&nbsp;    public CommandReactionHandler commandReactionHandler = null;</b>
+<b class="nc"><i>66</i>&nbsp;    public GameHandler gameHandler = null;</b>
+<i>67</i>&nbsp;    private AutoReplyHandler autoReplyhandler;
+<b class="nc"><i>68</i>&nbsp;    private volatile boolean isReady = false;</b>
+<i>69</i>&nbsp;    private int shardId;
+<i>70</i>&nbsp;    private BotContainer container;
+<i>71</i>&nbsp;
+<b class="nc"><i>72</i>&nbsp;    public DiscordBot(int shardId, int numShards, BotContainer container) {</b>
+<b class="nc"><i>73</i>&nbsp;        queue = new RestQueue(this);</b>
+<b class="nc"><i>74</i>&nbsp;        scheduler = Executors.newScheduledThreadPool(1);</b>
+<b class="nc"><i>75</i>&nbsp;        jda = new AtomicReference&lt;&gt;();</b>
+<b class="nc"><i>76</i>&nbsp;        this.shardId = shardId;</b>
+<b class="nc"><i>77</i>&nbsp;        this.totShards = numShards;</b>
+<b class="nc"><i>78</i>&nbsp;        registerHandlers();</b>
+<b class="nc"><i>79</i>&nbsp;        setContainer(container);</b>
+<b class="nc"><i>80</i>&nbsp;        chatBotHandler = new ChatBotHandler(this);</b>
+<b class="nc"><i>81</i>&nbsp;        startupTimeStamp = System.currentTimeMillis() / 1000L;</b>
+<i>82</i>&nbsp;        while (true) {
+<i>83</i>&nbsp;            try {
+<b class="nc"><i>84</i>&nbsp;                restartJDA();</b>
+<b class="nc"><i>85</i>&nbsp;                break;</b>
+<b class="nc"><i>86</i>&nbsp;            } catch (LoginException | InterruptedException | RateLimitedException e) {</b>
+<i>87</i>&nbsp;                try {
+<b class="nc"><i>88</i>&nbsp;                    Thread.sleep(5_000L);</b>
+<b class="nc"><i>89</i>&nbsp;                } catch (InterruptedException e1) {</b>
+<b class="nc"><i>90</i>&nbsp;                    e1.printStackTrace();</b>
+<b class="nc"><i>91</i>&nbsp;                }</b>
+<b class="nc"><i>92</i>&nbsp;            }</b>
+<i>93</i>&nbsp;        }
+<b class="nc"><i>94</i>&nbsp;        markReady();</b>
+<b class="nc"><i>95</i>&nbsp;        container.setLastAction(shardId, System.currentTimeMillis());</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public Emote getEmote(String emoteString) {
+<b class="nc"><i>99</i>&nbsp;        List&lt;Emote&gt; emotes = jda.get().getEmotesByName(emoteString, true);</b>
+<b class="nc"><i>100</i>&nbsp;        if (!emotes.isEmpty()) {</b>
+<b class="nc"><i>101</i>&nbsp;            return emotes.get(0);</b>
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;
+<b class="nc"><i>104</i>&nbsp;        if (Misc.parseLong(emoteString, 0) &gt; 0) {</b>
+<b class="nc"><i>105</i>&nbsp;            return jda.get().getEmoteById(emoteString);</b>
+<i>106</i>&nbsp;        }
+<b class="nc"><i>107</i>&nbsp;        return null;</b>
+<i>108</i>&nbsp;    }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    public void updateJda(JDA jda) {
+<b class="nc"><i>111</i>&nbsp;        this.jda.compareAndSet(this.jda.get(), jda);</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    public JDA getJda() {
+<b class="nc"><i>115</i>&nbsp;        return jda.get();</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public void restartJDA() throws LoginException, InterruptedException, RateLimitedException {
+<b class="nc"><i>119</i>&nbsp;        JDABuilder builder = new JDABuilder(AccountType.BOT).setToken(BotConfig.BOT_TOKEN);</b>
+<b class="nc"><i>120</i>&nbsp;        if (totShards &gt; 1) {</b>
+<b class="nc"><i>121</i>&nbsp;            builder.useSharding(shardId, totShards);</b>
+<i>122</i>&nbsp;        }
+<b class="nc"><i>123</i>&nbsp;        builder.setBulkDeleteSplittingEnabled(false);</b>
+<b class="nc"><i>124</i>&nbsp;        builder.setEnableShutdownHook(false);</b>
+<b class="nc"><i>125</i>&nbsp;        builder.setEventManager(new JDAEventManager(this));</b>
+<b class="nc"><i>126</i>&nbsp;        System.out.println(&quot;STARTING SHARD &quot; + shardId);</b>
+<b class="nc"><i>127</i>&nbsp;        jda.set(builder.buildBlocking());</b>
+<b class="nc"><i>128</i>&nbsp;        jda.get().addEventListener(new JDAEvents(this));</b>
+<b class="nc"><i>129</i>&nbsp;        System.out.println(&quot;SHARD &quot; + shardId + &quot; IS READY &quot;);</b>
+<i>130</i>&nbsp;        //
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    /**
+<i>134</i>&nbsp;     * Schedule the a task somewhere in the future
+<i>135</i>&nbsp;     *
+<i>136</i>&nbsp;     * @param task     the task
+<i>137</i>&nbsp;     * @param delay    the delay
+<i>138</i>&nbsp;     * @param timeUnit unit type of delay
+<i>139</i>&nbsp;     */
+<i>140</i>&nbsp;    public void schedule(Runnable task, Long delay, TimeUnit timeUnit) {
+<b class="nc"><i>141</i>&nbsp;        scheduler.schedule(task, delay, timeUnit);</b>
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    /**
+<i>145</i>&nbsp;     * schedule a repeating task
+<i>146</i>&nbsp;     *
+<i>147</i>&nbsp;     * @param task        the taks
+<i>148</i>&nbsp;     * @param startDelay  delay before starting the first iteration
+<i>149</i>&nbsp;     * @param repeatDelay delay between consecutive executions
+<i>150</i>&nbsp;     */
+<i>151</i>&nbsp;    public ScheduledFuture&lt;?&gt; scheduleRepeat(Runnable task, long startDelay, long repeatDelay) {
+<b class="nc"><i>152</i>&nbsp;        return scheduler.scheduleWithFixedDelay(task, startDelay, repeatDelay, TimeUnit.MILLISECONDS);</b>
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    /**
+<i>156</i>&nbsp;     * Should the bot clean up after itself in specified channel?
+<i>157</i>&nbsp;     *
+<i>158</i>&nbsp;     * @param channel the channel to check for
+<i>159</i>&nbsp;     * @return delete the message?
+<i>160</i>&nbsp;     */
+<i>161</i>&nbsp;    public boolean shouldCleanUpMessages(MessageChannel channel) {
+<b class="nc"><i>162</i>&nbsp;        String cleanupMethod = GuildSettings.getFor(channel, GSetting.CLEANUP_MESSAGES);</b>
+<b class="nc"><i>163</i>&nbsp;        String myChannel = GuildSettings.getFor(channel, GSetting.BOT_CHANNEL);</b>
+<b class="nc"><i>164</i>&nbsp;        if (&quot;yes&quot;.equals(cleanupMethod)) {</b>
+<b class="nc"><i>165</i>&nbsp;            return true;</b>
+<b class="nc"><i>166</i>&nbsp;        } else if (&quot;nonstandard&quot;.equals(cleanupMethod) &amp;&amp; !channel.getName().equalsIgnoreCase(myChannel)) {</b>
+<b class="nc"><i>167</i>&nbsp;            return true;</b>
+<i>168</i>&nbsp;        }
+<b class="nc"><i>169</i>&nbsp;        return false;</b>
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    public void logGuildEvent(Guild guild, String category, String message) {
+<b class="nc"><i>173</i>&nbsp;        TextChannel channel = getChannelFor(guild.getIdLong(), GSetting.BOT_LOGGING_CHANNEL);</b>
+<b class="nc"><i>174</i>&nbsp;        if (channel == null) {</b>
+<i>175</i>&nbsp;            return;
+<i>176</i>&nbsp;        }
+<b class="nc"><i>177</i>&nbsp;        if (!channel.canTalk()) {</b>
+<b class="nc"><i>178</i>&nbsp;            out.sendAsyncMessage(getDefaultChannel(guild), Templates.config.cant_talk_in_channel.format(GuildSettings.get(guild).getOrDefault(GSetting.BOT_LOGGING_CHANNEL)));</b>
+<i>179</i>&nbsp;            return;
+<i>180</i>&nbsp;        }
+<b class="nc"><i>181</i>&nbsp;        out.sendAsyncMessage(channel, String.format(&quot;%s %s&quot;, category, message));</b>
+<i>182</i>&nbsp;    }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    public int getShardId() {
+<b class="nc"><i>185</i>&nbsp;        return shardId;</b>
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    public boolean isReady() {
+<b class="nc"><i>189</i>&nbsp;        return isReady;</b>
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    /**
+<i>193</i>&nbsp;     * Gets the default channel to output to
+<i>194</i>&nbsp;     * if configured channel can&#39;t be found, return the first channel
+<i>195</i>&nbsp;     *
+<i>196</i>&nbsp;     * @param guild the guild to check
+<i>197</i>&nbsp;     * @return default chat channel
+<i>198</i>&nbsp;     */
+<i>199</i>&nbsp;    public synchronized TextChannel getDefaultChannel(Guild guild) {
+<b class="nc"><i>200</i>&nbsp;        TextChannel defaultChannel = getChannelFor(guild.getIdLong(), GSetting.BOT_CHANNEL);</b>
+<b class="nc"><i>201</i>&nbsp;        if (defaultChannel != null) {</b>
+<b class="nc"><i>202</i>&nbsp;            return defaultChannel;</b>
+<i>203</i>&nbsp;        }
+<b class="nc"><i>204</i>&nbsp;        return DisUtil.findFirstWriteableChannel(guild);</b>
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     * gets the default channel to output music to
+<i>209</i>&nbsp;     *
+<i>210</i>&nbsp;     * @param guild guild
+<i>211</i>&nbsp;     * @return default music channel
+<i>212</i>&nbsp;     */
+<i>213</i>&nbsp;    public synchronized TextChannel getMusicChannel(Guild guild) {
+<b class="nc"><i>214</i>&nbsp;        return getMusicChannel(guild.getIdLong());</b>
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    public synchronized TextChannel getMusicChannel(long guildId) {
+<b class="nc"><i>218</i>&nbsp;        Guild guild = getJda().getGuildById(guildId);</b>
+<b class="nc"><i>219</i>&nbsp;        if (guild == null) {</b>
+<b class="nc"><i>220</i>&nbsp;            return null;</b>
+<i>221</i>&nbsp;        }
+<b class="nc"><i>222</i>&nbsp;        TextChannel channel = getChannelFor(guildId, GSetting.MUSIC_CHANNEL);</b>
+<b class="nc"><i>223</i>&nbsp;        if (channel == null) {</b>
+<b class="nc"><i>224</i>&nbsp;            channel = getDefaultChannel(guild);</b>
+<i>225</i>&nbsp;        }
+<b class="nc"><i>226</i>&nbsp;        if (channel == null || !channel.canTalk()) {</b>
+<b class="nc"><i>227</i>&nbsp;            return null;</b>
+<i>228</i>&nbsp;        }
+<b class="nc"><i>229</i>&nbsp;        return channel;</b>
+<i>230</i>&nbsp;    }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    /**
+<i>233</i>&nbsp;     * Retrieves the moderation log of a guild
+<i>234</i>&nbsp;     *
+<i>235</i>&nbsp;     * @param guildId the guild to get the modlog-channel for
+<i>236</i>&nbsp;     * @return channel || null
+<i>237</i>&nbsp;     */
+<i>238</i>&nbsp;    public synchronized TextChannel getModlogChannel(long guildId) {
+<b class="nc"><i>239</i>&nbsp;        return getChannelFor(guildId, GSetting.BOT_MODLOG_CHANNEL);</b>
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    /**
+<i>243</i>&nbsp;     * retrieves a channel for setting
+<i>244</i>&nbsp;     *
+<i>245</i>&nbsp;     * @param guildId the guild
+<i>246</i>&nbsp;     * @param setting the channel setting
+<i>247</i>&nbsp;     * @return A text channel Or null in case it can&#39;t be found
+<i>248</i>&nbsp;     */
+<i>249</i>&nbsp;    private synchronized TextChannel getChannelFor(long guildId, GSetting setting) {
+<b class="nc"><i>250</i>&nbsp;        Guild guild = getJda().getGuildById(guildId);</b>
+<b class="nc"><i>251</i>&nbsp;        if (guild == null) {</b>
+<b class="nc"><i>252</i>&nbsp;            return null;</b>
+<i>253</i>&nbsp;        }
+<b class="nc"><i>254</i>&nbsp;        String channelId = GuildSettings.get(guild.getIdLong()).getOrDefault(setting);</b>
+<b class="nc"><i>255</i>&nbsp;        if (channelId.matches(&quot;\\d{12,}&quot;)) {</b>
+<b class="nc"><i>256</i>&nbsp;            return guild.getTextChannelById(channelId);</b>
+<b class="nc"><i>257</i>&nbsp;        } else if (!channelId.isEmpty() &amp;&amp; !&quot;false&quot;.equals(channelId)) {</b>
+<b class="nc"><i>258</i>&nbsp;            return DisUtil.findChannel(guild, channelId);</b>
+<i>259</i>&nbsp;        }
+<b class="nc"><i>260</i>&nbsp;        return null;</b>
+<i>261</i>&nbsp;    }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    /**
+<i>264</i>&nbsp;     * Retrieves the moderation log of a guild
+<i>265</i>&nbsp;     *
+<i>266</i>&nbsp;     * @param guild the guild to get the modlog-channel for
+<i>267</i>&nbsp;     * @return channel || null
+<i>268</i>&nbsp;     */
+<i>269</i>&nbsp;    public synchronized TextChannel getCommandLogChannel(long guild) {
+<b class="nc"><i>270</i>&nbsp;        return getChannelFor(guild, GSetting.COMMAND_LOGGING_CHANNEL);</b>
+<i>271</i>&nbsp;    }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;    /**
+<i>274</i>&nbsp;     * Mark the shard as ready, the bot will start working once all shards are marked as ready
+<i>275</i>&nbsp;     */
+<i>276</i>&nbsp;    public void markReady() {
+<b class="nc"><i>277</i>&nbsp;        if (isReady) {</b>
+<i>278</i>&nbsp;            return;
+<i>279</i>&nbsp;        }
+<b class="nc"><i>280</i>&nbsp;        mentionMe = &quot;&lt;@&quot; + this.getJda().getSelfUser().getId() + &quot;&gt;&quot;;</b>
+<b class="nc"><i>281</i>&nbsp;        mentionMeAlias = &quot;&lt;@!&quot; + this.getJda().getSelfUser().getId() + &quot;&gt;&quot;;</b>
+<b class="nc"><i>282</i>&nbsp;        sendStatsToDiscordPw();</b>
+<b class="nc"><i>283</i>&nbsp;        sendStatsToDiscordbotsOrg();</b>
+<b class="nc"><i>284</i>&nbsp;        isReady = true;</b>
+<b class="nc"><i>285</i>&nbsp;        RoleRankings.fixRoles(this.getJda().getGuilds());</b>
+<b class="nc"><i>286</i>&nbsp;        container.allShardsReady();</b>
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    public void reloadAutoReplies() {
+<b class="nc"><i>291</i>&nbsp;        autoReplyhandler.reload();</b>
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    /**
+<i>295</i>&nbsp;     * Remove all cached objects for a guild
+<i>296</i>&nbsp;     *
+<i>297</i>&nbsp;     * @param guild the guild to clear
+<i>298</i>&nbsp;     */
+<i>299</i>&nbsp;    public void clearGuildData(Guild guild) {
+<b class="nc"><i>300</i>&nbsp;        GuildSettings.remove(guild.getIdLong());</b>
+<b class="nc"><i>301</i>&nbsp;        autoReplyhandler.removeGuild(guild.getIdLong());</b>
+<b class="nc"><i>302</i>&nbsp;        MusicPlayerHandler.removeGuild(guild);</b>
+<b class="nc"><i>303</i>&nbsp;        commandReactionHandler.removeGuild(guild.getIdLong());</b>
+<i>304</i>&nbsp;    }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;    /**
+<i>307</i>&nbsp;     * load data for a guild
+<i>308</i>&nbsp;     *
+<i>309</i>&nbsp;     * @param guild guild to load for
+<i>310</i>&nbsp;     */
+<i>311</i>&nbsp;    public void loadGuild(Guild guild) {
+<b class="nc"><i>312</i>&nbsp;        int cachedId = CGuild.getCachedId(guild.getIdLong());</b>
+<b class="nc"><i>313</i>&nbsp;        CommandHandler.loadCustomCommands(cachedId);</b>
+<i>314</i>&nbsp;    }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    private void registerHandlers() {
+<b class="nc"><i>317</i>&nbsp;        security = new SecurityHandler();</b>
+<b class="nc"><i>318</i>&nbsp;        gameHandler = new GameHandler(this);</b>
+<b class="nc"><i>319</i>&nbsp;        out = new OutgoingContentHandler(this);</b>
+<b class="nc"><i>320</i>&nbsp;        musicReactionHandler = new MusicReactionHandler(this);</b>
+<b class="nc"><i>321</i>&nbsp;        roleReactionHandler = new RoleReactionHandler(this);</b>
+<b class="nc"><i>322</i>&nbsp;        commandReactionHandler = new CommandReactionHandler();</b>
+<b class="nc"><i>323</i>&nbsp;        autoReplyhandler = new AutoReplyHandler(this);</b>
+<i>324</i>&nbsp;    }
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;    public String getUserName() {
+<b class="nc"><i>327</i>&nbsp;        return getJda().getSelfUser().getName();</b>
+<i>328</i>&nbsp;    }
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;    public boolean setUserName(String newName) {
+<b class="nc"><i>331</i>&nbsp;        if (!getUserName().equals(newName)) {</b>
+<b class="nc"><i>332</i>&nbsp;            getJda().getSelfUser().getManager().setName(newName).complete();</b>
+<b class="nc"><i>333</i>&nbsp;            return true;</b>
+<i>334</i>&nbsp;        }
+<b class="nc"><i>335</i>&nbsp;        return false;</b>
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    public void addStreamToQueue(String url, Guild guild) {
+<b class="nc"><i>339</i>&nbsp;        MusicPlayerHandler.getFor(guild, this).addStream(url);</b>
+<b class="nc"><i>340</i>&nbsp;        MusicPlayerHandler.getFor(guild, this).startPlaying();</b>
+<i>341</i>&nbsp;    }
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;    public void handlePrivateMessage(PrivateChannel channel, User author, Message message) {
+<b class="nc"><i>344</i>&nbsp;        if (security.isBanned(author)) {</b>
+<i>345</i>&nbsp;            return;
+<i>346</i>&nbsp;        }
+<b class="nc"><i>347</i>&nbsp;        if (CommandHandler.isCommand(null, message.getContentRaw(), mentionMe, mentionMeAlias)) {</b>
+<b class="nc"><i>348</i>&nbsp;            CommandHandler.process(this, channel, author, message);</b>
+<i>349</i>&nbsp;        } else {
+<b class="nc"><i>350</i>&nbsp;            channel.sendTyping().queue();</b>
+<b class="nc"><i>351</i>&nbsp;            this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(0L, message.getContentRaw(), channel), null);</b>
+<i>352</i>&nbsp;        }
+<i>353</i>&nbsp;    }
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;    public void handleMessage(Guild guild, TextChannel channel, User author, Message message) {
+<b class="nc"><i>356</i>&nbsp;        if (author == null || (author.isBot() &amp;&amp; !security.isInteractionBot(author.getIdLong()))) {</b>
+<i>357</i>&nbsp;            return;
+<i>358</i>&nbsp;        }
+<b class="nc"><i>359</i>&nbsp;        if (security.isBanned(author)) {</b>
+<i>360</i>&nbsp;            return;
+<i>361</i>&nbsp;        }
+<b class="nc"><i>362</i>&nbsp;        GuildSettings settings = GuildSettings.get(guild.getIdLong());</b>
+<b class="nc"><i>363</i>&nbsp;        if (gameHandler.isGameInput(channel, author, message.getContentRaw().toLowerCase())) {</b>
+<b class="nc"><i>364</i>&nbsp;            gameHandler.execute(author, channel, message.getContentRaw(), null);</b>
+<i>365</i>&nbsp;            return;
+<i>366</i>&nbsp;        }
+<b class="nc"><i>367</i>&nbsp;        if (CommandHandler.isCommand(channel, message.getContentRaw().trim(), mentionMe, mentionMeAlias)) {</b>
+<b class="nc"><i>368</i>&nbsp;            CommandHandler.process(this, channel, author, message);</b>
+<i>369</i>&nbsp;            return;
+<i>370</i>&nbsp;        }
+<b class="nc"><i>371</i>&nbsp;        if (GuildSettings.getBoolFor(channel, GSetting.AUTO_REPLY)) {</b>
+<b class="nc"><i>372</i>&nbsp;            if (autoReplyhandler.autoReplied(message)) {</b>
+<i>373</i>&nbsp;                return;
+<i>374</i>&nbsp;            }
+<i>375</i>&nbsp;        }
+<b class="nc"><i>376</i>&nbsp;        if (BotConfig.BOT_CHATTING_ENABLED &amp;&amp; settings.getBoolValue(GSetting.CHAT_BOT_ENABLED) &amp;&amp;</b>
+<b class="nc"><i>377</i>&nbsp;                channel.getId().equals(GuildSettings.get(channel.getGuild()).getOrDefault(GSetting.BOT_CHANNEL))) {</b>
+<b class="nc"><i>378</i>&nbsp;            if (PermissionUtil.checkPermission(channel, channel.getGuild().getSelfMember(), Permission.MESSAGE_WRITE)) {</b>
+<b class="nc"><i>379</i>&nbsp;                channel.sendTyping().queue();</b>
+<b class="nc"><i>380</i>&nbsp;                this.out.sendAsyncMessage(channel, this.chatBotHandler.chat(guild.getIdLong(), message.getContentRaw(), channel), null);</b>
+<i>381</i>&nbsp;            }
+<i>382</i>&nbsp;        }
+<i>383</i>&nbsp;    }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;    public BotContainer getContainer() {
+<b class="nc"><i>386</i>&nbsp;        return container;</b>
+<i>387</i>&nbsp;    }
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;    public void setContainer(BotContainer container) {
+<b class="nc"><i>390</i>&nbsp;        this.container = container;</b>
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    public void sendStatsToDiscordPw() {
+<b class="nc"><i>394</i>&nbsp;        if (!BotConfig.BOT_STATS_DISCORD_PW_ENABLED) {</b>
+<i>395</i>&nbsp;            return;
+<i>396</i>&nbsp;        }
+<b class="nc"><i>397</i>&nbsp;        JSONObject data = new JSONObject();</b>
+<b class="nc"><i>398</i>&nbsp;        data.put(&quot;server_count&quot;, getJda().getGuilds().size());</b>
+<b class="nc"><i>399</i>&nbsp;        if (totShards &gt; 1) {</b>
+<b class="nc"><i>400</i>&nbsp;            data.put(&quot;shard_id&quot;, shardId);</b>
+<b class="nc"><i>401</i>&nbsp;            data.put(&quot;shard_count&quot;, totShards);</b>
+<i>402</i>&nbsp;        }
+<b class="nc"><i>403</i>&nbsp;        Unirest.post(&quot;https://bots.discord.pw/api/bots/&quot; + getJda().getSelfUser().getId() + &quot;/stats&quot;)</b>
+<b class="nc"><i>404</i>&nbsp;                .header(&quot;Authorization&quot;, BotConfig.BOT_TOKEN_BOTS_DISCORD_PW)</b>
+<b class="nc"><i>405</i>&nbsp;                .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</b>
+<b class="nc"><i>406</i>&nbsp;                .body(data.toString())</b>
+<b class="nc"><i>407</i>&nbsp;                .asJsonAsync();</b>
+<i>408</i>&nbsp;    }
+<i>409</i>&nbsp;
+<i>410</i>&nbsp;    public void sendStatsToDiscordbotsOrg() {
+<b class="nc"><i>411</i>&nbsp;        if (BotConfig.BOT_TOKEN_DISCORDBOTS_ORG.length() &lt; 10) {</b>
+<i>412</i>&nbsp;            return;
+<i>413</i>&nbsp;        }
+<b class="nc"><i>414</i>&nbsp;        JSONObject data = new JSONObject();</b>
+<b class="nc"><i>415</i>&nbsp;        data.put(&quot;server_count&quot;, getJda().getGuilds().size());</b>
+<b class="nc"><i>416</i>&nbsp;        if (totShards &gt; 1) {</b>
+<b class="nc"><i>417</i>&nbsp;            data.put(&quot;shard_id&quot;, shardId);</b>
+<b class="nc"><i>418</i>&nbsp;            data.put(&quot;shard_count&quot;, totShards);</b>
+<i>419</i>&nbsp;        }
+<b class="nc"><i>420</i>&nbsp;        Unirest.post(&quot;https://discordbots.org/api/bots/&quot; + getJda().getSelfUser().getId() + &quot;/stats&quot;)</b>
+<b class="nc"><i>421</i>&nbsp;                .header(&quot;Authorization&quot;, BotConfig.BOT_TOKEN_DISCORDBOTS_ORG)</b>
+<b class="nc"><i>422</i>&nbsp;                .header(&quot;Content-Type&quot;, &quot;application/json&quot;)</b>
+<b class="nc"><i>423</i>&nbsp;                .body(data.toString())</b>
+<b class="nc"><i>424</i>&nbsp;                .asJsonAsync();</b>
+<i>425</i>&nbsp;    }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;    public void initOnce() {
+<b class="nc"><i>428</i>&nbsp;        CBanks.init(getJda().getSelfUser().getIdLong(), getJda().getSelfUser().getName());</b>
+<i>429</i>&nbsp;    }
+<i>430</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

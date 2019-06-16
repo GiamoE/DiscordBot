@@ -1,0 +1,285 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ChatBotHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.handler</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ChatBotHandler (emily.handler)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ChatBotHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ChatBotHandler$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ChatBotHandler$ChatBotInstance</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 30)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ChatBotHandler$ResponseCategory</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 57)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.handler;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;import emily.main.BotConfig;
+<i>21</i>&nbsp;import emily.main.DiscordBot;
+<i>22</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>23</i>&nbsp;import org.bots4j.wit.WitClient;
+<i>24</i>&nbsp;import org.bots4j.wit.beans.EntityMap;
+<i>25</i>&nbsp;import org.bots4j.wit.beans.GetIntentViaTextResponse;
+<i>26</i>&nbsp;import org.bots4j.wit.beans.Outcome;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Iterator;
+<i>29</i>&nbsp;import java.util.Map;
+<i>30</i>&nbsp;import java.util.concurrent.ConcurrentHashMap;
+<i>31</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>32</i>&nbsp;
+<b class="nc"><i>33</i>&nbsp;public class ChatBotHandler {</b>
+<i>34</i>&nbsp;    private final Map&lt;Long, ChatBotInstance&gt; sessions;
+<i>35</i>&nbsp;    private final DiscordBot bot;
+<i>36</i>&nbsp;
+<b class="nc"><i>37</i>&nbsp;    public ChatBotHandler(DiscordBot bot) {</b>
+<b class="nc"><i>38</i>&nbsp;        this.bot = bot;</b>
+<b class="nc"><i>39</i>&nbsp;        sessions = new ConcurrentHashMap&lt;&gt;();</b>
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private WitClient createSession() {
+<b class="nc"><i>43</i>&nbsp;        return new WitClient(BotConfig.WIT_AI_TOKEN);</b>
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public void cleanCache() {
+<b class="nc"><i>47</i>&nbsp;        long deleteBefore = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(30);</b>
+<b class="nc"><i>48</i>&nbsp;        Iterator&lt;Map.Entry&lt;Long, ChatBotInstance&gt;&gt; iterator = sessions.entrySet().iterator();</b>
+<b class="nc"><i>49</i>&nbsp;        while (iterator.hasNext()) {</b>
+<b class="nc"><i>50</i>&nbsp;            Map.Entry&lt;Long, ChatBotInstance&gt; entry = iterator.next();</b>
+<b class="nc"><i>51</i>&nbsp;            if (entry.getValue().getLastInteraction() &lt; deleteBefore) {</b>
+<b class="nc"><i>52</i>&nbsp;                sessions.remove(entry.getKey());</b>
+<i>53</i>&nbsp;            }
+<b class="nc"><i>54</i>&nbsp;        }</b>
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public String chat(long guildId, String input, MessageChannel channel) {
+<b class="nc"><i>58</i>&nbsp;        if (!sessions.containsKey(guildId)) {</b>
+<b class="nc"><i>59</i>&nbsp;            sessions.put(guildId, new ChatBotInstance(createSession()));</b>
+<i>60</i>&nbsp;        }
+<b class="nc"><i>61</i>&nbsp;        return sessions.get(guildId).chat(input, channel);</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    private class ChatBotInstance {
+<i>65</i>&nbsp;        private long lastInteraction;
+<b class="nc"><i>66</i>&nbsp;        private int failedAttempts = 0;</b>
+<i>67</i>&nbsp;        private WitClient botsession;
+<i>68</i>&nbsp;
+<b class="nc"><i>69</i>&nbsp;        ChatBotInstance(WitClient session) {</b>
+<b class="nc"><i>70</i>&nbsp;            botsession = session;</b>
+<i>71</i>&nbsp;        }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;        public long getLastInteraction() {
+<b class="nc"><i>74</i>&nbsp;            return lastInteraction;</b>
+<i>75</i>&nbsp;        }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;        public String chat(String input, MessageChannel channel) {
+<b class="nc"><i>78</i>&nbsp;            if (failedAttempts &gt; 25) {</b>
+<b class="nc"><i>79</i>&nbsp;                return &quot;&quot;;</b>
+<i>80</i>&nbsp;            }
+<i>81</i>&nbsp;            try {
+<b class="nc"><i>82</i>&nbsp;                failedAttempts = 0;</b>
+<b class="nc"><i>83</i>&nbsp;                lastInteraction = System.currentTimeMillis();</b>
+<b class="nc"><i>84</i>&nbsp;                GetIntentViaTextResponse intent = botsession.getIntentViaText(input, null, null, null, null);</b>
+<b class="nc"><i>85</i>&nbsp;                if (intent.getOutcomes().isEmpty()) {</b>
+<b class="nc"><i>86</i>&nbsp;                    return &quot;&quot;;</b>
+<i>87</i>&nbsp;                }
+<b class="nc"><i>88</i>&nbsp;                Outcome outcome = intent.getOutcomes().get(0);</b>
+<b class="nc"><i>89</i>&nbsp;                EntityMap entities = outcome.getEntities();</b>
+<b class="nc"><i>90</i>&nbsp;                for (Map.Entry&lt;String, Object&gt; stringObjectEntry : entities.entrySet()) {</b>
+<b class="nc"><i>91</i>&nbsp;                    System.out.println(stringObjectEntry.getKey() + &quot; ++ &quot; + stringObjectEntry.getValue());</b>
+<b class="nc"><i>92</i>&nbsp;                }</b>
+<b class="nc"><i>93</i>&nbsp;                String search = entities.firstEntityValue(&quot;search_query&quot;);</b>
+<b class="nc"><i>94</i>&nbsp;                ResponseCategory category = ResponseCategory.get(entities.firstEntityValue(&quot;intent&quot;));</b>
+<b class="nc"><i>95</i>&nbsp;                switch (category){</b>
+<i>96</i>&nbsp;                    case COMMANDHELP:
+<b class="nc"><i>97</i>&nbsp;                        if(CommandHandler.commandExists(search)){</b>
+<b class="nc"><i>98</i>&nbsp;                            return CommandHandler.getCommand(&quot;help&quot;).execute(bot, new String[]{search}, channel, null, null);</b>
+<i>99</i>&nbsp;                        }
+<b class="nc"><i>100</i>&nbsp;                        return &quot;No info for `&quot;+search+&quot;`&quot;;</b>
+<i>101</i>&nbsp;                    case COMMANDEXECUTE:
+<b class="nc"><i>102</i>&nbsp;                        search = search.replace(&quot; &quot;,&quot;&quot;);</b>
+<b class="nc"><i>103</i>&nbsp;                        if(CommandHandler.commandExists(search)){</b>
+<b class="nc"><i>104</i>&nbsp;                            return CommandHandler.getCommand(search).execute(bot, new String[]{}, channel, bot.getJda().getSelfUser(), null);</b>
+<i>105</i>&nbsp;                        }
+<b class="nc"><i>106</i>&nbsp;                        return &quot;Cant find a command for `&quot;+search+&quot;`&quot;;</b>
+<i>107</i>&nbsp;                }
+<b class="nc"><i>108</i>&nbsp;                return String.format(&quot;category: %s; details: `%s`&quot;, category, search);</b>
+<b class="nc"><i>109</i>&nbsp;            } catch (Exception ignored) {</b>
+<b class="nc"><i>110</i>&nbsp;                failedAttempts++;</b>
+<i>111</i>&nbsp;            }
+<b class="nc"><i>112</i>&nbsp;            return &quot;&quot;;</b>
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;    }
+<b class="nc"><i>115</i>&nbsp;    enum ResponseCategory{</b>
+<b class="nc"><i>116</i>&nbsp;        COMMANDHELP(&quot;command-help&quot;),</b>
+<b class="nc"><i>117</i>&nbsp;        COMMANDEXECUTE(&quot;command-execute&quot;),</b>
+<b class="nc"><i>118</i>&nbsp;        UNKNOWN(&quot;?&quot;);</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;        private final String categoryname;
+<i>121</i>&nbsp;
+<b class="nc"><i>122</i>&nbsp;        ResponseCategory(String categoryname) {</b>
+<b class="nc"><i>123</i>&nbsp;            this.categoryname = categoryname;</b>
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;        public String getCategoryname() {
+<b class="nc"><i>127</i>&nbsp;            return categoryname;</b>
+<i>128</i>&nbsp;        }
+<i>129</i>&nbsp;        public static ResponseCategory get(String text){
+<b class="nc"><i>130</i>&nbsp;            for (ResponseCategory responseCategory : values()) {</b>
+<b class="nc"><i>131</i>&nbsp;                if(responseCategory.getCategoryname().equals(text)){</b>
+<b class="nc"><i>132</i>&nbsp;                    return responseCategory;</b>
+<i>133</i>&nbsp;                }
+<i>134</i>&nbsp;            }
+<b class="nc"><i>135</i>&nbsp;            return UNKNOWN;</b>
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

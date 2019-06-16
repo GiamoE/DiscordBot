@@ -1,0 +1,650 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CommandHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.handler</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CommandHandler (emily.handler)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CommandHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 243)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CommandHandler$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 245)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.handler;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.CommandCategory;
+<i>20</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>21</i>&nbsp;import emily.command.meta.ICommandCooldown;
+<i>22</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>23</i>&nbsp;import emily.db.WebDb;
+<i>24</i>&nbsp;import emily.db.controllers.CBlacklistCommand;
+<i>25</i>&nbsp;import emily.db.controllers.CBotEvent;
+<i>26</i>&nbsp;import emily.db.controllers.CCommandCooldown;
+<i>27</i>&nbsp;import emily.db.controllers.CCommandLog;
+<i>28</i>&nbsp;import emily.db.controllers.CGuild;
+<i>29</i>&nbsp;import emily.db.controllers.CUser;
+<i>30</i>&nbsp;import emily.db.model.OBlacklistCommand;
+<i>31</i>&nbsp;import emily.db.model.OBotEvent;
+<i>32</i>&nbsp;import emily.db.model.OCommandCooldown;
+<i>33</i>&nbsp;import emily.guildsettings.GSetting;
+<i>34</i>&nbsp;import emily.main.BotConfig;
+<i>35</i>&nbsp;import emily.main.DiscordBot;
+<i>36</i>&nbsp;import emily.main.Launcher;
+<i>37</i>&nbsp;import emily.templates.Templates;
+<i>38</i>&nbsp;import emily.util.DisUtil;
+<i>39</i>&nbsp;import emily.util.Emojibet;
+<i>40</i>&nbsp;import emily.util.TimeUtil;
+<i>41</i>&nbsp;import emoji4j.EmojiUtils;
+<i>42</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>43</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>44</i>&nbsp;import net.dv8tion.jda.core.entities.PrivateChannel;
+<i>45</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>46</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>47</i>&nbsp;import org.reflections.Reflections;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;import java.lang.reflect.InvocationTargetException;
+<i>50</i>&nbsp;import java.lang.reflect.Modifier;
+<i>51</i>&nbsp;import java.sql.ResultSet;
+<i>52</i>&nbsp;import java.sql.SQLException;
+<i>53</i>&nbsp;import java.util.ArrayList;
+<i>54</i>&nbsp;import java.util.HashMap;
+<i>55</i>&nbsp;import java.util.List;
+<i>56</i>&nbsp;import java.util.Map;
+<i>57</i>&nbsp;import java.util.Set;
+<i>58</i>&nbsp;import java.util.concurrent.ConcurrentHashMap;
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;/**
+<i>61</i>&nbsp; * Handles all the commands
+<i>62</i>&nbsp; */
+<b class="nc"><i>63</i>&nbsp;public class CommandHandler {</b>
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public final static String ALL_COMMANDS = &quot;all-commands&quot;;
+<b class="nc"><i>66</i>&nbsp;    private static final HashMap&lt;String, AbstractCommand&gt; commands = new HashMap&lt;&gt;();</b>
+<b class="nc"><i>67</i>&nbsp;    private static final HashMap&lt;String, AbstractCommand&gt; commandsAlias = new HashMap&lt;&gt;();</b>
+<b class="nc"><i>68</i>&nbsp;    private static final Map&lt;String, String&gt; customCommands = new ConcurrentHashMap&lt;&gt;();</b>
+<b class="nc"><i>69</i>&nbsp;    private static final Map&lt;Integer, Map&lt;String, String&gt;&gt; guildCommands = new ConcurrentHashMap&lt;&gt;();</b>
+<b class="nc"><i>70</i>&nbsp;    private static final Map&lt;Integer, Map&lt;Long, Map&lt;String, Boolean&gt;&gt;&gt; commandBlacklist = new ConcurrentHashMap&lt;&gt;();</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * checks if the the message in channel is a command
+<i>74</i>&nbsp;     *
+<i>75</i>&nbsp;     * @param channel        the channel the message came from
+<i>76</i>&nbsp;     * @param msg            the message
+<i>77</i>&nbsp;     * @param mentionMe      the user mention string
+<i>78</i>&nbsp;     * @param mentionMeAlias the nickname
+<i>79</i>&nbsp;     * @return whether or not the message is a command
+<i>80</i>&nbsp;     */
+<i>81</i>&nbsp;    public static boolean isCommand(TextChannel channel, String msg, String mentionMe, String mentionMeAlias) {
+<b class="nc"><i>82</i>&nbsp;        return msg.startsWith(DisUtil.getCommandPrefix(channel)) || msg.startsWith(mentionMe) || msg.startsWith(mentionMeAlias);</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public static void removeGuild(int guildId) {
+<b class="nc"><i>86</i>&nbsp;        if (guildCommands.containsKey(guildId)) {</b>
+<b class="nc"><i>87</i>&nbsp;            guildCommands.remove(guildId);</b>
+<i>88</i>&nbsp;        }
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    /**
+<i>92</i>&nbsp;     * directs the command to the right class
+<i>93</i>&nbsp;     *
+<i>94</i>&nbsp;     * @param bot             The bot instance
+<i>95</i>&nbsp;     * @param channel         which channel
+<i>96</i>&nbsp;     * @param author          author
+<i>97</i>&nbsp;     * @param incomingMessage message
+<i>98</i>&nbsp;     */
+<i>99</i>&nbsp;    public static void process(DiscordBot bot, MessageChannel channel, User author, Message incomingMessage) {
+<b class="nc"><i>100</i>&nbsp;        String outMsg = &quot;&quot;;</b>
+<b class="nc"><i>101</i>&nbsp;        boolean commandSuccess = true;</b>
+<b class="nc"><i>102</i>&nbsp;        boolean startedWithMention = false;</b>
+<b class="nc"><i>103</i>&nbsp;        int guildId = 0;</b>
+<b class="nc"><i>104</i>&nbsp;        String inputMessage = incomingMessage.getContentRaw();</b>
+<b class="nc"><i>105</i>&nbsp;        String commandUsed = &quot;-&quot;;</b>
+<b class="nc"><i>106</i>&nbsp;        if (inputMessage.startsWith(bot.mentionMe)) {</b>
+<b class="nc"><i>107</i>&nbsp;            inputMessage = inputMessage.replace(bot.mentionMe, &quot;&quot;).trim();</b>
+<b class="nc"><i>108</i>&nbsp;            startedWithMention = true;</b>
+<b class="nc"><i>109</i>&nbsp;        } else if (inputMessage.startsWith(bot.mentionMeAlias)) {</b>
+<b class="nc"><i>110</i>&nbsp;            inputMessage = inputMessage.replace(bot.mentionMeAlias, &quot;&quot;).trim();</b>
+<b class="nc"><i>111</i>&nbsp;            startedWithMention = true;</b>
+<i>112</i>&nbsp;        }
+<i>113</i>&nbsp;
+<b class="nc"><i>114</i>&nbsp;        if (channel instanceof TextChannel) {</b>
+<b class="nc"><i>115</i>&nbsp;            guildId = CGuild.getCachedId(((TextChannel) channel).getGuild().getIdLong());</b>
+<b class="nc"><i>116</i>&nbsp;            if (!((TextChannel) channel).canTalk()) {</b>
+<i>117</i>&nbsp;                return;
+<i>118</i>&nbsp;            }
+<i>119</i>&nbsp;        }
+<i>120</i>&nbsp;        //
+<b class="nc"><i>121</i>&nbsp;        String[] input = inputMessage.split(&quot;\\s+&quot;, 2);// (?:([^\s\&quot;]+)|\&quot;((?:\w+|\\\&quot;|[^\&quot;])+)&quot;)</b>
+<i>122</i>&nbsp;        String[] args;
+<b class="nc"><i>123</i>&nbsp;        if (input.length == 2) {</b>
+<b class="nc"><i>124</i>&nbsp;            args = input[1].split(&quot; +&quot;);</b>
+<i>125</i>&nbsp;        } else {
+<b class="nc"><i>126</i>&nbsp;            args = new String[0];</b>
+<i>127</i>&nbsp;        }
+<b class="nc"><i>128</i>&nbsp;        input[0] = DisUtil.filterPrefix(input[0], channel).toLowerCase();</b>
+<b class="nc"><i>129</i>&nbsp;        if (commands.containsKey(input[0]) || commandsAlias.containsKey(input[0])) {</b>
+<b class="nc"><i>130</i>&nbsp;            AbstractCommand command = commands.containsKey(input[0]) ? commands.get(input[0]) : commandsAlias.get(input[0]);</b>
+<b class="nc"><i>131</i>&nbsp;            commandUsed = command.getCommand();</b>
+<b class="nc"><i>132</i>&nbsp;            long cooldown = getCommandCooldown(command, author, channel);</b>
+<b class="nc"><i>133</i>&nbsp;            if (command.canBeDisabled() &amp;&amp; isDisabled(guildId, channel.getIdLong(), command.getCommand())) {</b>
+<b class="nc"><i>134</i>&nbsp;                commandSuccess = false;</b>
+<b class="nc"><i>135</i>&nbsp;                if (GuildSettings.getBoolFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS)) {</b>
+<b class="nc"><i>136</i>&nbsp;                    outMsg = Templates.command.is_blacklisted.format(input[0]);</b>
+<i>137</i>&nbsp;                }
+<b class="nc"><i>138</i>&nbsp;            } else if (cooldown &gt; 0) {</b>
+<b class="nc"><i>139</i>&nbsp;                outMsg = Templates.command.on_cooldown.format(TimeUtil.getRelativeTime((System.currentTimeMillis() / 1000L) + cooldown, false));</b>
+<i>140</i>&nbsp;
+<b class="nc"><i>141</i>&nbsp;            } else if (!hasRightVisibility(channel, command.getVisibility())) {</b>
+<b class="nc"><i>142</i>&nbsp;                if (channel instanceof PrivateChannel) {</b>
+<b class="nc"><i>143</i>&nbsp;                    outMsg = Templates.command.not_for_private.formatGuild(channel);</b>
+<i>144</i>&nbsp;                } else {
+<b class="nc"><i>145</i>&nbsp;                    outMsg = Templates.command.not_for_public.formatGuild(channel);</b>
+<i>146</i>&nbsp;                }
+<i>147</i>&nbsp;            } else {
+<i>148</i>&nbsp;                String commandOutput;
+<b class="nc"><i>149</i>&nbsp;                if (args.length == 1 &amp;&amp; args[0].equalsIgnoreCase(&quot;help&quot;)) {</b>
+<b class="nc"><i>150</i>&nbsp;                    commandOutput = commands.get(&quot;help&quot;).execute(bot, new String[]{input[0]}, channel, author, incomingMessage);</b>
+<i>151</i>&nbsp;                } else {
+<b class="nc"><i>152</i>&nbsp;                    commandOutput = command.execute(bot, args, channel, author, incomingMessage);</b>
+<i>153</i>&nbsp;                }
+<b class="nc"><i>154</i>&nbsp;                if (!commandOutput.isEmpty()) {</b>
+<b class="nc"><i>155</i>&nbsp;                    outMsg = commandOutput;</b>
+<i>156</i>&nbsp;                }
+<b class="nc"><i>157</i>&nbsp;                if (BotConfig.BOT_COMMAND_LOGGING) {</b>
+<b class="nc"><i>158</i>&nbsp;                    StringBuilder usedArguments = new StringBuilder();</b>
+<b class="nc"><i>159</i>&nbsp;                    for (String arg : args) {</b>
+<b class="nc"><i>160</i>&nbsp;                        usedArguments.append(arg).append(&quot; &quot;);</b>
+<i>161</i>&nbsp;                    }
+<b class="nc"><i>162</i>&nbsp;                    if (channel instanceof TextChannel) {</b>
+<b class="nc"><i>163</i>&nbsp;                        CCommandLog.saveLog(CUser.getCachedId(author.getIdLong(), EmojiUtils.shortCodify(author.getName())),</b>
+<b class="nc"><i>164</i>&nbsp;                                CGuild.getCachedId(((TextChannel) channel).getGuild().getIdLong()),</b>
+<b class="nc"><i>165</i>&nbsp;                                command.getCommand(),</b>
+<b class="nc"><i>166</i>&nbsp;                                EmojiUtils.shortCodify(usedArguments.toString()).trim());</b>
+<i>167</i>&nbsp;                    }
+<i>168</i>&nbsp;                }
+<i>169</i>&nbsp;            }
+<b class="nc"><i>170</i>&nbsp;        } else if (customCommands.containsKey(input[0])) {</b>
+<b class="nc"><i>171</i>&nbsp;            commandUsed = input[0];</b>
+<b class="nc"><i>172</i>&nbsp;            outMsg = DisUtil.replaceTags(customCommands.get(input[0]), author, channel, args);</b>
+<b class="nc"><i>173</i>&nbsp;        } else if (guildCommands.containsKey(guildId) &amp;&amp; guildCommands.get(guildId).containsKey(input[0])) {</b>
+<b class="nc"><i>174</i>&nbsp;            commandUsed = &quot;custom:&quot; + input[0];</b>
+<b class="nc"><i>175</i>&nbsp;            outMsg = DisUtil.replaceTags(guildCommands.get(guildId).get(input[0]), author, channel, args);</b>
+<b class="nc"><i>176</i>&nbsp;        } else if (startedWithMention &amp;&amp; BotConfig.BOT_CHATTING_ENABLED) {</b>
+<b class="nc"><i>177</i>&nbsp;            commandSuccess = false;</b>
+<b class="nc"><i>178</i>&nbsp;            channel.sendTyping().queue();</b>
+<b class="nc"><i>179</i>&nbsp;            outMsg = author.getAsMention() + &quot;, &quot; + bot.chatBotHandler.chat(guildId &gt; 0 ? Long.parseLong(CGuild.getCachedDiscordId(guildId)) : 0L, inputMessage, channel);</b>
+<b class="nc"><i>180</i>&nbsp;        } else if (BotConfig.BOT_COMMAND_SHOW_UNKNOWN ||</b>
+<b class="nc"><i>181</i>&nbsp;                GuildSettings.getBoolFor(channel, GSetting.SHOW_UNKNOWN_COMMANDS)) {</b>
+<b class="nc"><i>182</i>&nbsp;            commandSuccess = false;</b>
+<b class="nc"><i>183</i>&nbsp;            outMsg = Templates.unknown_command.format(GuildSettings.getFor(channel, GSetting.COMMAND_PREFIX) + &quot;help&quot;);</b>
+<i>184</i>&nbsp;        }
+<b class="nc"><i>185</i>&nbsp;        if (!outMsg.isEmpty()) {</b>
+<b class="nc"><i>186</i>&nbsp;            bot.out.sendAsyncMessage(channel, outMsg);</b>
+<i>187</i>&nbsp;        }
+<b class="nc"><i>188</i>&nbsp;        if (commandSuccess) {</b>
+<b class="nc"><i>189</i>&nbsp;            if (channel instanceof TextChannel) {</b>
+<b class="nc"><i>190</i>&nbsp;                TextChannel tc = (TextChannel) channel;</b>
+<b class="nc"><i>191</i>&nbsp;                TextChannel commandLogChannel = bot.getCommandLogChannel(tc.getGuild().getIdLong());</b>
+<b class="nc"><i>192</i>&nbsp;                if (commandLogChannel != null &amp;&amp; commandLogChannel.canTalk()) {</b>
+<b class="nc"><i>193</i>&nbsp;                    bot.queue.add(commandLogChannel.sendMessage(</b>
+<b class="nc"><i>194</i>&nbsp;                            String.format(&quot;%s **%s#%s** used %s `%s` in %s&quot;,</b>
+<b class="nc"><i>195</i>&nbsp;                                    Emojibet.USER, author.getName(), author.getDiscriminator(), Emojibet.KEYBOARD, commandUsed, tc.getAsMention()</b>
+<i>196</i>&nbsp;                            )
+<i>197</i>&nbsp;                    ));
+<i>198</i>&nbsp;                }
+<b class="nc"><i>199</i>&nbsp;                Launcher.log(&quot;command executed&quot;, &quot;bot&quot;, &quot;command&quot;,</b>
+<i>200</i>&nbsp;                        &quot;input&quot;, incomingMessage,
+<b class="nc"><i>201</i>&nbsp;                        &quot;user-id&quot;, author.getId(),</b>
+<i>202</i>&nbsp;                        &quot;command&quot;, commandUsed,
+<b class="nc"><i>203</i>&nbsp;                        &quot;user-name&quot;, author.getName(),</b>
+<b class="nc"><i>204</i>&nbsp;                        &quot;guild-id&quot;, tc.getGuild().getId(),</b>
+<b class="nc"><i>205</i>&nbsp;                        &quot;guild-name&quot;, tc.getGuild().getName(),</b>
+<i>206</i>&nbsp;                        &quot;response&quot;, outMsg);
+<b class="nc"><i>207</i>&nbsp;            } else {</b>
+<b class="nc"><i>208</i>&nbsp;                Launcher.log(&quot;command executed&quot;, &quot;bot&quot;, &quot;command-private&quot;,</b>
+<i>209</i>&nbsp;                        &quot;input&quot;, incomingMessage,
+<b class="nc"><i>210</i>&nbsp;                        &quot;user-id&quot;, author.getId(),</b>
+<i>211</i>&nbsp;                        &quot;command&quot;, commandUsed,
+<b class="nc"><i>212</i>&nbsp;                        &quot;user-name&quot;, author.getName(),</b>
+<i>213</i>&nbsp;                        &quot;response&quot;, outMsg);
+<i>214</i>&nbsp;            }
+<b class="nc"><i>215</i>&nbsp;            CUser.registerCommandUse(CUser.getCachedId(author.getIdLong()));</b>
+<i>216</i>&nbsp;        }
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    private static boolean hasRightVisibility(MessageChannel channel, CommandVisibility visibility) {
+<b class="nc"><i>220</i>&nbsp;        if (channel instanceof PrivateChannel) {</b>
+<b class="nc"><i>221</i>&nbsp;            return visibility.isForPrivate();</b>
+<i>222</i>&nbsp;        }
+<b class="nc"><i>223</i>&nbsp;        return visibility.isForPublic();</b>
+<i>224</i>&nbsp;    }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    /**
+<i>227</i>&nbsp;     * checks if a command is on cooldown and returns the amount of seconds left before next usage
+<i>228</i>&nbsp;     *
+<i>229</i>&nbsp;     * @param command the command
+<i>230</i>&nbsp;     * @param author  the user who sent the command
+<i>231</i>&nbsp;     * @param channel the channel
+<i>232</i>&nbsp;     * @return seconds till next use
+<i>233</i>&nbsp;     */
+<i>234</i>&nbsp;    private static long getCommandCooldown(AbstractCommand command, User author, MessageChannel channel) {
+<b class="nc"><i>235</i>&nbsp;        if (command instanceof ICommandCooldown) {</b>
+<b class="nc"><i>236</i>&nbsp;            long now = System.currentTimeMillis() / 1000L;</b>
+<b class="nc"><i>237</i>&nbsp;            ICommandCooldown cd = (ICommandCooldown) command;</b>
+<i>238</i>&nbsp;            String targetId;
+<b class="nc"><i>239</i>&nbsp;            switch (cd.getScope()) {</b>
+<i>240</i>&nbsp;                case USER:
+<b class="nc"><i>241</i>&nbsp;                    targetId = author.getId();</b>
+<b class="nc"><i>242</i>&nbsp;                    break;</b>
+<i>243</i>&nbsp;                case CHANNEL:
+<b class="nc"><i>244</i>&nbsp;                    targetId = channel.getId();</b>
+<b class="nc"><i>245</i>&nbsp;                    break;</b>
+<i>246</i>&nbsp;                case GUILD:
+<b class="nc"><i>247</i>&nbsp;                    if (channel instanceof PrivateChannel) {</b>
+<b class="nc"><i>248</i>&nbsp;                        CBotEvent.insert(OBotEvent.Level.WARN, &quot;:warning:&quot;, &quot;:keyboard:&quot;, String.format(&quot;`%s` issued the `%s` Command with guild-scale cooldown in private channel!&quot;, author.getName(), command.getCommand()));</b>
+<i>249</i>&nbsp;                    }
+<b class="nc"><i>250</i>&nbsp;                    targetId = ((TextChannel) channel).getGuild().getId();</b>
+<b class="nc"><i>251</i>&nbsp;                    break;</b>
+<i>252</i>&nbsp;                case GLOBAL:
+<b class="nc"><i>253</i>&nbsp;                    targetId = &quot;GLOBAL&quot;;</b>
+<b class="nc"><i>254</i>&nbsp;                    break;</b>
+<i>255</i>&nbsp;                default:
+<b class="nc"><i>256</i>&nbsp;                    targetId = &quot;&quot;;</b>
+<i>257</i>&nbsp;                    break;
+<i>258</i>&nbsp;            }
+<b class="nc"><i>259</i>&nbsp;            OCommandCooldown cooldown = CCommandCooldown.findBy(command.getCommand(), targetId, cd.getScope().getId());</b>
+<b class="nc"><i>260</i>&nbsp;            if (cooldown.lastTime + cd.getCooldownDuration() &lt;= now) {</b>
+<i>261</i>&nbsp;
+<b class="nc"><i>262</i>&nbsp;                cooldown.command = command.getCommand();</b>
+<b class="nc"><i>263</i>&nbsp;                cooldown.targetId = targetId;</b>
+<b class="nc"><i>264</i>&nbsp;                cooldown.targetType = cd.getScope().getId();</b>
+<b class="nc"><i>265</i>&nbsp;                cooldown.lastTime = now;</b>
+<b class="nc"><i>266</i>&nbsp;                CCommandCooldown.insertOrUpdate(cooldown);</b>
+<b class="nc"><i>267</i>&nbsp;                return 0;</b>
+<i>268</i>&nbsp;            }
+<b class="nc"><i>269</i>&nbsp;            return cooldown.lastTime + cd.getCooldownDuration() - now;</b>
+<i>270</i>&nbsp;        }
+<b class="nc"><i>271</i>&nbsp;        return 0;</b>
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    private static boolean isDisabled(int guildId, long channelId, String commandName) {
+<b class="nc"><i>275</i>&nbsp;        if (guildId == 0) {</b>
+<b class="nc"><i>276</i>&nbsp;            return false;</b>
+<i>277</i>&nbsp;        }
+<b class="nc"><i>278</i>&nbsp;        if (!commandBlacklist.containsKey(guildId)) {</b>
+<b class="nc"><i>279</i>&nbsp;            return false;</b>
+<i>280</i>&nbsp;        }
+<b class="nc"><i>281</i>&nbsp;        if (commandBlacklist.get(guildId).containsKey(channelId)) {</b>
+<b class="nc"><i>282</i>&nbsp;            if (commandBlacklist.get(guildId).get(channelId).containsKey(commandName)) {</b>
+<b class="nc"><i>283</i>&nbsp;                return commandBlacklist.get(guildId).get(channelId).get(commandName);</b>
+<i>284</i>&nbsp;            }
+<b class="nc"><i>285</i>&nbsp;            if (commandBlacklist.get(guildId).get(channelId).containsKey(ALL_COMMANDS)) {</b>
+<b class="nc"><i>286</i>&nbsp;                return commandBlacklist.get(guildId).get(channelId).get(ALL_COMMANDS);</b>
+<i>287</i>&nbsp;            }
+<b class="nc"><i>288</i>&nbsp;            return false;</b>
+<i>289</i>&nbsp;        }
+<b class="nc"><i>290</i>&nbsp;        if (commandBlacklist.get(guildId).containsKey(0L)) {</b>
+<b class="nc"><i>291</i>&nbsp;            if (commandBlacklist.get(guildId).get(0L).containsKey(commandName)) {</b>
+<b class="nc"><i>292</i>&nbsp;                return commandBlacklist.get(guildId).get(0L).get(commandName);</b>
+<i>293</i>&nbsp;            }
+<b class="nc"><i>294</i>&nbsp;            if (commandBlacklist.get(guildId).get(0L).containsKey(ALL_COMMANDS)) {</b>
+<b class="nc"><i>295</i>&nbsp;                return commandBlacklist.get(guildId).get(0L).get(ALL_COMMANDS);</b>
+<i>296</i>&nbsp;            }
+<b class="nc"><i>297</i>&nbsp;            return false;</b>
+<i>298</i>&nbsp;        }
+<b class="nc"><i>299</i>&nbsp;        return false;</b>
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    /**
+<i>303</i>&nbsp;     * @param key command with or without the Config.BOT_COMMAND_PREFIX
+<i>304</i>&nbsp;     * @return instance of Command for Key or null
+<i>305</i>&nbsp;     */
+<i>306</i>&nbsp;    public static AbstractCommand getCommand(String key) {
+<b class="nc"><i>307</i>&nbsp;        if (key.startsWith(BotConfig.BOT_COMMAND_PREFIX)) {</b>
+<b class="nc"><i>308</i>&nbsp;            key = key.substring(BotConfig.BOT_COMMAND_PREFIX.length());</b>
+<i>309</i>&nbsp;        }
+<b class="nc"><i>310</i>&nbsp;        if (commands.containsKey(key)) {</b>
+<b class="nc"><i>311</i>&nbsp;            return commands.get(key);</b>
+<i>312</i>&nbsp;        }
+<b class="nc"><i>313</i>&nbsp;        if (commandsAlias.containsKey(key)) {</b>
+<b class="nc"><i>314</i>&nbsp;            return commandsAlias.get(key);</b>
+<i>315</i>&nbsp;        }
+<b class="nc"><i>316</i>&nbsp;        return null;</b>
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    /**
+<i>320</i>&nbsp;     * Lists the active custom commands
+<i>321</i>&nbsp;     *
+<i>322</i>&nbsp;     * @param guildId the internal guild id
+<i>323</i>&nbsp;     * @return list of code-commands
+<i>324</i>&nbsp;     */
+<i>325</i>&nbsp;    public static List&lt;String&gt; getCustomCommands(int guildId) {
+<b class="nc"><i>326</i>&nbsp;        List&lt;String&gt; cmds = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>327</i>&nbsp;        cmds.addAll(customCommands.keySet());</b>
+<b class="nc"><i>328</i>&nbsp;        if (guildCommands.containsKey(guildId)) {</b>
+<b class="nc"><i>329</i>&nbsp;            cmds.addAll(guildCommands.get(guildId).keySet());</b>
+<i>330</i>&nbsp;        }
+<b class="nc"><i>331</i>&nbsp;        return cmds;</b>
+<i>332</i>&nbsp;    }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    public static AbstractCommand[] getCommandObjects() {
+<b class="nc"><i>335</i>&nbsp;        return commands.values().toArray(new AbstractCommand[commands.values().size()]);</b>
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    /**
+<i>339</i>&nbsp;     * Add a custom static command
+<i>340</i>&nbsp;     *
+<i>341</i>&nbsp;     * @param input  command
+<i>342</i>&nbsp;     * @param output return
+<i>343</i>&nbsp;     */
+<i>344</i>&nbsp;    public static void addCustomCommand(int guildId, String input, String output) {
+<i>345</i>&nbsp;        try {
+<b class="nc"><i>346</i>&nbsp;            WebDb.get().query(&quot;DELETE FROM commands WHERE input = ? AND server = ?&quot;, input, guildId);</b>
+<b class="nc"><i>347</i>&nbsp;            WebDb.get().query(&quot;INSERT INTO commands (server,input,output) VALUES(?, ?, ?)&quot;, guildId, input, output);</b>
+<b class="nc"><i>348</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>349</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>350</i>&nbsp;        }</b>
+<b class="nc"><i>351</i>&nbsp;        loadCustomCommands(guildId);</b>
+<i>352</i>&nbsp;    }
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;    /**
+<i>355</i>&nbsp;     * Loads all the custom commands
+<i>356</i>&nbsp;     */
+<i>357</i>&nbsp;    private static void loadCustomCommands() {
+<b class="nc"><i>358</i>&nbsp;        try (ResultSet r = WebDb.get().select(&quot;SELECT server,input, output FROM commands &quot;)) {</b>
+<b class="nc"><i>359</i>&nbsp;            while (r != null &amp;&amp; r.next()) {</b>
+<b class="nc"><i>360</i>&nbsp;                int guildId = r.getInt(&quot;server&quot;);</b>
+<b class="nc"><i>361</i>&nbsp;                if (guildId == 0) {</b>
+<b class="nc"><i>362</i>&nbsp;                    if (!commands.containsKey(r.getString(&quot;input&quot;))) {</b>
+<b class="nc"><i>363</i>&nbsp;                        customCommands.put(r.getString(&quot;input&quot;), r.getString(&quot;output&quot;));</b>
+<i>364</i>&nbsp;                    }
+<i>365</i>&nbsp;                } else {
+<b class="nc"><i>366</i>&nbsp;                    if (!guildCommands.containsKey(guildId)) {</b>
+<b class="nc"><i>367</i>&nbsp;                        guildCommands.put(guildId, new ConcurrentHashMap&lt;&gt;());</b>
+<i>368</i>&nbsp;                    }
+<b class="nc"><i>369</i>&nbsp;                    guildCommands.get(guildId).put(r.getString(&quot;input&quot;), r.getString(&quot;output&quot;));</b>
+<i>370</i>&nbsp;                }
+<b class="nc"><i>371</i>&nbsp;            }</b>
+<b class="nc"><i>372</i>&nbsp;            if (r != null) {</b>
+<b class="nc"><i>373</i>&nbsp;                r.getStatement().close();</b>
+<i>374</i>&nbsp;            }
+<b class="nc"><i>375</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>376</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>377</i>&nbsp;        }</b>
+<i>378</i>&nbsp;    }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;    public static void loadCustomCommands(int guildId) {
+<b class="nc"><i>381</i>&nbsp;        removeGuild(guildId);</b>
+<b class="nc"><i>382</i>&nbsp;        try (ResultSet r = WebDb.get().select(&quot;SELECT input, output FROM commands WHERE server = ?&quot;, guildId)) {</b>
+<b class="nc"><i>383</i>&nbsp;            while (r != null &amp;&amp; r.next()) {</b>
+<b class="nc"><i>384</i>&nbsp;                if (!guildCommands.containsKey(guildId)) {</b>
+<b class="nc"><i>385</i>&nbsp;                    guildCommands.put(guildId, new ConcurrentHashMap&lt;&gt;());</b>
+<i>386</i>&nbsp;                }
+<b class="nc"><i>387</i>&nbsp;                guildCommands.get(guildId).put(r.getString(&quot;input&quot;), r.getString(&quot;output&quot;));</b>
+<i>388</i>&nbsp;            }
+<i>389</i>&nbsp;
+<b class="nc"><i>390</i>&nbsp;            if (r != null) {</b>
+<b class="nc"><i>391</i>&nbsp;                r.getStatement().close();</b>
+<i>392</i>&nbsp;            }
+<b class="nc"><i>393</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>394</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>395</i>&nbsp;        }</b>
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;    }
+<i>398</i>&nbsp;
+<i>399</i>&nbsp;    /**
+<i>400</i>&nbsp;     * Loads aliases for the commands
+<i>401</i>&nbsp;     */
+<i>402</i>&nbsp;    private static void loadAliases() {
+<b class="nc"><i>403</i>&nbsp;        for (AbstractCommand command : commands.values()) {</b>
+<b class="nc"><i>404</i>&nbsp;            for (String alias : command.getAliases()) {</b>
+<b class="nc"><i>405</i>&nbsp;                if (!commandsAlias.containsKey(alias)) {</b>
+<b class="nc"><i>406</i>&nbsp;                    commandsAlias.put(alias, command);</b>
+<i>407</i>&nbsp;                } else {
+<b class="nc"><i>408</i>&nbsp;                    DiscordBot.LOGGER.warn(String.format(&quot;Duplicate alias found! The commands `%s` and `%s` use the alias `%s`&quot;,</b>
+<b class="nc"><i>409</i>&nbsp;                            command.getCommand(), commandsAlias.get(alias).getCommand(), alias));</b>
+<i>410</i>&nbsp;                }
+<i>411</i>&nbsp;            }
+<b class="nc"><i>412</i>&nbsp;        }</b>
+<i>413</i>&nbsp;    }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;    /**
+<i>416</i>&nbsp;     * Checks if the command category is enabled or not
+<i>417</i>&nbsp;     *
+<i>418</i>&nbsp;     * @param category the category to check
+<i>419</i>&nbsp;     * @return enabled?
+<i>420</i>&nbsp;     */
+<i>421</i>&nbsp;    private static boolean isCommandCategoryEnabled(CommandCategory category) {
+<b class="nc"><i>422</i>&nbsp;        switch (category) {</b>
+<i>423</i>&nbsp;            case MUSIC:
+<b class="nc"><i>424</i>&nbsp;                return BotConfig.MODULE_MUSIC_ENABLED;</b>
+<i>425</i>&nbsp;            case ECONOMY:
+<b class="nc"><i>426</i>&nbsp;                return BotConfig.MODULE_ECONOMY_ENABLED;</b>
+<i>427</i>&nbsp;            case POE:
+<b class="nc"><i>428</i>&nbsp;                return BotConfig.MODULE_POE_ENABLED;</b>
+<i>429</i>&nbsp;            case HEARTHSTONE:
+<b class="nc"><i>430</i>&nbsp;                return BotConfig.MODULE_HEARTHSTONE_ENABLED;</b>
+<i>431</i>&nbsp;            default:
+<b class="nc"><i>432</i>&nbsp;                return true;</b>
+<i>433</i>&nbsp;        }
+<i>434</i>&nbsp;    }
+<i>435</i>&nbsp;
+<i>436</i>&nbsp;    /**
+<i>437</i>&nbsp;     * Lists the active commands
+<i>438</i>&nbsp;     *
+<i>439</i>&nbsp;     * @return list of code-commands
+<i>440</i>&nbsp;     */
+<i>441</i>&nbsp;    public static String[] getCommands() {
+<b class="nc"><i>442</i>&nbsp;        return commands.keySet().toArray(new String[commands.keySet().size()]);</b>
+<i>443</i>&nbsp;    }
+<i>444</i>&nbsp;    public static boolean commandExists(String cmd){
+<b class="nc"><i>445</i>&nbsp;        return commands.containsKey(cmd) || commandsAlias.containsKey(cmd);</b>
+<i>446</i>&nbsp;    }
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    /**
+<i>449</i>&nbsp;     * Initializes the commands
+<i>450</i>&nbsp;     */
+<i>451</i>&nbsp;    public static void initialize() {
+<b class="nc"><i>452</i>&nbsp;        loadCommands();</b>
+<b class="nc"><i>453</i>&nbsp;        loadAliases();</b>
+<b class="nc"><i>454</i>&nbsp;        loadCustomCommands();</b>
+<b class="nc"><i>455</i>&nbsp;        reloadBlackList();</b>
+<i>456</i>&nbsp;    }
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;    /**
+<i>459</i>&nbsp;     * removes a custom command
+<i>460</i>&nbsp;     *
+<i>461</i>&nbsp;     * @param guildId internal id of the guild
+<i>462</i>&nbsp;     * @param input   command
+<i>463</i>&nbsp;     */
+<i>464</i>&nbsp;    public static void removeCustomCommand(int guildId, String input) {
+<i>465</i>&nbsp;        try {
+<b class="nc"><i>466</i>&nbsp;            WebDb.get().query(&quot;DELETE FROM commands WHERE input = ? AND server = ?&quot;, input, guildId);</b>
+<b class="nc"><i>467</i>&nbsp;            loadCustomCommands();</b>
+<b class="nc"><i>468</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>469</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>470</i>&nbsp;        }</b>
+<i>471</i>&nbsp;    }
+<i>472</i>&nbsp;
+<i>473</i>&nbsp;    /**
+<i>474</i>&nbsp;     * initializes the commands
+<i>475</i>&nbsp;     */
+<i>476</i>&nbsp;    private static void loadCommands() {
+<b class="nc"><i>477</i>&nbsp;        Reflections reflections = new Reflections(&quot;emily.command&quot;);</b>
+<b class="nc"><i>478</i>&nbsp;        Set&lt;Class&lt;? extends AbstractCommand&gt;&gt; classes = reflections.getSubTypesOf(AbstractCommand.class);</b>
+<b class="nc"><i>479</i>&nbsp;        for (Class&lt;? extends AbstractCommand&gt; s : classes) {</b>
+<i>480</i>&nbsp;            try {
+<b class="nc"><i>481</i>&nbsp;                if (Modifier.isAbstract(s.getModifiers())) {</b>
+<b class="nc"><i>482</i>&nbsp;                    continue;</b>
+<i>483</i>&nbsp;                }
+<b class="nc"><i>484</i>&nbsp;                String packageName = s.getPackage().getName();</b>
+<b class="nc"><i>485</i>&nbsp;                AbstractCommand c = s.getConstructor().newInstance();</b>
+<b class="nc"><i>486</i>&nbsp;                c.setCommandCategory(CommandCategory.fromPackage(packageName.substring(packageName.lastIndexOf(&quot;.&quot;) + 1)));</b>
+<b class="nc"><i>487</i>&nbsp;                if (!c.isEnabled()) {</b>
+<b class="nc"><i>488</i>&nbsp;                    continue;</b>
+<i>489</i>&nbsp;                }
+<b class="nc"><i>490</i>&nbsp;                if (!isCommandCategoryEnabled(c.getCommandCategory())) {</b>
+<b class="nc"><i>491</i>&nbsp;                    continue;</b>
+<i>492</i>&nbsp;                }
+<b class="nc"><i>493</i>&nbsp;                if (!commands.containsKey(c.getCommand())) {</b>
+<b class="nc"><i>494</i>&nbsp;                    commands.put(c.getCommand(), c);</b>
+<i>495</i>&nbsp;                }
+<b class="nc"><i>496</i>&nbsp;            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {</b>
+<b class="nc"><i>497</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>498</i>&nbsp;            }</b>
+<b class="nc"><i>499</i>&nbsp;        }</b>
+<i>500</i>&nbsp;    }
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;    /**
+<i>503</i>&nbsp;     * (re-)loads the guild-specific blacklisted commands
+<i>504</i>&nbsp;     * Map&lt;Integer, Map&lt;String, HashSet&lt;String&gt;&gt;&gt;
+<i>505</i>&nbsp;     */
+<i>506</i>&nbsp;    private static void reloadBlackList() {
+<b class="nc"><i>507</i>&nbsp;        commandBlacklist.clear();</b>
+<b class="nc"><i>508</i>&nbsp;        List&lt;OBlacklistCommand&gt; blacklisted = CBlacklistCommand.getAllBlacklisted();</b>
+<b class="nc"><i>509</i>&nbsp;        for (OBlacklistCommand item : blacklisted) {</b>
+<b class="nc"><i>510</i>&nbsp;            long channelId = Long.parseLong(item.channelId);</b>
+<b class="nc"><i>511</i>&nbsp;            if (!commandBlacklist.containsKey(item.guildId)) {</b>
+<b class="nc"><i>512</i>&nbsp;                commandBlacklist.put(item.guildId, new HashMap&lt;&gt;());</b>
+<i>513</i>&nbsp;            }
+<b class="nc"><i>514</i>&nbsp;            if (!commandBlacklist.get(item.guildId).containsKey(channelId)) {</b>
+<b class="nc"><i>515</i>&nbsp;                commandBlacklist.get(item.guildId).put(channelId, new HashMap&lt;&gt;());</b>
+<i>516</i>&nbsp;            }
+<b class="nc"><i>517</i>&nbsp;            commandBlacklist.get(item.guildId).get(channelId).put(item.command, item.blacklisted);</b>
+<b class="nc"><i>518</i>&nbsp;        }</b>
+<i>519</i>&nbsp;    }
+<i>520</i>&nbsp;
+<i>521</i>&nbsp;    /**
+<i>522</i>&nbsp;     * reloads the blacklist for a guild
+<i>523</i>&nbsp;     *
+<i>524</i>&nbsp;     * @param guildId internal guildid to reload it for
+<i>525</i>&nbsp;     */
+<i>526</i>&nbsp;    public synchronized static void reloadBlackListFor(int guildId) {
+<b class="nc"><i>527</i>&nbsp;        if (commandBlacklist.containsKey(guildId)) {</b>
+<b class="nc"><i>528</i>&nbsp;            commandBlacklist.get(guildId).clear();</b>
+<i>529</i>&nbsp;        } else {
+<b class="nc"><i>530</i>&nbsp;            commandBlacklist.put(guildId, new HashMap&lt;&gt;());</b>
+<i>531</i>&nbsp;        }
+<b class="nc"><i>532</i>&nbsp;        List&lt;OBlacklistCommand&gt; blacklisted = CBlacklistCommand.getBlacklistedFor(guildId);</b>
+<b class="nc"><i>533</i>&nbsp;        for (OBlacklistCommand item : blacklisted) {</b>
+<b class="nc"><i>534</i>&nbsp;            long channelId = Long.parseLong(item.channelId);</b>
+<b class="nc"><i>535</i>&nbsp;            if (!commandBlacklist.get(item.guildId).containsKey(channelId)) {</b>
+<b class="nc"><i>536</i>&nbsp;                commandBlacklist.get(item.guildId).put(channelId, new HashMap&lt;&gt;());</b>
+<i>537</i>&nbsp;            }
+<b class="nc"><i>538</i>&nbsp;            commandBlacklist.get(item.guildId).get(channelId).put(item.command, item.blacklisted);</b>
+<b class="nc"><i>539</i>&nbsp;        }</b>
+<i>540</i>&nbsp;    }
+<i>541</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

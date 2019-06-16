@@ -1,0 +1,226 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CBotVersions</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.db.controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CBotVersions (emily.db.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CBotVersions</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 55)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.db.controllers;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.Logger;
+<i>20</i>&nbsp;import emily.db.WebDb;
+<i>21</i>&nbsp;import emily.db.model.OBotVersion;
+<i>22</i>&nbsp;import emily.main.ProgramVersion;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;import java.sql.ResultSet;
+<i>25</i>&nbsp;import java.sql.SQLException;
+<i>26</i>&nbsp;import java.sql.Timestamp;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * data communication with the controllers `bot_versions`
+<i>30</i>&nbsp; */
+<b class="nc"><i>31</i>&nbsp;public class CBotVersions {</b>
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public static OBotVersion findBy(ProgramVersion version) {
+<b class="nc"><i>34</i>&nbsp;        OBotVersion s = new OBotVersion();</b>
+<b class="nc"><i>35</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>36</i>&nbsp;                &quot;SELECT * &quot; +
+<i>37</i>&nbsp;                        &quot;FROM bot_versions &quot; +
+<b class="nc"><i>38</i>&nbsp;                        &quot;WHERE major= ? AND minor = ? AND patch = ? &quot;, version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion())) {</b>
+<b class="nc"><i>39</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>40</i>&nbsp;                s = fillRecord(rs);</b>
+<i>41</i>&nbsp;            }
+<b class="nc"><i>42</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>43</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>44</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>45</i>&nbsp;        }</b>
+<b class="nc"><i>46</i>&nbsp;        return s;</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * Retrieves the version after after specified one
+<i>51</i>&nbsp;     *
+<i>52</i>&nbsp;     * @param version bot version
+<i>53</i>&nbsp;     * @return version || null
+<i>54</i>&nbsp;     */
+<i>55</i>&nbsp;    public static OBotVersion versionBefore(ProgramVersion version) {
+<b class="nc"><i>56</i>&nbsp;        OBotVersion s = new OBotVersion();</b>
+<b class="nc"><i>57</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>58</i>&nbsp;                &quot;SELECT * &quot; +
+<i>59</i>&nbsp;                        &quot;FROM bot_versions &quot; +
+<i>60</i>&nbsp;                        &quot; &quot; +
+<i>61</i>&nbsp;                        &quot;WHERE major &lt; ? &quot; +
+<i>62</i>&nbsp;                        &quot;OR (major = ? AND minor &lt; ?) &quot; +
+<i>63</i>&nbsp;                        &quot;OR (major = ? AND minor = ? AND patch &lt; ?) &quot; +
+<i>64</i>&nbsp;                        &quot;ORDER BY major DESC , minor DESC , patch DESC &quot;,
+<b class="nc"><i>65</i>&nbsp;                version.getMajorVersion(),</b>
+<b class="nc"><i>66</i>&nbsp;                version.getMajorVersion(), version.getMinorVersion(),</b>
+<b class="nc"><i>67</i>&nbsp;                version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion())) {</b>
+<b class="nc"><i>68</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>69</i>&nbsp;                s = fillRecord(rs);</b>
+<i>70</i>&nbsp;            }
+<b class="nc"><i>71</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>72</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>73</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>74</i>&nbsp;        }</b>
+<b class="nc"><i>75</i>&nbsp;        return s;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    /**
+<i>79</i>&nbsp;     * Retrieves the version before specified one
+<i>80</i>&nbsp;     *
+<i>81</i>&nbsp;     * @param version bot version
+<i>82</i>&nbsp;     * @return version || null
+<i>83</i>&nbsp;     */
+<i>84</i>&nbsp;    public static OBotVersion versionAfter(ProgramVersion version) {
+<b class="nc"><i>85</i>&nbsp;        OBotVersion s = new OBotVersion();</b>
+<b class="nc"><i>86</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>87</i>&nbsp;                &quot;SELECT * FROM bot_versions &quot; +
+<i>88</i>&nbsp;                        &quot; &quot; +
+<i>89</i>&nbsp;                        &quot;WHERE major &gt; ? &quot; +
+<i>90</i>&nbsp;                        &quot;OR (major = ? AND minor &gt; ?) &quot; +
+<i>91</i>&nbsp;                        &quot;OR (major = ? AND minor = ? AND patch &gt; ?) &quot; +
+<i>92</i>&nbsp;                        &quot;ORDER BY major ASC , minor ASC , patch ASC &quot;,
+<b class="nc"><i>93</i>&nbsp;                version.getMajorVersion(),</b>
+<b class="nc"><i>94</i>&nbsp;                version.getMajorVersion(), version.getMinorVersion(),</b>
+<b class="nc"><i>95</i>&nbsp;                version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion())) {</b>
+<b class="nc"><i>96</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>97</i>&nbsp;                s = fillRecord(rs);</b>
+<i>98</i>&nbsp;            }
+<b class="nc"><i>99</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>100</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>101</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>102</i>&nbsp;        }</b>
+<b class="nc"><i>103</i>&nbsp;        return s;</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    private static OBotVersion fillRecord(ResultSet rs) throws SQLException {
+<b class="nc"><i>107</i>&nbsp;        OBotVersion s = new OBotVersion();</b>
+<b class="nc"><i>108</i>&nbsp;        s.id = rs.getInt(&quot;id&quot;);</b>
+<b class="nc"><i>109</i>&nbsp;        s.major = rs.getInt(&quot;major&quot;);</b>
+<b class="nc"><i>110</i>&nbsp;        s.minor = rs.getInt(&quot;minor&quot;);</b>
+<b class="nc"><i>111</i>&nbsp;        s.patch = rs.getInt(&quot;patch&quot;);</b>
+<b class="nc"><i>112</i>&nbsp;        s.createdOn = rs.getTimestamp(&quot;created_on&quot;);</b>
+<b class="nc"><i>113</i>&nbsp;        s.published = rs.getInt(&quot;published&quot;);</b>
+<b class="nc"><i>114</i>&nbsp;        return s;</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public static void publish(ProgramVersion version, boolean publish) {
+<i>118</i>&nbsp;        try {
+<b class="nc"><i>119</i>&nbsp;            WebDb.get().insert(</b>
+<i>120</i>&nbsp;                    &quot;UPDATE bot_versions SET published = ? &quot; +
+<i>121</i>&nbsp;                            &quot; WHERE major = ? AND minor = ? AND patch = ?&quot;,
+<b class="nc"><i>122</i>&nbsp;                    publish ? 1 : 0, version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion());</b>
+<b class="nc"><i>123</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>124</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>125</i>&nbsp;        }</b>
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    public static int insert(ProgramVersion version, Timestamp date) {
+<i>130</i>&nbsp;        try {
+<b class="nc"><i>131</i>&nbsp;            if (date == null) {</b>
+<b class="nc"><i>132</i>&nbsp;                date = new Timestamp(System.currentTimeMillis());</b>
+<i>133</i>&nbsp;            }
+<b class="nc"><i>134</i>&nbsp;            return WebDb.get().insert(</b>
+<i>135</i>&nbsp;                    &quot;INSERT INTO bot_versions(major, minor, patch, created_on, published) &quot; +
+<i>136</i>&nbsp;                            &quot;VALUES (?,?,?,?,?)&quot;,
+<b class="nc"><i>137</i>&nbsp;                    version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion(), date, 0);</b>
+<b class="nc"><i>138</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>139</i>&nbsp;            e.printStackTrace();</b>
+<i>140</i>&nbsp;        }
+<b class="nc"><i>141</i>&nbsp;        return -1;</b>
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

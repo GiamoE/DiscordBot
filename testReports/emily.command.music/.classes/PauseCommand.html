@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PauseCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.music</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PauseCommand (emily.command.music)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PauseCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.music;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>20</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>21</i>&nbsp;import emily.guildsettings.GSetting;
+<i>22</i>&nbsp;import emily.handler.GuildSettings;
+<i>23</i>&nbsp;import emily.handler.MusicPlayerHandler;
+<i>24</i>&nbsp;import emily.main.DiscordBot;
+<i>25</i>&nbsp;import emily.permission.SimpleRank;
+<i>26</i>&nbsp;import emily.templates.Templates;
+<i>27</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>28</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>29</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>30</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>31</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>32</i>&nbsp;import net.dv8tion.jda.core.entities.VoiceChannel;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * !pause
+<i>36</i>&nbsp; * pause the music or resume it
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;public class PauseCommand extends AbstractCommand {
+<i>39</i>&nbsp;    public PauseCommand() {
+<b class="nc"><i>40</i>&nbsp;        super();</b>
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    @Override
+<i>44</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>45</i>&nbsp;        return &quot;pauses the music or resumes it if its paused&quot;;</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    @Override
+<i>49</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>50</i>&nbsp;        return &quot;pause&quot;;</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    @Override
+<i>54</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>55</i>&nbsp;        return new String[]{};</b>
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    @Override
+<i>59</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>60</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    @Override
+<i>64</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>65</i>&nbsp;        return new String[]{</b>
+<i>66</i>&nbsp;                &quot;resume&quot;
+<i>67</i>&nbsp;        };
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    @Override
+<i>71</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>72</i>&nbsp;        Guild guild = ((TextChannel) channel).getGuild();</b>
+<b class="nc"><i>73</i>&nbsp;        SimpleRank userRank = bot.security.getSimpleRank(author, channel);</b>
+<b class="nc"><i>74</i>&nbsp;        if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {</b>
+<b class="nc"><i>75</i>&nbsp;            return Templates.music.required_role_not_found.formatGuild(channel, guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));</b>
+<i>76</i>&nbsp;        }
+<b class="nc"><i>77</i>&nbsp;        MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);</b>
+<b class="nc"><i>78</i>&nbsp;        if (!player.canTogglePause()) {</b>
+<b class="nc"><i>79</i>&nbsp;            return Templates.music.state_not_started.formatGuild(channel);</b>
+<i>80</i>&nbsp;        }
+<b class="nc"><i>81</i>&nbsp;        VoiceChannel userVoice = guild.getMember(author).getVoiceState().getChannel();</b>
+<b class="nc"><i>82</i>&nbsp;        if (userVoice == null || !player.isConnectedTo(userVoice)) {</b>
+<b class="nc"><i>83</i>&nbsp;            return Templates.music.not_same_voicechannel.formatGuild(channel);</b>
+<i>84</i>&nbsp;        }
+<b class="nc"><i>85</i>&nbsp;        if (player.togglePause()) {</b>
+<b class="nc"><i>86</i>&nbsp;            return Templates.music.state_paused.formatGuild(channel);</b>
+<i>87</i>&nbsp;        }
+<b class="nc"><i>88</i>&nbsp;        return Templates.music.state_resumed.formatGuild(channel);</b>
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

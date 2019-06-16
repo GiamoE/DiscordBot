@@ -1,0 +1,149 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TemplateArgument</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.templates</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TemplateArgument (emily.templates)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TemplateArgument</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.templates;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.main.BotConfig;
+<i>20</i>&nbsp;
+<b class="nc"><i>21</i>&nbsp;public enum TemplateArgument {</b>
+<b class="nc"><i>22</i>&nbsp;    ARG(&quot;arg1&quot;, &quot;First input argument&quot;, e -&gt; e.arg[0] != null ? e.arg[0] : &quot;&quot;),</b>
+<b class="nc"><i>23</i>&nbsp;    ARG2(&quot;arg2&quot;, &quot;Second argument&quot;, e -&gt; e.arg[1] != null ? e.arg[1] : &quot;&quot;),</b>
+<b class="nc"><i>24</i>&nbsp;    ARG3(&quot;arg3&quot;, &quot;Third argument&quot;, e -&gt; e.arg[2] != null ? e.arg[2] : &quot;&quot;),</b>
+<b class="nc"><i>25</i>&nbsp;    ARGS(&quot;allargs&quot;, &quot;All input arguments&quot;, e -&gt; e.args != null ? e.args : &quot;&quot;),</b>
+<i>26</i>&nbsp;
+<b class="nc"><i>27</i>&nbsp;    USER(&quot;user&quot;, &quot;Username&quot;, e -&gt; e.user != null ? e.user.getName() : &quot;&quot;),</b>
+<b class="nc"><i>28</i>&nbsp;    USER_MENTION(&quot;user-mention&quot;, &quot;Mentions user&quot;, e -&gt; e.user != null ? e.user.getAsMention() : &quot;&quot;),</b>
+<b class="nc"><i>29</i>&nbsp;    USER_ID(&quot;user-id&quot;, &quot;User&#39;s id&quot;, e -&gt; e.user != null ? e.user.getId() : &quot;&quot;),</b>
+<b class="nc"><i>30</i>&nbsp;    USER_DESCRIMINATOR(&quot;discrim&quot;, &quot;Discriminator of the user&quot;, e -&gt; e.user != null ? e.user.getDiscriminator() : &quot;&quot;),</b>
+<i>31</i>&nbsp;
+<b class="nc"><i>32</i>&nbsp;    NICKNAME(&quot;nick&quot;, &quot;Nickname of user&quot;, e -&gt; e.user != null &amp;&amp; e.guild != null ? e.guild.getMember(e.user) == null ? e.user.getName() : e.guild.getMember(e.user).getEffectiveName() : &quot;&quot;),</b>
+<b class="nc"><i>33</i>&nbsp;    GUILD(&quot;guild&quot;, &quot;Guild name&quot;, e -&gt; e.guild != null ? e.guild.getName() : &quot;&quot;),</b>
+<b class="nc"><i>34</i>&nbsp;    GUILD_ID(&quot;guild-id&quot;, &quot;Guild&#39;s id&quot;, e -&gt; e.guild != null ? e.guild.getId() : &quot;&quot;),</b>
+<b class="nc"><i>35</i>&nbsp;    GUILD_USERS(&quot;guild-users&quot;, &quot;Sums guild members&quot;, e -&gt; e.guild != null ? Integer.toString(e.guild.getMembers().size()) : &quot;&quot;),</b>
+<i>36</i>&nbsp;
+<b class="nc"><i>37</i>&nbsp;    CHANNEL(&quot;channel&quot;, &quot;Channel name&quot;, e -&gt; e.channel != null ? e.channel.getName() : &quot;&quot;),</b>
+<b class="nc"><i>38</i>&nbsp;    CHANNEL_ID(&quot;channel-id&quot;, &quot;Channel id&quot;, e -&gt; e.channel != null ? e.channel.getId() : &quot;&quot;),</b>
+<b class="nc"><i>39</i>&nbsp;    CHANNEL_MENTION(&quot;channel-mention&quot;, &quot;Mentions channel&quot;, e -&gt; e.channel != null ? e.channel.getAsMention() : &quot;&quot;),</b>
+<i>40</i>&nbsp;
+<b class="nc"><i>41</i>&nbsp;    ROLE(&quot;role&quot;, &quot;Role name&quot;, e -&gt; e.role != null ? e.role.getName() : &quot;&quot;),</b>
+<b class="nc"><i>42</i>&nbsp;    ROLE_ID(&quot;role-id&quot;, &quot;Role&#39;s id&quot;, e -&gt; e.role != null ? e.role.getId() : &quot;&quot;),</b>
+<b class="nc"><i>43</i>&nbsp;    ROLE_MENTION(&quot;role-mention&quot;, &quot;mentions the role&quot;, e -&gt; e.role != null ? e.role.isMentionable() ? e.role.getAsMention() : e.role.getName() : &quot;&quot;),;</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    private final String pattern;
+<i>46</i>&nbsp;    private final TemplateParser parser;
+<i>47</i>&nbsp;    private final String description;
+<i>48</i>&nbsp;
+<b class="nc"><i>49</i>&nbsp;    TemplateArgument(String pattern, String description, TemplateParser parser) {</b>
+<b class="nc"><i>50</i>&nbsp;        this.pattern = BotConfig.TEMPLATE_QUOTE + pattern + BotConfig.TEMPLATE_QUOTE;</b>
+<b class="nc"><i>51</i>&nbsp;        this.parser = parser;</b>
+<b class="nc"><i>52</i>&nbsp;        this.description = description;</b>
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public String getPattern() {
+<b class="nc"><i>56</i>&nbsp;        return pattern;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public String parse(TemplateVariables vars) {
+<b class="nc"><i>60</i>&nbsp;        return parser.apply(vars);</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>64</i>&nbsp;        return description;</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

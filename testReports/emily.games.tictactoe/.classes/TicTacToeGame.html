@@ -1,0 +1,217 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TicTacToeGame</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.games.tictactoe</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TicTacToeGame (emily.games.tictactoe)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TicTacToeGame</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 44)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.games.tictactoe;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.games.meta.AbstractGame;
+<i>20</i>&nbsp;import emily.games.meta.GameState;
+<i>21</i>&nbsp;import emily.util.Misc;
+<i>22</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;public class TicTacToeGame extends AbstractGame&lt;TicGameTurn&gt; {
+<i>25</i>&nbsp;    private static final int TILES_ON_BOARD = 9;
+<b class="nc"><i>26</i>&nbsp;    private final int[][] winCombos = {</b>
+<i>27</i>&nbsp;            {0, 1, 2},
+<i>28</i>&nbsp;            {3, 4, 5},
+<i>29</i>&nbsp;            {6, 7, 8},
+<i>30</i>&nbsp;            {0, 3, 6},
+<i>31</i>&nbsp;            {1, 4, 7},
+<i>32</i>&nbsp;            {2, 5, 8},
+<i>33</i>&nbsp;            {0, 4, 8},
+<i>34</i>&nbsp;            {2, 4, 6}
+<i>35</i>&nbsp;    };
+<b class="nc"><i>36</i>&nbsp;    private TicTile[] board = new TicTile[TILES_ON_BOARD];</b>
+<i>37</i>&nbsp;
+<b class="nc"><i>38</i>&nbsp;    public TicTacToeGame() {</b>
+<b class="nc"><i>39</i>&nbsp;        reset();</b>
+<i>40</i>&nbsp;    }
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    /**
+<i>43</i>&nbsp;     * resets the board
+<i>44</i>&nbsp;     */
+<i>45</i>&nbsp;    public void reset() {
+<b class="nc"><i>46</i>&nbsp;        super.reset();</b>
+<b class="nc"><i>47</i>&nbsp;        for (int i = 0; i &lt; TILES_ON_BOARD; i++) {</b>
+<b class="nc"><i>48</i>&nbsp;            board[i] = new TicTile();</b>
+<i>49</i>&nbsp;        }
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    @Override
+<i>53</i>&nbsp;    public String getCodeName() {
+<b class="nc"><i>54</i>&nbsp;        return &quot;tic&quot;;</b>
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    @Override
+<i>58</i>&nbsp;    public String[] getReactions() {
+<b class="nc"><i>59</i>&nbsp;        return new String[0];</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    @Override
+<i>63</i>&nbsp;    public String getFullname() {
+<b class="nc"><i>64</i>&nbsp;        return &quot;Tic tac toe&quot;;</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    @Override
+<i>68</i>&nbsp;    public int getTotalPlayers() {
+<b class="nc"><i>69</i>&nbsp;        return 2;</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    @Override
+<i>73</i>&nbsp;    public boolean isValidMove(User player, TicGameTurn turnInfo) {
+<b class="nc"><i>74</i>&nbsp;        return turnInfo.getBoardIndex() &lt; TILES_ON_BOARD &amp;&amp; board[turnInfo.getBoardIndex()].isFree();</b>
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    @Override
+<i>78</i>&nbsp;    protected void doPlayerMove(User player, TicGameTurn turnInfo) {
+<b class="nc"><i>79</i>&nbsp;        board[turnInfo.getBoardIndex()].setPlayer(getActivePlayerIndex());</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    @Override
+<i>83</i>&nbsp;    protected boolean isTheGameOver() {
+<b class="nc"><i>84</i>&nbsp;        for (int[] combo : winCombos) {</b>
+<b class="nc"><i>85</i>&nbsp;            if (board[combo[0]].isFree()) {</b>
+<b class="nc"><i>86</i>&nbsp;                continue;</b>
+<i>87</i>&nbsp;            }
+<b class="nc"><i>88</i>&nbsp;            if (board[combo[0]].getPlayer() == board[combo[1]].getPlayer() &amp;&amp; board[combo[1]].getPlayer() == board[combo[2]].getPlayer()) {</b>
+<b class="nc"><i>89</i>&nbsp;                setWinner(board[combo[0]].getPlayer());</b>
+<b class="nc"><i>90</i>&nbsp;                return true;</b>
+<i>91</i>&nbsp;            }
+<i>92</i>&nbsp;        }
+<b class="nc"><i>93</i>&nbsp;        for (TicTile tt : board) {</b>
+<b class="nc"><i>94</i>&nbsp;            if (tt.isFree()) {</b>
+<b class="nc"><i>95</i>&nbsp;                return false;</b>
+<i>96</i>&nbsp;            }
+<i>97</i>&nbsp;        }
+<b class="nc"><i>98</i>&nbsp;        return true;</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    @Override
+<i>102</i>&nbsp;    public String toString() {
+<b class="nc"><i>103</i>&nbsp;        StringBuilder game = new StringBuilder();</b>
+<b class="nc"><i>104</i>&nbsp;        game.append(&quot;Game of Tic&quot;).append(&quot;\n&quot;);</b>
+<b class="nc"><i>105</i>&nbsp;        for (int i = 0; i &lt; TILES_ON_BOARD; i++) {</b>
+<b class="nc"><i>106</i>&nbsp;            if (board[i].getState().equals(TileState.FREE)) {</b>
+<b class="nc"><i>107</i>&nbsp;                game.append(Misc.numberToEmote(i + 1));</b>
+<i>108</i>&nbsp;            } else {
+<b class="nc"><i>109</i>&nbsp;                game.append(board[i].getState().getEmoticon());</b>
+<i>110</i>&nbsp;            }
+<b class="nc"><i>111</i>&nbsp;            if ((i + 1) % 3 == 0) {</b>
+<b class="nc"><i>112</i>&nbsp;                game.append(&quot;\n&quot;);</b>
+<i>113</i>&nbsp;            }
+<i>114</i>&nbsp;        }
+<b class="nc"><i>115</i>&nbsp;        game.append(&quot;\n&quot;);</b>
+<b class="nc"><i>116</i>&nbsp;        if (getGameState().equals(GameState.INITIALIZING)) {</b>
+<b class="nc"><i>117</i>&nbsp;            game.append(&quot;Waiting for another player!&quot;).append(&quot;\n&quot;);</b>
+<i>118</i>&nbsp;        }
+<b class="nc"><i>119</i>&nbsp;        if (getGameState().equals(GameState.IN_PROGRESS) || getGameState().equals(GameState.READY)) {</b>
+<b class="nc"><i>120</i>&nbsp;            game.append(TileState.X.getEmoticon()).append(&quot; = &quot;).append(getPlayer(0).getName()).append(&quot;\n&quot;);</b>
+<b class="nc"><i>121</i>&nbsp;            game.append(TileState.O.getEmoticon()).append(&quot; = &quot;).append(getPlayer(1).getName()).append(&quot;\n&quot;);</b>
+<b class="nc"><i>122</i>&nbsp;            game.append(&quot;It&#39;s the turn of &quot;).append(getActivePlayer().getAsMention()).append(&quot;\n&quot;);</b>
+<b class="nc"><i>123</i>&nbsp;            game.append(&quot;to play type **&quot;).append(getLastPrefix()).append(&quot;game &lt;number&gt;**&quot;);</b>
+<i>124</i>&nbsp;        }
+<b class="nc"><i>125</i>&nbsp;        if (getGameState().equals(GameState.OVER)) {</b>
+<b class="nc"><i>126</i>&nbsp;            if (getWinnerIndex() == getTotalPlayers()) {</b>
+<b class="nc"><i>127</i>&nbsp;                game.append(&quot;Its over! And its a draw!&quot;);</b>
+<i>128</i>&nbsp;            } else {
+<b class="nc"><i>129</i>&nbsp;                game.append(&quot;Its over! The winner is &quot;).append(getPlayer(getWinnerIndex()).getAsMention());</b>
+<i>130</i>&nbsp;            }
+<i>131</i>&nbsp;        }
+<b class="nc"><i>132</i>&nbsp;        return game.toString();</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

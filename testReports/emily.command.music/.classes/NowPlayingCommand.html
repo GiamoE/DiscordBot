@@ -1,0 +1,353 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NowPlayingCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.music</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NowPlayingCommand (emily.command.music)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NowPlayingCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 113)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.music;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>20</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>21</i>&nbsp;import emily.db.controllers.CMusic;
+<i>22</i>&nbsp;import emily.db.controllers.CMusicVote;
+<i>23</i>&nbsp;import emily.db.controllers.CPlaylist;
+<i>24</i>&nbsp;import emily.db.controllers.CUser;
+<i>25</i>&nbsp;import emily.db.model.OMusic;
+<i>26</i>&nbsp;import emily.db.model.OMusicVote;
+<i>27</i>&nbsp;import emily.db.model.OPlaylist;
+<i>28</i>&nbsp;import emily.db.model.OUser;
+<i>29</i>&nbsp;import emily.guildsettings.GSetting;
+<i>30</i>&nbsp;import emily.handler.GuildSettings;
+<i>31</i>&nbsp;import emily.handler.MusicPlayerHandler;
+<i>32</i>&nbsp;import emily.main.DiscordBot;
+<i>33</i>&nbsp;import emily.permission.SimpleRank;
+<i>34</i>&nbsp;import emily.templates.Templates;
+<i>35</i>&nbsp;import emily.util.DisUtil;
+<i>36</i>&nbsp;import emily.util.Emojibet;
+<i>37</i>&nbsp;import emily.util.Misc;
+<i>38</i>&nbsp;import emily.util.MusicUtil;
+<i>39</i>&nbsp;import emily.util.TimeUtil;
+<i>40</i>&nbsp;import net.dv8tion.jda.core.Permission;
+<i>41</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>42</i>&nbsp;import net.dv8tion.jda.core.entities.Member;
+<i>43</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>44</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>45</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>46</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>47</i>&nbsp;import net.dv8tion.jda.core.utils.PermissionUtil;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;import java.util.ArrayList;
+<i>50</i>&nbsp;import java.util.List;
+<i>51</i>&nbsp;import java.util.concurrent.Future;
+<i>52</i>&nbsp;import java.util.regex.Matcher;
+<i>53</i>&nbsp;import java.util.regex.Pattern;
+<i>54</i>&nbsp;import java.util.stream.Collectors;
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;/**
+<i>57</i>&nbsp; * !current
+<i>58</i>&nbsp; * retrieves information about the currently playing track
+<i>59</i>&nbsp; */
+<i>60</i>&nbsp;public class NowPlayingCommand extends AbstractCommand {
+<b class="nc"><i>61</i>&nbsp;    private static final Pattern votePattern = Pattern.compile(&quot;^(?&gt;vote|rate)\\s?(\\d+)?$&quot;);</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public NowPlayingCommand() {
+<b class="nc"><i>65</i>&nbsp;        super();</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    @Override
+<i>69</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>70</i>&nbsp;        return &quot;retrieves information about the song currently playing&quot;;</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    @Override
+<i>74</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>75</i>&nbsp;        return &quot;current&quot;;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    @Override
+<i>79</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>80</i>&nbsp;        return new String[]{</b>
+<i>81</i>&nbsp;                &quot;current                 //info about the currently playing song&quot;,
+<i>82</i>&nbsp;                &quot;current seek &lt;time&gt;     //go to specified timestamp of track (eg. 3m10s)&quot;,
+<i>83</i>&nbsp;                &quot;current vote &lt;1-10&gt;     //Cast your vote to the song; 1=worst, 10=best&quot;,
+<i>84</i>&nbsp;                &quot;current repeat          //repeats the currently playing song&quot;,
+<i>85</i>&nbsp;                &quot;current update          //updates the now playing message every 10 seconds&quot;,
+<i>86</i>&nbsp;                &quot;current updatetitle     //updates the topic of the music channel every 10 seconds&quot;,
+<i>87</i>&nbsp;                &quot;current source          //Shows the source of the video&quot;,
+<i>88</i>&nbsp;                &quot;current pm              //sends you a private message with the details&quot;,
+<i>89</i>&nbsp;                &quot;&quot;,
+<i>90</i>&nbsp;                &quot;current clear               //clears everything in the queue&quot;,
+<i>91</i>&nbsp;                &quot;current clear admin         //check if clear is admin-only&quot;,
+<i>92</i>&nbsp;                &quot;current clear admin toggle  //switch between admin-only and normal&quot;,
+<i>93</i>&nbsp;        };
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    @Override
+<i>97</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>98</i>&nbsp;        return new String[]{&quot;playing&quot;, &quot;np&quot;, &quot;nowplaying&quot;};</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    @Override
+<i>102</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>103</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    @Override
+<i>107</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>108</i>&nbsp;        Guild guild = ((TextChannel) channel).getGuild();</b>
+<b class="nc"><i>109</i>&nbsp;        SimpleRank userRank = bot.security.getSimpleRank(author, channel);</b>
+<b class="nc"><i>110</i>&nbsp;        if (!GuildSettings.get(guild).canUseMusicCommands(author, userRank)) {</b>
+<b class="nc"><i>111</i>&nbsp;            return Templates.music.required_role_not_found.formatGuild(channel, guild.getRoleById(GuildSettings.getFor(channel, GSetting.MUSIC_ROLE_REQUIREMENT)));</b>
+<i>112</i>&nbsp;        }
+<b class="nc"><i>113</i>&nbsp;        MusicPlayerHandler player = MusicPlayerHandler.getFor(guild, bot);</b>
+<b class="nc"><i>114</i>&nbsp;        OMusic song = CMusic.findById(player.getCurrentlyPlaying());</b>
+<b class="nc"><i>115</i>&nbsp;        if (song.id == 0 &amp;&amp; (args.length == 0 || !args[0].equals(&quot;clear&quot;))) {</b>
+<b class="nc"><i>116</i>&nbsp;            return Templates.command.currentlyplaying.nosong.formatGuild(channel);</b>
+<i>117</i>&nbsp;        }
+<b class="nc"><i>118</i>&nbsp;        if (args.length == 0 &amp;&amp; PermissionUtil.checkPermission((TextChannel) channel, guild.getSelfMember(), Permission.MESSAGE_EMBED_LINKS)) {</b>
+<b class="nc"><i>119</i>&nbsp;            bot.queue.add(channel.sendMessage(MusicUtil.nowPlayingMessage(player, song, null)));</b>
+<b class="nc"><i>120</i>&nbsp;            return &quot;&quot;;</b>
+<i>121</i>&nbsp;        }
+<i>122</i>&nbsp;        //
+<b class="nc"><i>123</i>&nbsp;        if (args.length &gt; 0) {</b>
+<b class="nc"><i>124</i>&nbsp;            String voteInput = args[0].toLowerCase();</b>
+<b class="nc"><i>125</i>&nbsp;            if (args.length &gt; 1) {</b>
+<b class="nc"><i>126</i>&nbsp;                voteInput += &quot; &quot; + args[1];</b>
+<i>127</i>&nbsp;            }
+<b class="nc"><i>128</i>&nbsp;            Matcher m = votePattern.matcher(voteInput);</b>
+<b class="nc"><i>129</i>&nbsp;            if (m.find()) {</b>
+<b class="nc"><i>130</i>&nbsp;                OMusicVote voteRecord = CMusicVote.findBy(song.id, author.getIdLong());</b>
+<b class="nc"><i>131</i>&nbsp;                if (m.group(1) != null) {</b>
+<b class="nc"><i>132</i>&nbsp;                    int vote = Math.max(1, Math.min(10, Misc.parseInt(m.group(1), 0)));</b>
+<b class="nc"><i>133</i>&nbsp;                    CMusicVote.insertOrUpdate(song.id, author.getIdLong(), vote);</b>
+<b class="nc"><i>134</i>&nbsp;                    return &quot;vote is registered (&quot; + vote + &quot;)&quot;;</b>
+<i>135</i>&nbsp;                }
+<b class="nc"><i>136</i>&nbsp;                if (voteRecord.vote &gt; 0) {</b>
+<b class="nc"><i>137</i>&nbsp;                    return Templates.music.your_vote.formatGuild(channel, song.youtubeTitle, voteRecord.vote);</b>
+<i>138</i>&nbsp;                } else {
+<b class="nc"><i>139</i>&nbsp;                    return Templates.music.not_voted.formatGuild(channel, DisUtil.getCommandPrefix(channel) + &quot;np vote &quot;);</b>
+<i>140</i>&nbsp;                }
+<i>141</i>&nbsp;            }
+<i>142</i>&nbsp;        }
+<i>143</i>&nbsp;
+<b class="nc"><i>144</i>&nbsp;        if (args.length &gt;= 1) {</b>
+<b class="nc"><i>145</i>&nbsp;            switch (args[0].toLowerCase()) {</b>
+<i>146</i>&nbsp;                case &quot;seek&quot;:
+<i>147</i>&nbsp;                case &quot;goto&quot;:
+<b class="nc"><i>148</i>&nbsp;                    player.goToTime(TimeUtil.toMillis(Misc.joinStrings(args, 1)));</b>
+<b class="nc"><i>149</i>&nbsp;                    return &quot;&quot;;</b>
+<i>150</i>&nbsp;                case &quot;repeat&quot;:
+<b class="nc"><i>151</i>&nbsp;                    boolean repeatMode = !player.isInRepeatMode();</b>
+<b class="nc"><i>152</i>&nbsp;                    player.setRepeat(repeatMode);</b>
+<b class="nc"><i>153</i>&nbsp;                    if (repeatMode) {</b>
+<b class="nc"><i>154</i>&nbsp;                        return Templates.music.repeat_mode.formatGuild(channel);</b>
+<i>155</i>&nbsp;                    }
+<b class="nc"><i>156</i>&nbsp;                    return Templates.music.repeat_mode_stopped.formatGuild(channel);</b>
+<i>157</i>&nbsp;                case &quot;ban&quot;:
+<b class="nc"><i>158</i>&nbsp;                    if (userRank.isAtLeast(SimpleRank.CONTRIBUTOR) || CUser.findBy(author.getIdLong()).hasPermission(OUser.PermissionNode.BAN_TRACKS)) {</b>
+<b class="nc"><i>159</i>&nbsp;                        song.banned = 1;</b>
+<b class="nc"><i>160</i>&nbsp;                        CMusic.update(song);</b>
+<b class="nc"><i>161</i>&nbsp;                        player.forceSkip();</b>
+<b class="nc"><i>162</i>&nbsp;                        return Templates.command.current_banned_success.formatGuild(channel);</b>
+<i>163</i>&nbsp;                    }
+<b class="nc"><i>164</i>&nbsp;                    return Templates.no_permission.formatGuild(channel);</b>
+<i>165</i>&nbsp;                case &quot;source&quot;:
+<b class="nc"><i>166</i>&nbsp;                    return Templates.music.source_location.formatGuild(channel, &quot;&lt;https://www.youtube.com/watch?v=&quot; + song.youtubecode + &quot;&gt;&quot;);</b>
+<i>167</i>&nbsp;                case &quot;pm&quot;:
+<b class="nc"><i>168</i>&nbsp;                    bot.out.sendPrivateMessage(author,</b>
+<i>169</i>&nbsp;                            &quot;The track I&#39;m playing now is: &quot; + song.youtubeTitle + &quot;\n&quot; +
+<i>170</i>&nbsp;                                    &quot;You can find it here: https://www.youtube.com/watch?v=&quot; + song.youtubecode
+<i>171</i>&nbsp;                    );
+<b class="nc"><i>172</i>&nbsp;                    return Templates.private_message_sent.formatGuild(channel, guild.getMember(author).getEffectiveName());</b>
+<i>173</i>&nbsp;                case &quot;clear&quot;:
+<b class="nc"><i>174</i>&nbsp;                    boolean adminOnly = GuildSettings.getBoolFor(channel, GSetting.MUSIC_CLEAR_ADMIN_ONLY);</b>
+<b class="nc"><i>175</i>&nbsp;                    if (userRank.isAtLeast(SimpleRank.GUILD_ADMIN) &amp;&amp; args.length &gt; 2 &amp;&amp; args[1].equals(&quot;admin&quot;) &amp;&amp; args[2].equalsIgnoreCase(&quot;toggle&quot;)) {</b>
+<b class="nc"><i>176</i>&nbsp;                        GuildSettings.get(guild).set(guild, GSetting.MUSIC_SKIP_ADMIN_ONLY, adminOnly ? &quot;false&quot; : &quot;true&quot;);</b>
+<b class="nc"><i>177</i>&nbsp;                        adminOnly = !adminOnly;</b>
+<b class="nc"><i>178</i>&nbsp;                    } else if ((userRank.isAtLeast(SimpleRank.GUILD_ADMIN) || !adminOnly) &amp;&amp; args.length == 1) {</b>
+<b class="nc"><i>179</i>&nbsp;                        player.clearQueue();</b>
+<b class="nc"><i>180</i>&nbsp;                        return Templates.music.queue_cleared.formatGuild(channel);</b>
+<i>181</i>&nbsp;                    }
+<b class="nc"><i>182</i>&nbsp;                    return Templates.music.clear_mode.formatGuild(channel, adminOnly ? &quot;admin-only&quot; : &quot;normal&quot;);</b>
+<i>183</i>&nbsp;            }
+<i>184</i>&nbsp;        }
+<i>185</i>&nbsp;
+<b class="nc"><i>186</i>&nbsp;        OPlaylist playlist = CPlaylist.findById(player.getActivePLaylistId());</b>
+<b class="nc"><i>187</i>&nbsp;        StringBuilder ret = new StringBuilder();</b>
+<b class="nc"><i>188</i>&nbsp;        if (player.getRequiredVotes() &gt; 1) {</b>
+<b class="nc"><i>189</i>&nbsp;            ret.append(player.getVoteCount()).append(&quot;/&quot;).append(player.getRequiredVotes()).append(Emojibet.NEXT_TRACK);</b>
+<i>190</i>&nbsp;        }
+<b class="nc"><i>191</i>&nbsp;        ret.append(&quot;[`&quot;).append(DisUtil.getCommandPrefix(channel)).append(&quot;pl` &quot;).append(playlist.title).append(&quot;] &quot;).append(&quot;\uD83C\uDFB6 &quot;);</b>
+<b class="nc"><i>192</i>&nbsp;        ret.append(song.youtubeTitle);</b>
+<b class="nc"><i>193</i>&nbsp;        final String autoUpdateText = ret.toString();</b>
+<b class="nc"><i>194</i>&nbsp;        ret.append(&quot;\n\n&quot;);</b>
+<b class="nc"><i>195</i>&nbsp;        MusicPlayerHandler musicHandler = MusicPlayerHandler.getFor(guild, bot);</b>
+<b class="nc"><i>196</i>&nbsp;        ret.append(MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused())).append(&quot;\n\n&quot;);</b>
+<i>197</i>&nbsp;
+<b class="nc"><i>198</i>&nbsp;        if (GuildSettings.get(guild).getBoolValue(GSetting.MUSIC_SHOW_LISTENERS)) {</b>
+<b class="nc"><i>199</i>&nbsp;            List&lt;Member&gt; userList = musicHandler.getUsersInVoiceChannel();</b>
+<b class="nc"><i>200</i>&nbsp;            if (userList.size() &gt; 0) {</b>
+<b class="nc"><i>201</i>&nbsp;                ret.append(&quot;\uD83C\uDFA7  Listeners\n&quot;);</b>
+<b class="nc"><i>202</i>&nbsp;                ArrayList&lt;String&gt; displayList = userList.stream().map(Member::getEffectiveName).collect(Collectors.toCollection(ArrayList::new));</b>
+<b class="nc"><i>203</i>&nbsp;                ret.append(Misc.makeTable(displayList));</b>
+<i>204</i>&nbsp;            }
+<i>205</i>&nbsp;        }
+<b class="nc"><i>206</i>&nbsp;        List&lt;OMusic&gt; queue = musicHandler.getQueue();</b>
+<b class="nc"><i>207</i>&nbsp;        if (queue.size() &gt; 0) {</b>
+<b class="nc"><i>208</i>&nbsp;            ret.append(&quot;\n\uD83C\uDFB5 *Next up:*\n&quot;);</b>
+<b class="nc"><i>209</i>&nbsp;            for (int i = 0; i &lt; Math.min(2, queue.size()); i++) {</b>
+<b class="nc"><i>210</i>&nbsp;                ret.append(&quot;\uD83D\uDC49 &quot;).append(queue.get(i).youtubeTitle).append(&quot;\n&quot;);</b>
+<i>211</i>&nbsp;            }
+<b class="nc"><i>212</i>&nbsp;            if (queue.size() &gt; 2) {</b>
+<b class="nc"><i>213</i>&nbsp;                ret.append(&quot;\n... And **&quot;).append(queue.size() - 2).append(&quot;** more!&quot;);</b>
+<i>214</i>&nbsp;            }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;        }
+<b class="nc"><i>217</i>&nbsp;        if (args.length == 1 &amp;&amp; args[0].equals(&quot;update&quot;)) {</b>
+<b class="nc"><i>218</i>&nbsp;            final Future&lt;?&gt;[] f = {null};</b>
+<b class="nc"><i>219</i>&nbsp;            bot.queue.add(channel.sendMessage(ret.toString()),</b>
+<i>220</i>&nbsp;                    message -&gt; {
+<b class="nc"><i>221</i>&nbsp;                        if (message == null) {</b>
+<i>222</i>&nbsp;                            return;
+<i>223</i>&nbsp;                        }
+<b class="nc"><i>224</i>&nbsp;                        bot.scheduleRepeat(</b>
+<i>225</i>&nbsp;                                () -&gt; {
+<b class="nc"><i>226</i>&nbsp;                                    if (player.getCurrentlyPlaying() != song.id) {</b>
+<b class="nc"><i>227</i>&nbsp;                                        f[0].cancel(false);</b>
+<i>228</i>&nbsp;                                        return;
+<i>229</i>&nbsp;                                    }
+<b class="nc"><i>230</i>&nbsp;                                    bot.queue.add(message.editMessage((player.isInRepeatMode() ? &quot;\uD83D\uDD02 &quot; : &quot;&quot;) + autoUpdateText + &quot;\n&quot; +</b>
+<b class="nc"><i>231</i>&nbsp;                                            MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) + &quot;\n\n&quot;</b>
+<i>232</i>&nbsp;                                    ));
+<i>233</i>&nbsp;                                }, 10_000L, 10_000L
+<i>234</i>&nbsp;                        );
+<i>235</i>&nbsp;                    });
+<b class="nc"><i>236</i>&nbsp;            return &quot;&quot;;</b>
+<b class="nc"><i>237</i>&nbsp;        } else if (args.length &gt;= 1 &amp;&amp; args[0].equals(&quot;updatetitle&quot;)) {</b>
+<b class="nc"><i>238</i>&nbsp;            if (!userRank.isAtLeast(SimpleRank.USER)) {</b>
+<b class="nc"><i>239</i>&nbsp;                return Templates.no_permission.formatGuild(channel, &quot;command_no_permission&quot;);</b>
+<i>240</i>&nbsp;            }
+<b class="nc"><i>241</i>&nbsp;            if (player.isUpdateChannelTitle()) {</b>
+<b class="nc"><i>242</i>&nbsp;                player.setUpdateChannelTitle(false);</b>
+<b class="nc"><i>243</i>&nbsp;                return Templates.music.channel_autotitle_stop.formatGuild(channel);</b>
+<i>244</i>&nbsp;            } else {
+<b class="nc"><i>245</i>&nbsp;                TextChannel musicChannel = (TextChannel) channel;</b>
+<b class="nc"><i>246</i>&nbsp;                if (PermissionUtil.checkPermission(musicChannel, guild.getSelfMember(), Permission.MANAGE_CHANNEL)) {</b>
+<b class="nc"><i>247</i>&nbsp;                    player.setUpdateChannelTitle(true);</b>
+<b class="nc"><i>248</i>&nbsp;                    final Future&lt;?&gt;[] f = {null};</b>
+<b class="nc"><i>249</i>&nbsp;                    bot.scheduleRepeat(() -&gt; {</b>
+<b class="nc"><i>250</i>&nbsp;                        if (!player.isUpdateChannelTitle() || !player.canTogglePause()) {</b>
+<b class="nc"><i>251</i>&nbsp;                            player.setUpdateChannelTitle(false);</b>
+<b class="nc"><i>252</i>&nbsp;                            bot.queue.add(musicChannel.getManager().setTopic(&quot;&quot;));</b>
+<b class="nc"><i>253</i>&nbsp;                            f[0].cancel(false);</b>
+<i>254</i>&nbsp;                            return;
+<i>255</i>&nbsp;                        }
+<b class="nc"><i>256</i>&nbsp;                        OMusic nowPlaying = CMusic.findById(player.getCurrentlyPlaying());</b>
+<b class="nc"><i>257</i>&nbsp;                        bot.queue.add(musicChannel.getManager().setTopic(</b>
+<b class="nc"><i>258</i>&nbsp;                                (player.isInRepeatMode() ? &quot;\uD83D\uDD02 &quot; : &quot;&quot;) +</b>
+<b class="nc"><i>259</i>&nbsp;                                        MusicUtil.getMediaplayerProgressbar(musicHandler.getCurrentSongStartTime(), musicHandler.getCurrentSongLength(), musicHandler.getVolume(), musicHandler.isPaused()) +</b>
+<i>260</i>&nbsp;                                        (nowPlaying.id &gt; 0 ? &quot;\uD83C\uDFB6 &quot; + nowPlaying.youtubeTitle : &quot;&quot;)
+<i>261</i>&nbsp;                        ));
+<i>262</i>&nbsp;                    }, 10_000L, 10_000L);
+<b class="nc"><i>263</i>&nbsp;                    return Templates.music.channel_autotitle_start.formatGuild(channel);</b>
+<i>264</i>&nbsp;                }
+<b class="nc"><i>265</i>&nbsp;                return Templates.permission_missing.formatGuild(channel, Permission.MANAGE_CHANNEL.toString());</b>
+<i>266</i>&nbsp;            }
+<i>267</i>&nbsp;        }
+<b class="nc"><i>268</i>&nbsp;        return (player.isInRepeatMode() ? &quot;\uD83D\uDD01 &quot; : &quot;&quot;) + ret;</b>
+<i>269</i>&nbsp;    }
+<i>270</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

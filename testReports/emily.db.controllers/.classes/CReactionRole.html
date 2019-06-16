@@ -1,0 +1,272 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CReactionRole</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.db.controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CReactionRole (emily.db.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CReactionRole</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 87)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.db.controllers;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.Logger;
+<i>20</i>&nbsp;import emily.db.WebDb;
+<i>21</i>&nbsp;import emily.db.model.OReactionRoleKey;
+<i>22</i>&nbsp;import emily.db.model.OReactionRoleMessage;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;import java.sql.ResultSet;
+<i>25</i>&nbsp;import java.sql.SQLException;
+<i>26</i>&nbsp;import java.util.ArrayList;
+<i>27</i>&nbsp;import java.util.List;
+<i>28</i>&nbsp;
+<b class="nc"><i>29</i>&nbsp;public class CReactionRole {</b>
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public static OReactionRoleKey findBy(long discordGuildId, String key) {
+<b class="nc"><i>32</i>&nbsp;        return findBy(CGuild.getCachedId(discordGuildId), key);</b>
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public static OReactionRoleKey findOrCreate(long discordGuildid, String key) {
+<b class="nc"><i>36</i>&nbsp;        OReactionRoleKey rec = findBy(CGuild.getCachedId(discordGuildid), key);</b>
+<b class="nc"><i>37</i>&nbsp;        if (rec.id == 0) {</b>
+<b class="nc"><i>38</i>&nbsp;            rec.guildId = CGuild.getCachedId(discordGuildid);</b>
+<b class="nc"><i>39</i>&nbsp;            rec.messageKey = key;</b>
+<b class="nc"><i>40</i>&nbsp;            insert(rec);</b>
+<i>41</i>&nbsp;        }
+<b class="nc"><i>42</i>&nbsp;        return rec;</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public static OReactionRoleKey findBy(int serverId, String key) {
+<b class="nc"><i>46</i>&nbsp;        OReactionRoleKey t = new OReactionRoleKey();</b>
+<b class="nc"><i>47</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>48</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>49</i>&nbsp;                        &quot;FROM reaction_role_key &quot; +
+<b class="nc"><i>50</i>&nbsp;                        &quot;WHERE guild_id = ? AND message_key = ? &quot;, serverId, key)) {</b>
+<b class="nc"><i>51</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>52</i>&nbsp;                t = fillRecord(rs);</b>
+<i>53</i>&nbsp;            }
+<b class="nc"><i>54</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>55</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>56</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>57</i>&nbsp;        }</b>
+<b class="nc"><i>58</i>&nbsp;        return t;</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public static List&lt;OReactionRoleKey&gt; getKeysForGuild(long guildDiscordId) {
+<b class="nc"><i>62</i>&nbsp;        return getKeysForGuild(CGuild.getCachedId(guildDiscordId));</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public static List&lt;OReactionRoleKey&gt; getKeysForGuild(int guildId) {
+<b class="nc"><i>66</i>&nbsp;        List&lt;OReactionRoleKey&gt; result = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>67</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>68</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>69</i>&nbsp;                        &quot;FROM reaction_role_key &quot; +
+<b class="nc"><i>70</i>&nbsp;                        &quot;WHERE guild_id = ?&quot;, guildId)) {</b>
+<b class="nc"><i>71</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>72</i>&nbsp;                result.add(fillRecord(rs));</b>
+<i>73</i>&nbsp;            }
+<b class="nc"><i>74</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>75</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>76</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>77</i>&nbsp;        }</b>
+<b class="nc"><i>78</i>&nbsp;        return result;</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    private static OReactionRoleMessage fillMessageRecord(ResultSet rs) throws SQLException {
+<b class="nc"><i>83</i>&nbsp;        OReactionRoleMessage m = new OReactionRoleMessage();</b>
+<b class="nc"><i>84</i>&nbsp;        m.id = rs.getInt(&quot;id&quot;);</b>
+<b class="nc"><i>85</i>&nbsp;        m.reactionRoleKey = rs.getInt(&quot;reaction_role_key_id&quot;);</b>
+<b class="nc"><i>86</i>&nbsp;        m.emoji = rs.getString(&quot;emoji&quot;);</b>
+<b class="nc"><i>87</i>&nbsp;        m.isNormalEmote = rs.getInt(&quot;custom_emoji&quot;) == 0;</b>
+<b class="nc"><i>88</i>&nbsp;        m.roleId = rs.getLong(&quot;role_id&quot;);</b>
+<b class="nc"><i>89</i>&nbsp;        return m;</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    private static OReactionRoleKey fillRecord(ResultSet rs) throws SQLException {
+<b class="nc"><i>93</i>&nbsp;        OReactionRoleKey t = new OReactionRoleKey();</b>
+<b class="nc"><i>94</i>&nbsp;        t.id = rs.getInt(&quot;id&quot;);</b>
+<b class="nc"><i>95</i>&nbsp;        t.guildId = rs.getInt(&quot;guild_id&quot;);</b>
+<b class="nc"><i>96</i>&nbsp;        t.messageKey = rs.getString(&quot;message_key&quot;);</b>
+<b class="nc"><i>97</i>&nbsp;        t.channelId = rs.getLong(&quot;channel_id&quot;);</b>
+<b class="nc"><i>98</i>&nbsp;        t.message = rs.getString(&quot;message&quot;);</b>
+<b class="nc"><i>99</i>&nbsp;        t.messageId = rs.getLong(&quot;message_id&quot;);</b>
+<b class="nc"><i>100</i>&nbsp;        return t;</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    public static void delete(OReactionRoleKey record) {
+<i>104</i>&nbsp;        try {
+<b class="nc"><i>105</i>&nbsp;            WebDb.get().query(</b>
+<i>106</i>&nbsp;                    &quot;DELETE FROM reaction_role_key WHERE message_key = ? AND guild_id = ? &quot;,
+<b class="nc"><i>107</i>&nbsp;                    record.messageKey, record.guildId</b>
+<i>108</i>&nbsp;            );
+<b class="nc"><i>109</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>110</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>111</i>&nbsp;        }</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    public static void deleteGuild(long guildId) {
+<b class="nc"><i>115</i>&nbsp;        deleteGuild(CGuild.getCachedId(guildId));</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public static void deleteGuild(int guildId) {
+<i>119</i>&nbsp;        try {
+<b class="nc"><i>120</i>&nbsp;            WebDb.get().query(</b>
+<i>121</i>&nbsp;                    &quot;DELETE FROM reaction_role_key WHERE guild_id = ? &quot;,
+<b class="nc"><i>122</i>&nbsp;                    guildId</b>
+<i>123</i>&nbsp;            );
+<b class="nc"><i>124</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>125</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>126</i>&nbsp;        }</b>
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    public static void update(OReactionRoleKey record) {
+<i>130</i>&nbsp;        try {
+<b class="nc"><i>131</i>&nbsp;            WebDb.get().query(</b>
+<i>132</i>&nbsp;                    &quot;UPDATE reaction_role_key SET message_key = ?, channel_id = ?, message = ?, message_id = ? WHERE id = ?&quot;,
+<b class="nc"><i>133</i>&nbsp;                    record.messageKey, record.channelId, record.message, record.messageId, record.id);</b>
+<b class="nc"><i>134</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>135</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>136</i>&nbsp;        }</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    public static void insert(OReactionRoleKey record) {
+<b class="nc"><i>140</i>&nbsp;        if (record.id &gt; 0) {</b>
+<b class="nc"><i>141</i>&nbsp;            update(record);</b>
+<i>142</i>&nbsp;            return;
+<i>143</i>&nbsp;        }
+<i>144</i>&nbsp;        try {
+<b class="nc"><i>145</i>&nbsp;            record.id = WebDb.get().insert(</b>
+<i>146</i>&nbsp;                    &quot;INSERT INTO reaction_role_key(guild_id, message_key, channel_id, message, message_id) &quot; +
+<i>147</i>&nbsp;                            &quot;VALUES (?,?,?,?,?)&quot;,
+<b class="nc"><i>148</i>&nbsp;                    record.guildId, record.messageKey, record.channelId, record.message, record.messageId);</b>
+<b class="nc"><i>149</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>150</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>151</i>&nbsp;        }</b>
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public static List&lt;OReactionRoleMessage&gt; getReactionsForKey(int id) {
+<b class="nc"><i>155</i>&nbsp;        List&lt;OReactionRoleMessage&gt; l = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>156</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>157</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>158</i>&nbsp;                        &quot;FROM reaction_role_message &quot; +
+<b class="nc"><i>159</i>&nbsp;                        &quot;WHERE reaction_role_key_id = ? &quot;, id)) {</b>
+<b class="nc"><i>160</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>161</i>&nbsp;                l.add(fillMessageRecord(rs));</b>
+<i>162</i>&nbsp;            }
+<b class="nc"><i>163</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>164</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>165</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>166</i>&nbsp;        }</b>
+<b class="nc"><i>167</i>&nbsp;        return l;</b>
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    public static void addReaction(int reactionRoleKeyId, String emote, boolean isNormalEmote, long roleId) {
+<i>171</i>&nbsp;        try {
+<b class="nc"><i>172</i>&nbsp;            WebDb.get().insert(&quot;INSERT INTO reaction_role_message (reaction_role_key_id, role_id, emoji, custom_emoji) &quot; +</b>
+<b class="nc"><i>173</i>&nbsp;                    &quot;VALUES(?,?,?,?)&quot;, reactionRoleKeyId, roleId, emote, isNormalEmote ? 0 : 1);</b>
+<b class="nc"><i>174</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>175</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>176</i>&nbsp;        }</b>
+<i>177</i>&nbsp;    }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    public static void removeReaction(int reactionRoleKeyId, String emote) {
+<i>180</i>&nbsp;        try {
+<b class="nc"><i>181</i>&nbsp;            WebDb.get().query(</b>
+<i>182</i>&nbsp;                    &quot;DELETE FROM reaction_role_message WHERE reaction_role_key_id = ? AND emoji= ? &quot;,
+<b class="nc"><i>183</i>&nbsp;                    reactionRoleKeyId, emote</b>
+<i>184</i>&nbsp;            );
+<b class="nc"><i>185</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>186</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>187</i>&nbsp;        }</b>
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

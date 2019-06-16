@@ -1,0 +1,225 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CBet</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.db.controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CBet (emily.db.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CBet</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 67)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.db.controllers;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.Logger;
+<i>20</i>&nbsp;import emily.db.WebDb;
+<i>21</i>&nbsp;import emily.db.model.OBet;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;import java.sql.ResultSet;
+<i>24</i>&nbsp;import java.sql.SQLException;
+<i>25</i>&nbsp;import java.sql.Timestamp;
+<i>26</i>&nbsp;import java.util.ArrayList;
+<i>27</i>&nbsp;import java.util.List;
+<i>28</i>&nbsp;
+<b class="nc"><i>29</i>&nbsp;public class CBet {</b>
+<i>30</i>&nbsp;    public static final int MAX_BET_AMOUNT = 1_000_000;
+<i>31</i>&nbsp;    public static final int MIN_BET_OPTIONS = 2;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public static List&lt;OBet&gt; getActiveBetsForGuild(int id) {
+<b class="nc"><i>34</i>&nbsp;        List&lt;OBet&gt; ret = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>35</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>36</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>37</i>&nbsp;                        &quot;FROM bets &quot; +
+<b class="nc"><i>38</i>&nbsp;                        &quot;WHERE guild_id = ? AND bet_status = ? &quot;, id, OBet.Status.ACTIVE.getId())) {</b>
+<b class="nc"><i>39</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>40</i>&nbsp;                ret.add(fillRecord(rs));</b>
+<i>41</i>&nbsp;            }
+<b class="nc"><i>42</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>43</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>44</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>45</i>&nbsp;        }</b>
+<b class="nc"><i>46</i>&nbsp;        return ret;</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public static OBet findById(int id) {
+<b class="nc"><i>50</i>&nbsp;        OBet t = new OBet();</b>
+<b class="nc"><i>51</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>52</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>53</i>&nbsp;                        &quot;FROM bets &quot; +
+<b class="nc"><i>54</i>&nbsp;                        &quot;WHERE id = ? &quot;, id)) {</b>
+<b class="nc"><i>55</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>56</i>&nbsp;                t = fillRecord(rs);</b>
+<i>57</i>&nbsp;            }
+<b class="nc"><i>58</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>59</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>60</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>61</i>&nbsp;        }</b>
+<b class="nc"><i>62</i>&nbsp;        return t;</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public static OBet getActiveBet(int guildId, int userId) {
+<b class="nc"><i>66</i>&nbsp;        OBet t = new OBet();</b>
+<b class="nc"><i>67</i>&nbsp;        try (ResultSet rs = WebDb.get().select(</b>
+<i>68</i>&nbsp;                &quot;SELECT *  &quot; +
+<i>69</i>&nbsp;                        &quot;FROM bets &quot; +
+<b class="nc"><i>70</i>&nbsp;                        &quot;WHERE guild_id = ? AND owner_id= ? AND bet_status IN (?,?,?)&quot;, guildId, userId,</b>
+<b class="nc"><i>71</i>&nbsp;                OBet.Status.PREPARING.getId(), OBet.Status.PENDING.getId(), OBet.Status.ACTIVE.getId())) {</b>
+<b class="nc"><i>72</i>&nbsp;            if (rs.next()) {</b>
+<b class="nc"><i>73</i>&nbsp;                t = fillRecord(rs);</b>
+<i>74</i>&nbsp;            }
+<b class="nc"><i>75</i>&nbsp;            rs.getStatement().close();</b>
+<b class="nc"><i>76</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>77</i>&nbsp;            Logger.fatal(e);</b>
+<b class="nc"><i>78</i>&nbsp;        }</b>
+<b class="nc"><i>79</i>&nbsp;        return t;</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    private static OBet fillRecord(ResultSet rs) throws SQLException {
+<b class="nc"><i>83</i>&nbsp;        OBet b = new OBet();</b>
+<b class="nc"><i>84</i>&nbsp;        b.id = rs.getInt(&quot;id&quot;);</b>
+<b class="nc"><i>85</i>&nbsp;        b.title = rs.getString(&quot;title&quot;);</b>
+<b class="nc"><i>86</i>&nbsp;        b.ownerId = rs.getInt(&quot;owner_id&quot;);</b>
+<b class="nc"><i>87</i>&nbsp;        b.guildId = rs.getInt(&quot;guild_id&quot;);</b>
+<b class="nc"><i>88</i>&nbsp;        b.createdOn = rs.getTimestamp(&quot;created_on&quot;);</b>
+<b class="nc"><i>89</i>&nbsp;        b.startedOn = rs.getTimestamp(&quot;started_on&quot;);</b>
+<b class="nc"><i>90</i>&nbsp;        b.endsAt = rs.getTimestamp(&quot;ends_at&quot;);</b>
+<b class="nc"><i>91</i>&nbsp;        b.price = rs.getInt(&quot;price&quot;);</b>
+<b class="nc"><i>92</i>&nbsp;        return b;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public static void delete(OBet record) {
+<i>96</i>&nbsp;        try {
+<b class="nc"><i>97</i>&nbsp;            WebDb.get().query(</b>
+<i>98</i>&nbsp;                    &quot;DELETE FROM bets WHERE id = ? &quot;,
+<b class="nc"><i>99</i>&nbsp;                    record.id</b>
+<i>100</i>&nbsp;            );
+<b class="nc"><i>101</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>102</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>103</i>&nbsp;        }</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    public static void update(OBet record) {
+<i>107</i>&nbsp;        try {
+<b class="nc"><i>108</i>&nbsp;            record.id = WebDb.get().query(</b>
+<i>109</i>&nbsp;                    &quot;UPDATE bets SET title = ?, started_on = ?, ends_at = ?, price = ? WHERE id = ?&quot;,
+<b class="nc"><i>110</i>&nbsp;                    record.title, record.startedOn, record.endsAt, record.price, record.id);</b>
+<b class="nc"><i>111</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>112</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>113</i>&nbsp;        }</b>
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public static void insert(OBet record) {
+<b class="nc"><i>117</i>&nbsp;        if (record.id &gt; 0) {</b>
+<b class="nc"><i>118</i>&nbsp;            update(record);</b>
+<i>119</i>&nbsp;            return;
+<i>120</i>&nbsp;        }
+<b class="nc"><i>121</i>&nbsp;        if (record.createdOn == null) {</b>
+<b class="nc"><i>122</i>&nbsp;            record.createdOn = new Timestamp(System.currentTimeMillis());</b>
+<i>123</i>&nbsp;        }
+<i>124</i>&nbsp;        try {
+<b class="nc"><i>125</i>&nbsp;            record.id = WebDb.get().insert(</b>
+<i>126</i>&nbsp;                    &quot;INSERT INTO bets(title, owner_id, guild_id, created_on, started_on, ends_at, price,bet_status) &quot; +
+<i>127</i>&nbsp;                            &quot;VALUES (?,?,?,?,?,?,?,?)&quot;,
+<b class="nc"><i>128</i>&nbsp;                    record.title, record.ownerId, record.guildId, record.createdOn, record.startedOn, record.endsAt, record.price, record.status.getId());</b>
+<b class="nc"><i>129</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>130</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>131</i>&nbsp;        }</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    public static void createBet(String title, int price, int guildId, int userId) {
+<b class="nc"><i>135</i>&nbsp;        OBet b = new OBet();</b>
+<b class="nc"><i>136</i>&nbsp;        b.title = title;</b>
+<b class="nc"><i>137</i>&nbsp;        b.price = price;</b>
+<b class="nc"><i>138</i>&nbsp;        b.guildId = guildId;</b>
+<b class="nc"><i>139</i>&nbsp;        b.ownerId = userId;</b>
+<b class="nc"><i>140</i>&nbsp;        insert(b);</b>
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

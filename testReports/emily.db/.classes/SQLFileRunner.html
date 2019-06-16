@@ -1,0 +1,272 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SQLFileRunner</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.db</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SQLFileRunner (emily.db)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SQLFileRunner</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 85)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.db;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.core.Logger;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;import java.io.IOException;
+<i>22</i>&nbsp;import java.io.LineNumberReader;
+<i>23</i>&nbsp;import java.io.Reader;
+<i>24</i>&nbsp;import java.sql.Connection;
+<i>25</i>&nbsp;import java.sql.ResultSet;
+<i>26</i>&nbsp;import java.sql.ResultSetMetaData;
+<i>27</i>&nbsp;import java.sql.SQLException;
+<i>28</i>&nbsp;import java.sql.Statement;
+<i>29</i>&nbsp;import java.util.regex.Matcher;
+<i>30</i>&nbsp;import java.util.regex.Pattern;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;public class SQLFileRunner {
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    private static final String DEFAULT_DELIMITER = &quot;;&quot;;
+<i>36</i>&nbsp;
+<b class="nc"><i>37</i>&nbsp;    private static final Pattern delimP = Pattern.compile(&quot;^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$&quot;, Pattern.CASE_INSENSITIVE);</b>
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private final Connection connection;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    private final boolean stopOnError;
+<i>42</i>&nbsp;    private final boolean autoCommit;
+<i>43</i>&nbsp;
+<b class="nc"><i>44</i>&nbsp;    private String delimiter = DEFAULT_DELIMITER;</b>
+<b class="nc"><i>45</i>&nbsp;    private boolean fullLineDelimiter = false;</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    SQLFileRunner(Connection connection, boolean autoCommit,
+<b class="nc"><i>48</i>&nbsp;                  boolean stopOnError) {</b>
+<b class="nc"><i>49</i>&nbsp;        this.connection = connection;</b>
+<b class="nc"><i>50</i>&nbsp;        this.autoCommit = autoCommit;</b>
+<b class="nc"><i>51</i>&nbsp;        this.stopOnError = stopOnError;</b>
+<b class="nc"><i>52</i>&nbsp;        Logger.debug(&quot;SQL IMPORT FILE&quot;);</b>
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    private void setDelimiter(String delimiter, boolean fullLineDelimiter) {
+<b class="nc"><i>56</i>&nbsp;        this.delimiter = delimiter;</b>
+<b class="nc"><i>57</i>&nbsp;        this.fullLineDelimiter = fullLineDelimiter;</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Runs an SQL script (read in using the Reader parameter)
+<i>62</i>&nbsp;     *
+<i>63</i>&nbsp;     * @param reader - the source of the script
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    public void runScript(Reader reader) throws IOException, SQLException {
+<i>66</i>&nbsp;        try {
+<b class="nc"><i>67</i>&nbsp;            boolean originalAutoCommit = connection.getAutoCommit();</b>
+<i>68</i>&nbsp;            try {
+<b class="nc"><i>69</i>&nbsp;                if (originalAutoCommit != this.autoCommit) {</b>
+<b class="nc"><i>70</i>&nbsp;                    connection.setAutoCommit(this.autoCommit);</b>
+<i>71</i>&nbsp;                }
+<b class="nc"><i>72</i>&nbsp;                runScript(connection, reader);</b>
+<i>73</i>&nbsp;            } finally {
+<b class="nc"><i>74</i>&nbsp;                connection.setAutoCommit(originalAutoCommit);</b>
+<b class="nc"><i>75</i>&nbsp;            }</b>
+<b class="nc"><i>76</i>&nbsp;        } catch (IOException | SQLException e) {</b>
+<b class="nc"><i>77</i>&nbsp;            throw e;</b>
+<b class="nc"><i>78</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>79</i>&nbsp;            throw new RuntimeException(&quot;Error running script.  Cause: &quot; + e, e);</b>
+<b class="nc"><i>80</i>&nbsp;        }</b>
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    /**
+<i>84</i>&nbsp;     * Runs an SQL script (read in using the Reader parameter) using the
+<i>85</i>&nbsp;     * connection passed in
+<i>86</i>&nbsp;     *
+<i>87</i>&nbsp;     * @param conn   - the connection to use for the script
+<i>88</i>&nbsp;     * @param reader - the source of the script
+<i>89</i>&nbsp;     * @throws SQLException if any SQL errors occur
+<i>90</i>&nbsp;     * @throws IOException  if there is an error reading from the Reader
+<i>91</i>&nbsp;     */
+<i>92</i>&nbsp;    private void runScript(Connection conn, Reader reader) throws IOException,
+<i>93</i>&nbsp;            SQLException {
+<b class="nc"><i>94</i>&nbsp;        StringBuffer command = null;</b>
+<i>95</i>&nbsp;        try {
+<b class="nc"><i>96</i>&nbsp;            LineNumberReader lineReader = new LineNumberReader(reader);</b>
+<i>97</i>&nbsp;            String line;
+<b class="nc"><i>98</i>&nbsp;            while ((line = lineReader.readLine()) != null) {</b>
+<b class="nc"><i>99</i>&nbsp;                if (command == null) {</b>
+<b class="nc"><i>100</i>&nbsp;                    command = new StringBuffer();</b>
+<i>101</i>&nbsp;                }
+<b class="nc"><i>102</i>&nbsp;                String trimmedLine = line.trim();</b>
+<b class="nc"><i>103</i>&nbsp;                final Matcher delimMatch = delimP.matcher(trimmedLine);</b>
+<b class="nc"><i>104</i>&nbsp;                if (trimmedLine.length() &lt; 1</b>
+<b class="nc"><i>105</i>&nbsp;                        || trimmedLine.startsWith(&quot;//&quot;)) {</b>
+<i>106</i>&nbsp;                    // Do nothing
+<b class="nc"><i>107</i>&nbsp;                } else if (delimMatch.matches()) {</b>
+<b class="nc"><i>108</i>&nbsp;                    setDelimiter(delimMatch.group(2), false);</b>
+<b class="nc"><i>109</i>&nbsp;                } else if (trimmedLine.startsWith(&quot;--&quot;)) {</b>
+<b class="nc"><i>110</i>&nbsp;                    Logger.info(trimmedLine);</b>
+<b class="nc"><i>111</i>&nbsp;                } else if (trimmedLine.length() &lt; 1</b>
+<b class="nc"><i>112</i>&nbsp;                        || trimmedLine.startsWith(&quot;--&quot;)) {</b>
+<i>113</i>&nbsp;                    // Do nothing
+<b class="nc"><i>114</i>&nbsp;                } else if (!fullLineDelimiter</b>
+<b class="nc"><i>115</i>&nbsp;                        &amp;&amp; trimmedLine.endsWith(getDelimiter())</b>
+<i>116</i>&nbsp;                        || fullLineDelimiter
+<b class="nc"><i>117</i>&nbsp;                        &amp;&amp; trimmedLine.equals(getDelimiter())) {</b>
+<b class="nc"><i>118</i>&nbsp;                    command.append(line.substring(0, line</b>
+<b class="nc"><i>119</i>&nbsp;                            .lastIndexOf(getDelimiter())));</b>
+<b class="nc"><i>120</i>&nbsp;                    command.append(&quot; &quot;);</b>
+<b class="nc"><i>121</i>&nbsp;                    this.execCommand(conn, command, lineReader);</b>
+<b class="nc"><i>122</i>&nbsp;                    command = null;</b>
+<i>123</i>&nbsp;                } else {
+<b class="nc"><i>124</i>&nbsp;                    command.append(line);</b>
+<b class="nc"><i>125</i>&nbsp;                    command.append(&quot;\n&quot;);</b>
+<i>126</i>&nbsp;                }
+<b class="nc"><i>127</i>&nbsp;            }</b>
+<b class="nc"><i>128</i>&nbsp;            if (command != null) {</b>
+<b class="nc"><i>129</i>&nbsp;                this.execCommand(conn, command, lineReader);</b>
+<i>130</i>&nbsp;            }
+<b class="nc"><i>131</i>&nbsp;            if (!autoCommit) {</b>
+<b class="nc"><i>132</i>&nbsp;                conn.commit();</b>
+<i>133</i>&nbsp;            }
+<b class="nc"><i>134</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>135</i>&nbsp;            conn.rollback();</b>
+<b class="nc"><i>136</i>&nbsp;            throw new IOException(String.format(&quot;Error executing &#39;%s&#39;: %s&quot;, command, e.getMessage()), e);</b>
+<b class="nc"><i>137</i>&nbsp;        }</b>
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    private void execCommand(Connection conn, StringBuffer command,
+<i>141</i>&nbsp;                             LineNumberReader lineReader) throws SQLException {
+<b class="nc"><i>142</i>&nbsp;        Statement statement = conn.createStatement();</b>
+<i>143</i>&nbsp;
+<b class="nc"><i>144</i>&nbsp;        Logger.info(command);</b>
+<i>145</i>&nbsp;
+<b class="nc"><i>146</i>&nbsp;        boolean hasResults = false;</b>
+<i>147</i>&nbsp;        try {
+<b class="nc"><i>148</i>&nbsp;            hasResults = statement.execute(command.toString());</b>
+<b class="nc"><i>149</i>&nbsp;        } catch (SQLException e) {</b>
+<b class="nc"><i>150</i>&nbsp;            final String errText = String.format(&quot;Error executing &#39;%s&#39; (line %d): %s&quot;,</b>
+<b class="nc"><i>151</i>&nbsp;                    command, lineReader.getLineNumber(), e.getMessage());</b>
+<b class="nc"><i>152</i>&nbsp;            Logger.info(errText);</b>
+<b class="nc"><i>153</i>&nbsp;            if (stopOnError) {</b>
+<b class="nc"><i>154</i>&nbsp;                throw new SQLException(errText, e);</b>
+<i>155</i>&nbsp;            }
+<b class="nc"><i>156</i>&nbsp;        }</b>
+<i>157</i>&nbsp;
+<b class="nc"><i>158</i>&nbsp;        if (autoCommit &amp;&amp; !conn.getAutoCommit()) {</b>
+<b class="nc"><i>159</i>&nbsp;            conn.commit();</b>
+<i>160</i>&nbsp;        }
+<i>161</i>&nbsp;
+<b class="nc"><i>162</i>&nbsp;        ResultSet rs = statement.getResultSet();</b>
+<b class="nc"><i>163</i>&nbsp;        if (hasResults &amp;&amp; rs != null) {</b>
+<b class="nc"><i>164</i>&nbsp;            ResultSetMetaData md = rs.getMetaData();</b>
+<b class="nc"><i>165</i>&nbsp;            int cols = md.getColumnCount();</b>
+<b class="nc"><i>166</i>&nbsp;            for (int i = 1; i &lt;= cols; i++) {</b>
+<b class="nc"><i>167</i>&nbsp;                String name = md.getColumnLabel(i);</b>
+<b class="nc"><i>168</i>&nbsp;                Logger.debug(name + &quot;\t&quot;);</b>
+<i>169</i>&nbsp;            }
+<b class="nc"><i>170</i>&nbsp;            Logger.info(&quot;&quot;);</b>
+<b class="nc"><i>171</i>&nbsp;            while (rs.next()) {</b>
+<b class="nc"><i>172</i>&nbsp;                for (int i = 1; i &lt;= cols; i++) {</b>
+<b class="nc"><i>173</i>&nbsp;                    String value = rs.getString(i);</b>
+<b class="nc"><i>174</i>&nbsp;                    Logger.debug(value + &quot;\t&quot;);</b>
+<i>175</i>&nbsp;                }
+<b class="nc"><i>176</i>&nbsp;                Logger.info(&quot;&quot;);</b>
+<i>177</i>&nbsp;            }
+<i>178</i>&nbsp;        }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;        try {
+<b class="nc"><i>181</i>&nbsp;            statement.close();</b>
+<b class="nc"><i>182</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>183</i>&nbsp;        }</b>
+<i>184</i>&nbsp;    }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    private String getDelimiter() {
+<b class="nc"><i>187</i>&nbsp;        return delimiter;</b>
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

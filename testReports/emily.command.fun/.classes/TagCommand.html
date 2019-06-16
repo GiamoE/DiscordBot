@@ -1,0 +1,301 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TagCommand</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.command.fun</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TagCommand (emily.command.fun)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TagCommand</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 92)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.command.fun;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.CommandReactionListener;
+<i>20</i>&nbsp;import emily.command.meta.CommandVisibility;
+<i>21</i>&nbsp;import emily.command.meta.ICommandReactionListener;
+<i>22</i>&nbsp;import emily.command.meta.PaginationInfo;
+<i>23</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>24</i>&nbsp;import emily.db.controllers.CGuild;
+<i>25</i>&nbsp;import emily.db.controllers.CTag;
+<i>26</i>&nbsp;import emily.db.controllers.CUser;
+<i>27</i>&nbsp;import emily.db.model.OTag;
+<i>28</i>&nbsp;import emily.main.DiscordBot;
+<i>29</i>&nbsp;import emily.permission.SimpleRank;
+<i>30</i>&nbsp;import emily.templates.Templates;
+<i>31</i>&nbsp;import emily.util.DisUtil;
+<i>32</i>&nbsp;import emily.util.Emojibet;
+<i>33</i>&nbsp;import emily.util.Misc;
+<i>34</i>&nbsp;import emily.util.TimeUtil;
+<i>35</i>&nbsp;import emoji4j.EmojiUtils;
+<i>36</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>37</i>&nbsp;import net.dv8tion.jda.core.entities.Message;
+<i>38</i>&nbsp;import net.dv8tion.jda.core.entities.MessageChannel;
+<i>39</i>&nbsp;import net.dv8tion.jda.core.entities.TextChannel;
+<i>40</i>&nbsp;import net.dv8tion.jda.core.entities.User;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;import java.sql.Timestamp;
+<i>43</i>&nbsp;import java.util.List;
+<i>44</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>45</i>&nbsp;import java.util.stream.Collectors;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;/**
+<i>48</i>&nbsp; * !tag
+<i>49</i>&nbsp; */
+<i>50</i>&nbsp;public class TagCommand extends AbstractCommand implements ICommandReactionListener&lt;PaginationInfo&gt; {
+<b class="nc"><i>51</i>&nbsp;    private final int TAGS_PER_PAGE = 25;</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public TagCommand() {
+<b class="nc"><i>54</i>&nbsp;        super();</b>
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    @Override
+<i>58</i>&nbsp;    public String getDescription() {
+<b class="nc"><i>59</i>&nbsp;        return &quot;Tags!&quot;;</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    @Override
+<i>63</i>&nbsp;    public String getCommand() {
+<b class="nc"><i>64</i>&nbsp;        return &quot;tag&quot;;</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    @Override
+<i>68</i>&nbsp;    public String[] getUsage() {
+<b class="nc"><i>69</i>&nbsp;        return new String[]{</b>
+<i>70</i>&nbsp;                &quot;tag                     //list of tags&quot;,
+<i>71</i>&nbsp;                &quot;tag &lt;name&gt;              //shows the tag&quot;,
+<i>72</i>&nbsp;                &quot;tag mine                //shows your tags&quot;,
+<i>73</i>&nbsp;                &quot;tag by &lt;name&gt;           //shows tags created by user&quot;,
+<i>74</i>&nbsp;                &quot;tag details &lt;tag&gt;       //shows info about tag&quot;,
+<i>75</i>&nbsp;                &quot;tag list                //shows all tags &quot;,
+<i>76</i>&nbsp;                &quot;tag deleteuser &lt;@user&gt;  //deletes tags by user&quot;,
+<i>77</i>&nbsp;                &quot;tag delete &lt;name&gt;       //deletes tag&quot;,
+<i>78</i>&nbsp;                &quot;tag &lt;name&gt; &lt;content&gt;    //creates the tag&quot;,
+<i>79</i>&nbsp;        };
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    @Override
+<i>83</i>&nbsp;    public String[] getAliases() {
+<b class="nc"><i>84</i>&nbsp;        return new String[]{</b>
+<i>85</i>&nbsp;                &quot;t&quot;, &quot;tags&quot;
+<i>86</i>&nbsp;        };
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    @Override
+<i>90</i>&nbsp;    public CommandVisibility getVisibility() {
+<b class="nc"><i>91</i>&nbsp;        return CommandVisibility.PUBLIC;</b>
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    @Override
+<i>95</i>&nbsp;    public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
+<b class="nc"><i>96</i>&nbsp;        Guild guild = ((TextChannel) channel).getGuild();</b>
+<b class="nc"><i>97</i>&nbsp;        SimpleRank rank = bot.security.getSimpleRank(author, channel);</b>
+<b class="nc"><i>98</i>&nbsp;        if (args.length == 0 || args[0].equals(&quot;list&quot;)) {</b>
+<b class="nc"><i>99</i>&nbsp;            List&lt;OTag&gt; tags = CTag.getTagsFor(guild.getIdLong());</b>
+<b class="nc"><i>100</i>&nbsp;            if (tags.isEmpty()) {</b>
+<b class="nc"><i>101</i>&nbsp;                return Templates.command.tag.no_tags.formatGuild(channel);</b>
+<i>102</i>&nbsp;            }
+<b class="nc"><i>103</i>&nbsp;            int tagCount = CTag.countTagsOn(CGuild.getCachedId(guild.getIdLong()));</b>
+<b class="nc"><i>104</i>&nbsp;            if (tagCount &lt;= TAGS_PER_PAGE) {</b>
+<b class="nc"><i>105</i>&nbsp;                return &quot;The following tags exist:\n&quot; + Misc.makeTable(tags.stream().map(sc -&gt; sc.tagname).collect(Collectors.toList()));</b>
+<i>106</i>&nbsp;            }
+<b class="nc"><i>107</i>&nbsp;            int maxPage = (int) Math.ceil((double) CTag.countTagsOn(CGuild.getCachedId(guild.getIdLong())) / (double) TAGS_PER_PAGE);</b>
+<b class="nc"><i>108</i>&nbsp;            bot.queue.add(channel.sendMessage(makePage(guild, 1, maxPage)),</b>
+<i>109</i>&nbsp;                    message -&gt;
+<b class="nc"><i>110</i>&nbsp;                            bot.commandReactionHandler.addReactionListener(</b>
+<b class="nc"><i>111</i>&nbsp;                                    guild.getIdLong(), message,</b>
+<b class="nc"><i>112</i>&nbsp;                                    getReactionListener(author.getIdLong(), new PaginationInfo(1, maxPage, guild))));</b>
+<b class="nc"><i>113</i>&nbsp;            return &quot;&quot;;</b>
+<i>114</i>&nbsp;
+<b class="nc"><i>115</i>&nbsp;        } else if (args[0].equalsIgnoreCase(&quot;mine&quot;)) {</b>
+<b class="nc"><i>116</i>&nbsp;            List&lt;OTag&gt; tags = CTag.getTagsFor(guild.getIdLong(), author.getIdLong());</b>
+<b class="nc"><i>117</i>&nbsp;            if (tags.isEmpty()) {</b>
+<b class="nc"><i>118</i>&nbsp;                return Templates.command.tag.no_tags.formatGuild(channel);</b>
+<i>119</i>&nbsp;            }
+<b class="nc"><i>120</i>&nbsp;            return &quot;You have made the following tags:\n&quot; + Misc.makeTable(tags.stream().map(sc -&gt; sc.tagname).collect(Collectors.toList()));</b>
+<i>121</i>&nbsp;        }
+<b class="nc"><i>122</i>&nbsp;        if (args.length == 2 &amp;&amp; args[0].equalsIgnoreCase(&quot;details&quot;)) {</b>
+<b class="nc"><i>123</i>&nbsp;            OTag tag = CTag.findBy(CGuild.getCachedId(guild.getIdLong()), args[1]);</b>
+<b class="nc"><i>124</i>&nbsp;            if (tag.id == 0) {</b>
+<b class="nc"><i>125</i>&nbsp;                return Templates.command.tag.not_set.formatGuild(channel);</b>
+<i>126</i>&nbsp;            }
+<b class="nc"><i>127</i>&nbsp;            User user = channel.getJDA().getUserById(CUser.getCachedDiscordId(tag.userId));</b>
+<b class="nc"><i>128</i>&nbsp;            String username = &quot;???&quot;;</b>
+<b class="nc"><i>129</i>&nbsp;            if (user != null) {</b>
+<b class="nc"><i>130</i>&nbsp;                username = user.getName();</b>
+<i>131</i>&nbsp;            }
+<b class="nc"><i>132</i>&nbsp;            return String.format(&quot;The tag `%s` is created on %s by %s&quot;, tag.tagname, TimeUtil.formatYMD(tag.created), username);</b>
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;        }
+<b class="nc"><i>135</i>&nbsp;        if (args.length == 2 &amp;&amp; args[0].equalsIgnoreCase(&quot;by&quot;)) {</b>
+<b class="nc"><i>136</i>&nbsp;            User user = DisUtil.findUser((TextChannel) channel, args[1]);</b>
+<b class="nc"><i>137</i>&nbsp;            if (user == null) {</b>
+<b class="nc"><i>138</i>&nbsp;                return Templates.config.cant_find_user.formatGuild(channel, args[1]);</b>
+<i>139</i>&nbsp;            }
+<b class="nc"><i>140</i>&nbsp;            List&lt;OTag&gt; tags = CTag.findByUser(CGuild.getCachedId(guild.getIdLong()), CUser.getCachedId(user.getIdLong()));</b>
+<b class="nc"><i>141</i>&nbsp;            return user.getName() + &quot; made the following tags:\n&quot; + Misc.makeTable(tags.stream().map(sc -&gt; sc.tagname).collect(Collectors.toList()));</b>
+<i>142</i>&nbsp;        }
+<b class="nc"><i>143</i>&nbsp;        if (args.length &gt; 1 &amp;&amp; args[0].equalsIgnoreCase(&quot;deleteuser&quot;)) {</b>
+<b class="nc"><i>144</i>&nbsp;            if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN)) {</b>
+<b class="nc"><i>145</i>&nbsp;                return Templates.no_permission.formatGuild(channel);</b>
+<i>146</i>&nbsp;            }
+<b class="nc"><i>147</i>&nbsp;            User user = DisUtil.findUser((TextChannel) channel, args[1]);</b>
+<b class="nc"><i>148</i>&nbsp;            if (user == null) {</b>
+<b class="nc"><i>149</i>&nbsp;                return Templates.config.cant_find_user.formatGuild(channel, args[1]);</b>
+<i>150</i>&nbsp;            }
+<b class="nc"><i>151</i>&nbsp;            CTag.deleteTagsBy(CGuild.getCachedId(guild.getIdLong()), CUser.getCachedId(user.getIdLong()));</b>
+<b class="nc"><i>152</i>&nbsp;            return Templates.command.tag.by_user_deleted.formatGuild(channel, user);</b>
+<i>153</i>&nbsp;        }
+<b class="nc"><i>154</i>&nbsp;        if (args.length == 2 &amp;&amp; args[0].equalsIgnoreCase(&quot;delete&quot;)) {</b>
+<b class="nc"><i>155</i>&nbsp;            OTag tag = CTag.findBy(guild.getIdLong(), args[1]);</b>
+<b class="nc"><i>156</i>&nbsp;            if (tag.id &gt; 0) {</b>
+<b class="nc"><i>157</i>&nbsp;                if (!rank.isAtLeast(SimpleRank.GUILD_ADMIN) &amp;&amp; CUser.getCachedId(author.getIdLong()) != tag.userId) {</b>
+<b class="nc"><i>158</i>&nbsp;                    return Templates.command.tag.only_delete_own.formatGuild(channel);</b>
+<i>159</i>&nbsp;                }
+<b class="nc"><i>160</i>&nbsp;                CTag.delete(tag);</b>
+<b class="nc"><i>161</i>&nbsp;                return Templates.command.tag.delete_success.formatGuild(channel);</b>
+<i>162</i>&nbsp;            }
+<b class="nc"><i>163</i>&nbsp;            return Templates.command.tag.nothing_to_delete.formatGuild(channel);</b>
+<i>164</i>&nbsp;        }
+<b class="nc"><i>165</i>&nbsp;        if (DisUtil.hasMention(args[0])) {</b>
+<b class="nc"><i>166</i>&nbsp;            return Templates.command.tag.no_mention.formatGuild(channel);</b>
+<i>167</i>&nbsp;        }
+<b class="nc"><i>168</i>&nbsp;        OTag tag = CTag.findBy(guild.getIdLong(), args[0]);</b>
+<b class="nc"><i>169</i>&nbsp;        if (args.length &gt; 1) {</b>
+<b class="nc"><i>170</i>&nbsp;            if (tag.id &gt; 0 &amp;&amp; tag.userId != CUser.getCachedId(author.getIdLong())) {</b>
+<b class="nc"><i>171</i>&nbsp;                return Templates.command.tag.only_creator_can_edit.formatGuild(channel);</b>
+<i>172</i>&nbsp;            }
+<b class="nc"><i>173</i>&nbsp;            String output = Misc.joinStrings(args, 1);</b>
+<b class="nc"><i>174</i>&nbsp;            output = output.trim();</b>
+<b class="nc"><i>175</i>&nbsp;            if (tag.id == 0) {</b>
+<b class="nc"><i>176</i>&nbsp;                tag.tagname = args[0].replace(&quot;\n&quot;, &quot;&quot;).trim();</b>
+<b class="nc"><i>177</i>&nbsp;                tag.guildId = CGuild.getCachedId(guild.getIdLong());</b>
+<b class="nc"><i>178</i>&nbsp;                tag.userId = CUser.getCachedId(author.getIdLong(), author.getName());</b>
+<b class="nc"><i>179</i>&nbsp;                tag.created = new Timestamp(System.currentTimeMillis());</b>
+<i>180</i>&nbsp;            }
+<b class="nc"><i>181</i>&nbsp;            tag.response = EmojiUtils.shortCodify(output);</b>
+<b class="nc"><i>182</i>&nbsp;            if (tag.response.length() &gt; 2000) {</b>
+<b class="nc"><i>183</i>&nbsp;                tag.response = tag.response.substring(0, 1999);</b>
+<i>184</i>&nbsp;            }
+<b class="nc"><i>185</i>&nbsp;            CTag.insert(tag);</b>
+<b class="nc"><i>186</i>&nbsp;            return Templates.command.tag.saved.formatGuild(channel);</b>
+<i>187</i>&nbsp;        }
+<b class="nc"><i>188</i>&nbsp;        if (tag.id &gt; 0) {</b>
+<b class="nc"><i>189</i>&nbsp;            return tag.response;</b>
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;        }
+<b class="nc"><i>192</i>&nbsp;        return Templates.command.tag.not_set.formatGuild(channel);</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    private String makePage(Guild guild, int activePage, int maxPage) {
+<b class="nc"><i>196</i>&nbsp;        int offset = (activePage - 1) * TAGS_PER_PAGE;</b>
+<b class="nc"><i>197</i>&nbsp;        List&lt;OTag&gt; tags = CTag.getTagsFor(guild.getIdLong(), offset, TAGS_PER_PAGE);</b>
+<b class="nc"><i>198</i>&nbsp;        return String.format(&quot;The following tags exist: [page %2d/%2d] &quot;, activePage, maxPage) +</b>
+<b class="nc"><i>199</i>&nbsp;                &quot;\n&quot; + Misc.makeTable(tags.stream().map(sc -&gt; sc.tagname).collect(Collectors.toList()));</b>
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    @Override
+<i>203</i>&nbsp;    public CommandReactionListener&lt;PaginationInfo&gt; getReactionListener(long userId, PaginationInfo initialData) {
+<b class="nc"><i>204</i>&nbsp;        CommandReactionListener&lt;PaginationInfo&gt; listener = new CommandReactionListener&lt;&gt;(userId, initialData);</b>
+<b class="nc"><i>205</i>&nbsp;        listener.setExpiresIn(TimeUnit.MINUTES, 2);</b>
+<b class="nc"><i>206</i>&nbsp;        listener.registerReaction(Emojibet.PREV_TRACK, o -&gt; {</b>
+<b class="nc"><i>207</i>&nbsp;            if (listener.getData().previousPage()) {</b>
+<b class="nc"><i>208</i>&nbsp;                o.editMessage(makePage(o.getGuild(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).complete();</b>
+<i>209</i>&nbsp;            }
+<i>210</i>&nbsp;        });
+<b class="nc"><i>211</i>&nbsp;        listener.registerReaction(Emojibet.NEXT_TRACK, o -&gt; {</b>
+<b class="nc"><i>212</i>&nbsp;            if (listener.getData().nextPage()) {</b>
+<b class="nc"><i>213</i>&nbsp;                o.editMessage(makePage(o.getGuild(), listener.getData().getCurrentPage(), listener.getData().getMaxPage())).complete();</b>
+<i>214</i>&nbsp;            }
+<i>215</i>&nbsp;        });
+<b class="nc"><i>216</i>&nbsp;        return listener;</b>
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

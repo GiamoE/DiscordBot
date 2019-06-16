@@ -1,0 +1,165 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BotCleanupService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.service</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BotCleanupService (emily.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BotCleanupService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.service;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.command.meta.ICommandCleanup;
+<i>20</i>&nbsp;import emily.command.meta.AbstractCommand;
+<i>21</i>&nbsp;import emily.core.AbstractService;
+<i>22</i>&nbsp;import emily.handler.CommandHandler;
+<i>23</i>&nbsp;import emily.main.BotContainer;
+<i>24</i>&nbsp;import emily.main.DiscordBot;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * delete cached stuff, etc.
+<i>30</i>&nbsp; */
+<i>31</i>&nbsp;public class BotCleanupService extends AbstractService {
+<b class="nc"><i>32</i>&nbsp;    private int runCount = 0;</b>
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public BotCleanupService(BotContainer b) {
+<b class="nc"><i>35</i>&nbsp;        super(b);</b>
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    @Override
+<i>39</i>&nbsp;    public String getIdentifier() {
+<b class="nc"><i>40</i>&nbsp;        return &quot;bot_cleanup_service&quot;;</b>
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    @Override
+<i>44</i>&nbsp;    public long getDelayBetweenRuns() {
+<b class="nc"><i>45</i>&nbsp;        return TimeUnit.MINUTES.toMillis(1);</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    @Override
+<i>49</i>&nbsp;    public boolean shouldIRun() {
+<b class="nc"><i>50</i>&nbsp;        return bot.allShardsReady();</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    @Override
+<i>54</i>&nbsp;    public void beforeRun() {
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    @Override
+<i>58</i>&nbsp;    public void run() {
+<b class="nc"><i>59</i>&nbsp;        runCount++;</b>
+<b class="nc"><i>60</i>&nbsp;        for (DiscordBot shard : bot.getShards()) {</b>
+<b class="nc"><i>61</i>&nbsp;            if (shard == null || !shard.isReady()) {</b>
+<b class="nc"><i>62</i>&nbsp;                continue;</b>
+<i>63</i>&nbsp;            }
+<b class="nc"><i>64</i>&nbsp;            shard.commandReactionHandler.cleanCache();</b>
+<b class="nc"><i>65</i>&nbsp;            shard.chatBotHandler.cleanCache();</b>
+<b class="nc"><i>66</i>&nbsp;            shard.gameHandler.cleanCache();</b>
+<i>67</i>&nbsp;        }
+<b class="nc"><i>68</i>&nbsp;        if (runCount &lt; 60) {</b>
+<i>69</i>&nbsp;            return;
+<i>70</i>&nbsp;        }
+<b class="nc"><i>71</i>&nbsp;        runCount = 0;</b>
+<b class="nc"><i>72</i>&nbsp;        for (AbstractCommand abstractCommand : CommandHandler.getCommandObjects()) {</b>
+<b class="nc"><i>73</i>&nbsp;            if (abstractCommand instanceof ICommandCleanup) {</b>
+<b class="nc"><i>74</i>&nbsp;                ((ICommandCleanup) abstractCommand).cleanup();</b>
+<i>75</i>&nbsp;            }
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    @Override
+<i>80</i>&nbsp;    public void afterRun() {
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,205 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MusicUtil</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">emily.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MusicUtil (emily.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MusicUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 45)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright 2017 github.com/kaaz
+<i>3</i>&nbsp; *
+<i>4</i>&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>5</i>&nbsp; * you may not use this file except in compliance with the License.
+<i>6</i>&nbsp; * You may obtain a copy of the License at
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *     http://www.apache.org/licenses/LICENSE-2.0
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; * Unless required by applicable law or agreed to in writing, software
+<i>11</i>&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>12</i>&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>13</i>&nbsp; * See the License for the specific language governing permissions and
+<i>14</i>&nbsp; * limitations under the License.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;package emily.util;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import emily.db.model.OMusic;
+<i>20</i>&nbsp;import emily.guildsettings.GSetting;
+<i>21</i>&nbsp;import emily.handler.GuildSettings;
+<i>22</i>&nbsp;import emily.handler.MusicPlayerHandler;
+<i>23</i>&nbsp;import net.dv8tion.jda.core.EmbedBuilder;
+<i>24</i>&nbsp;import net.dv8tion.jda.core.entities.Guild;
+<i>25</i>&nbsp;import net.dv8tion.jda.core.entities.Member;
+<i>26</i>&nbsp;import net.dv8tion.jda.core.entities.MessageEmbed;
+<i>27</i>&nbsp;import net.dv8tion.jda.core.entities.Role;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;import java.util.List;
+<i>30</i>&nbsp;
+<b class="nc"><i>31</i>&nbsp;public class MusicUtil {</b>
+<i>32</i>&nbsp;    private final static String BLOCK_INACTIVE = &quot;\u25AC&quot;;
+<i>33</i>&nbsp;    private final static String BLOCK_ACTIVE = &quot;\uD83D\uDD18&quot;;
+<i>34</i>&nbsp;    private final static String SOUND_CHILL = &quot;\uD83D\uDD09&quot;;
+<i>35</i>&nbsp;    private final static String SOUND_LOUD = &quot;\uD83D\uDD0A&quot;;
+<i>36</i>&nbsp;    private final static float SOUND_TRESHHOLD = 0.4F;
+<i>37</i>&nbsp;    private final static int BLOCK_PARTS = 10;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    /**
+<i>40</i>&nbsp;     * Returns a fancy now playing message
+<i>41</i>&nbsp;     *
+<i>42</i>&nbsp;     * @param player the musicplayer
+<i>43</i>&nbsp;     * @param record the record playing
+<i>44</i>&nbsp;     * @param member the song requester
+<i>45</i>&nbsp;     * @return an embedded message
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public static MessageEmbed nowPlayingMessage(MusicPlayerHandler player, OMusic record, Member member) {
+<b class="nc"><i>48</i>&nbsp;        EmbedBuilder embed = new EmbedBuilder();</b>
+<b class="nc"><i>49</i>&nbsp;        Guild guild = player.getJDA().getGuildById(player.getGuild());</b>
+<i>50</i>&nbsp;
+<b class="nc"><i>51</i>&nbsp;        embed.setThumbnail(&quot;https://i.ytimg.com/vi/&quot; + record.youtubecode + &quot;/0.jpg&quot;);</b>
+<b class="nc"><i>52</i>&nbsp;        embed.setTitle(&quot;\uD83C\uDFB6 &quot; + record.youtubeTitle, null);</b>
+<b class="nc"><i>53</i>&nbsp;        embed.setDescription(&quot;[source](https://www.youtube.com/watch?v=&quot; + record.youtubecode + &quot;) | `&quot; + DisUtil.getCommandPrefix(player.getGuild()) + &quot;pl` - &quot; + player.getPlaylist().title);</b>
+<b class="nc"><i>54</i>&nbsp;        embed.addField(&quot;duration&quot;, Misc.getDurationString(player.player.getPlayingTrack().getPosition() / 1000) + &quot; / &quot; + Misc.getDurationString(record.duration), true);</b>
+<b class="nc"><i>55</i>&nbsp;        String optionsField = &quot;&quot;;</b>
+<b class="nc"><i>56</i>&nbsp;        if (player.getRequiredVotes() != 1) {</b>
+<b class="nc"><i>57</i>&nbsp;            optionsField += &quot;Skips req.: &quot; + player.getRequiredVotes() + &quot;\n&quot;;</b>
+<i>58</i>&nbsp;        }
+<b class="nc"><i>59</i>&nbsp;        String requiredRole = GuildSettings.get(player.getGuild()).getOrDefault(GSetting.MUSIC_ROLE_REQUIREMENT);</b>
+<b class="nc"><i>60</i>&nbsp;        if (!requiredRole.equals(&quot;false&quot;)) {</b>
+<b class="nc"><i>61</i>&nbsp;            Role role = guild.getRoleById(requiredRole);</b>
+<b class="nc"><i>62</i>&nbsp;            if (role != null) {</b>
+<b class="nc"><i>63</i>&nbsp;                optionsField += &quot;Role req.: &quot; + role.getName() + &quot;\n&quot;;</b>
+<i>64</i>&nbsp;            }
+<i>65</i>&nbsp;        }
+<b class="nc"><i>66</i>&nbsp;        if (!GuildSettings.get(player.getGuild()).getBoolValue(GSetting.MUSIC_QUEUE_ONLY)) {</b>
+<b class="nc"><i>67</i>&nbsp;            optionsField += &quot;Random after queue&quot;;</b>
+<i>68</i>&nbsp;        } else {
+<b class="nc"><i>69</i>&nbsp;            optionsField += &quot;Stop after queue&quot;;</b>
+<i>70</i>&nbsp;        }
+<b class="nc"><i>71</i>&nbsp;        embed.addField(&quot;Options:&quot;, optionsField, true);</b>
+<b class="nc"><i>72</i>&nbsp;        List&lt;OMusic&gt; queue = player.getQueue();</b>
+<b class="nc"><i>73</i>&nbsp;        int show = 3;</b>
+<b class="nc"><i>74</i>&nbsp;        if (!queue.isEmpty()) {</b>
+<b class="nc"><i>75</i>&nbsp;            StringBuilder x = new StringBuilder();</b>
+<b class="nc"><i>76</i>&nbsp;            for (int i = 0; i &lt; Math.min(show, queue.size()); i++) {</b>
+<b class="nc"><i>77</i>&nbsp;                x.append(queue.get(i).youtubeTitle).append(&quot;\n&quot;);</b>
+<i>78</i>&nbsp;            }
+<b class="nc"><i>79</i>&nbsp;            if (queue.size() &gt; show) {</b>
+<b class="nc"><i>80</i>&nbsp;                x.append(&quot;.. and **&quot;).append(queue.size() - 3).append(&quot;** more&quot;);</b>
+<i>81</i>&nbsp;            }
+<b class="nc"><i>82</i>&nbsp;            embed.addField(&quot;Next up&quot;, x.toString(), true);</b>
+<i>83</i>&nbsp;        }
+<b class="nc"><i>84</i>&nbsp;        if (member != null) {</b>
+<b class="nc"><i>85</i>&nbsp;            embed.setFooter(&quot;requested by &quot; + member.getEffectiveName(), member.getUser().getAvatarUrl());</b>
+<i>86</i>&nbsp;        } else {
+<b class="nc"><i>87</i>&nbsp;            embed.setFooter(&quot;You add to your playlist and vote to skip with reactions&quot;, null);</b>
+<i>88</i>&nbsp;        }
+<b class="nc"><i>89</i>&nbsp;        return embed.build();</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public static String nowPlayingMessageNoEmbed(MusicPlayerHandler player, OMusic record) {
+<b class="nc"><i>93</i>&nbsp;        return &quot;[`&quot; + DisUtil.getCommandPrefix(player.getGuild()) + &quot;pl` &quot; + player.getPlaylist().title + &quot;] \uD83C\uDFB6 &quot; + record.youtubeTitle;</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /**
+<i>98</i>&nbsp;     * @param startTime timestamp (in seconds) of the moment the song started playing
+<i>99</i>&nbsp;     * @param duration  current song length in seconds
+<i>100</i>&nbsp;     * @param volume    volume of the player
+<i>101</i>&nbsp;     * @return a formatted mediaplayer
+<i>102</i>&nbsp;     */
+<i>103</i>&nbsp;    public static String getMediaplayerProgressbar(long startTime, long duration, float volume, boolean isPaused) {
+<b class="nc"><i>104</i>&nbsp;        long current = System.currentTimeMillis() / 1000 - startTime;</b>
+<b class="nc"><i>105</i>&nbsp;        StringBuilder bar = new StringBuilder(isPaused ? &quot;\u23EF&quot; : &quot;\u23F8 &quot;);</b>
+<b class="nc"><i>106</i>&nbsp;        int activeBLock = (int) ((float) current / (float) duration * (float) BLOCK_PARTS);</b>
+<b class="nc"><i>107</i>&nbsp;        for (int i = 0; i &lt; BLOCK_PARTS; i++) {</b>
+<b class="nc"><i>108</i>&nbsp;            if (i == activeBLock) {</b>
+<b class="nc"><i>109</i>&nbsp;                bar.append(BLOCK_ACTIVE);</b>
+<i>110</i>&nbsp;            } else {
+<b class="nc"><i>111</i>&nbsp;                bar.append(BLOCK_INACTIVE);</b>
+<i>112</i>&nbsp;            }
+<i>113</i>&nbsp;        }
+<b class="nc"><i>114</i>&nbsp;        bar.append(&quot; [&quot;).append(Misc.getDurationString(current)).append(&quot;/&quot;).append(Misc.getDurationString(duration)).append(&quot;] &quot;);</b>
+<b class="nc"><i>115</i>&nbsp;        if (volume &gt;= SOUND_TRESHHOLD) {</b>
+<b class="nc"><i>116</i>&nbsp;            bar.append(SOUND_LOUD);</b>
+<i>117</i>&nbsp;        } else {
+<b class="nc"><i>118</i>&nbsp;            bar.append(SOUND_CHILL);</b>
+<i>119</i>&nbsp;        }
+<b class="nc"><i>120</i>&nbsp;        return bar.toString();</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-06-16 11:51</div>
+</div>
+</body>
+</html>
