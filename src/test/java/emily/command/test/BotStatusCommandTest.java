@@ -115,6 +115,19 @@ public class BotStatusCommandTest {
         };
     }
 
+
+    @Test
+    public void testGetDescription() {
+        String expected = "Set the game I'm currently playing";
+        assertEquals(botStatusCommand.getDescription(), expected);
+    }
+
+    @Test
+    public void testGetCommand() {
+        String expected = "botstatus";
+        assertEquals(botStatusCommand.getCommand(), expected);
+    }
+
     @Test
     public void testGetUsage() {
 
@@ -125,10 +138,9 @@ public class BotStatusCommandTest {
         };
 
         assertArrayEquals(botStatusCommand.getUsage(), args);
-
     }
 
-
+    //TODO execute
     @Test
     public void testExecute() {
         SimpleRank rank = SimpleRank.CREATOR;
