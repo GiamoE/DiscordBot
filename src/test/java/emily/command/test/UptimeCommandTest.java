@@ -3,6 +3,7 @@ package emily.command.test;
 import emily.command.informative.UptimeCommand;
 import emily.command.music.SkipTrack;
 import emily.main.DiscordBot;
+import emily.permission.SimpleRank;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -15,11 +16,14 @@ import static org.junit.Assert.assertNotNull;
 
 public class UptimeCommandTest {
 
+
     @Mock DiscordBot bot;
     @Mock String[] args;
     @Mock MessageChannel channel;
     @Mock User author;
     @Mock Message inputMessage;
+
+    SimpleRank rank = SimpleRank.CREATOR;
 
     private UptimeCommand uptimeCommand;
 
