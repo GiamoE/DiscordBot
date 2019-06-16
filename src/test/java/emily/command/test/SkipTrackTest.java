@@ -26,7 +26,6 @@ public class SkipTrackTest {
 
     @Before
     public void before() {
-//        MockitoAnnotations.initMocks(SkipTrack.class);
         MockitoAnnotations.initMocks(SkipTrack.class);
         skiptrack = new SkipTrack();
 
@@ -108,6 +107,30 @@ public class SkipTrackTest {
         };
     }
 
+    @Test
+    public void testGetDescription() {
+        String expected = "skip current track";
+        assertEquals(skiptrack.getDescription(), expected);
+    }
+
+    @Test
+    public void testGetCommand() {
+        String expected = "skip";
+        assertEquals(skiptrack.getCommand(), expected);
+    }
+
+    @Test
+    public void testGetUsage() {
+
+        args = new String[]{
+                "skip                  //skips current track",
+                "skip adminonly        //check what skipmode its set on",
+                "skip adminonly toggle //toggle the skipmode",
+                "skip force            //admin-only, force a skip"
+        };
+
+        assertArrayEquals(skiptrack.getUsage(), args);
+    }
 //    @Test
 //    public void testExecute() {
 //         assertNotNull(skiptrack.execute(bot, args, channel, author, inputMessage));
