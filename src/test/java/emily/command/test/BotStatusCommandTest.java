@@ -2,6 +2,7 @@ package emily.command.test;
 
 import emily.command.bot_administration.BotStatusCommand;
 import emily.main.DiscordBot;
+import emily.permission.SimpleRank;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.requests.RestAction;
@@ -9,11 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -26,6 +26,7 @@ public class BotStatusCommandTest {
     Message inputMessage;
 
     BotStatusCommand botStatusCommand;
+
 
     @Before
     public void before() {
@@ -114,16 +115,17 @@ public class BotStatusCommandTest {
         };
     }
 
+
     @Test
     public void testGetDescription() {
         String expected = "Set the game I'm currently playing";
-        assertEquals( expected, botStatusCommand.getDescription());
+        assertEquals(botStatusCommand.getDescription(), expected);
     }
 
     @Test
     public void testGetCommand() {
         String expected = "botstatus";
-        assertEquals(expected, botStatusCommand.getCommand());
+        assertEquals(botStatusCommand.getCommand(), expected);
     }
 
     @Test
@@ -135,21 +137,16 @@ public class BotStatusCommandTest {
                 "botstatus stream <username> <game>   //streaming twitch.tv/<username> playing <game>",
         };
 
-        assertArrayEquals(args, botStatusCommand.getUsage());
-    }
-
-    @Test
-    public void testGetAliases() {
-        String[] expected = new String[]{};
-        assertArrayEquals(expected, botStatusCommand.getAliases());
-
+        assertArrayEquals(botStatusCommand.getUsage(), args);
     }
 
     //TODO execute
-//    @Test
-//    public void testExecute() {
-//        System.out.println(bot.security.getSimpleRank(author, null));
-//        botStatusCommand.execute(bot, args, channel, author, inputMessage);
-//    }
+    @Test
+    public void testExecute() {
+        SimpleRank rank = SimpleRank.CREATOR;
+        args = new String[]{"reset"};
+        //botStatusCommand.execute(bot, args, channel, author, inputMessage);
+
+    }
 
 }

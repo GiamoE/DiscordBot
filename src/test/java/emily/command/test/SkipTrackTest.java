@@ -1,49 +1,122 @@
 package emily.command.test;
 
-import emily.command.meta.CommandVisibility;
 import emily.command.music.SkipTrack;
 import emily.main.DiscordBot;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.requests.RestAction;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import static org.junit.Assert.*;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import java.util.List;
+
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class SkipTrackTest {
 
-    DiscordBot bot;
-    String[] args;
-    MessageChannel channel;
-    User author;
-    Message inputMessage;
-
-    SkipTrack skiptrack;
+    @Mock DiscordBot bot;
+    @Mock String[] args;
+    @Mock MessageChannel channel;
+    @Mock User author;
+    @Mock Message inputMessage;
+    private SkipTrack skiptrack;
 
     @Before
     public void before() {
-        bot = mock(DiscordBot.class);
-        channel = mock(MessageChannel.class);
-        author = mock(User.class);
-        inputMessage = mock(Message.class);
-
+        MockitoAnnotations.initMocks(SkipTrack.class);
         skiptrack = new SkipTrack();
+
+        author = new User() {
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public String getDiscriminator() {
+                return null;
+            }
+
+            @Override
+            public String getAvatarId() {
+                return null;
+            }
+
+            @Override
+            public String getAvatarUrl() {
+                return null;
+            }
+
+            @Override
+            public String getDefaultAvatarId() {
+                return null;
+            }
+
+            @Override
+            public String getDefaultAvatarUrl() {
+                return null;
+            }
+
+            @Override
+            public String getEffectiveAvatarUrl() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrivateChannel() {
+                return false;
+            }
+
+            @Override
+            public RestAction<PrivateChannel> openPrivateChannel() {
+                return null;
+            }
+
+            @Override
+            public List<Guild> getMutualGuilds() {
+                return null;
+            }
+
+            @Override
+            public boolean isBot() {
+                return false;
+            }
+
+            @Override
+            public JDA getJDA() {
+                return null;
+            }
+
+            @Override
+            public boolean isFake() {
+                return false;
+            }
+
+            @Override
+            public String getAsMention() {
+                return null;
+            }
+
+            @Override
+            public long getIdLong() {
+                return 0;
+            }
+        };
     }
 
     @Test
     public void testGetDescription() {
         String expected = "skip current track";
-        assertEquals(expected, skiptrack.getDescription());
+        assertEquals(skiptrack.getDescription(), expected);
     }
 
     @Test
     public void testGetCommand() {
         String expected = "skip";
-        assertEquals(expected, skiptrack.getCommand());
+        assertEquals(skiptrack.getCommand(), expected);
     }
 
     @Test
@@ -56,21 +129,8 @@ public class SkipTrackTest {
                 "skip force            //admin-only, force a skip"
         };
 
-        assertArrayEquals(args, skiptrack.getUsage());
+        assertArrayEquals(skiptrack.getUsage(), args);
     }
-
-    @Test
-    public void testGetVisibility() {
-        SkipTrack test = mock(SkipTrack.class);
-        when(test.getVisibility()).thenReturn(CommandVisibility.PUBLIC);
-    }
-
-    @Test
-    public void testGetAliases() {
-        String[] expected = new String[]{"next"};
-        assertArrayEquals(expected, skiptrack.getAliases());
-    }
-
 //    @Test
 //    public void testExecute() {
 //         assertNotNull(skiptrack.execute(bot, args, channel, author, inputMessage));
