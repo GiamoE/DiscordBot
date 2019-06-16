@@ -1,25 +1,35 @@
 package emily.command.test;
 
-import emily.main.BotContainer;
+import emily.command.informative.UptimeCommand;
+import emily.command.music.SkipTrack;
 import emily.main.DiscordBot;
-import emily.templates.Templates;
-import emily.util.TimeUtil;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
+import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class UptimeCommandTest {
 
-    // Create the needed variables
+    @Mock DiscordBot bot;
+    @Mock String[] args;
+    @Mock MessageChannel channel;
+    @Mock User author;
+    @Mock Message inputMessage;
 
-//    DiscordBot bot; (need to init bot, however seems to be hard. Mby mock?)
-//    MessageChannel channel;
-//    String uptime = Templates.command.uptime.upfor.formatGuild(channel, TimeUtil.getRelativeTime(bot.startupTimeStamp, false));
+    private UptimeCommand uptimeCommand;
+
+    @Before
+    public void before() {
+//        MockitoAnnotations.initMocks(SkipTrack.class);
+        MockitoAnnotations.initMocks(SkipTrack.class);
+        uptimeCommand = new UptimeCommand();
+    }
 
     @Test
-    public void CheckUptime() {
-        // check whether the bot actually has an uptime, if it is null the bot is most likely offline.
-        assertTrue("The bot isn't up therefore has no uptime", System.currentTimeMillis() != 0);
+    public void testExecute() {
+        uptimeCommand.execute(bot, args, channel, author, inputMessage);
     }
 }

@@ -1,33 +1,47 @@
 package emily.command.test;
 
+import emily.command.bot_administration.BotStatusCommand;
+import emily.main.DiscordBot;
 import emily.permission.SimpleRank;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.requests.RestAction;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertTrue;
+import java.util.List;
 
+import static org.mockito.Mockito.mock;
+
+@RunWith(MockitoJUnitRunner.class)
 public class BotStatusCommandTest {
 
-    // setting up the initial variables
-    SimpleRank rank = SimpleRank.BOT_ADMIN;
-    String status = "Playing Mario 98";
-    String command = "game";
+    DiscordBot bot;
+    String[] args;
+    MessageChannel channel;
+    User author;
+    Message inputMessage;
 
-    @Test
-    public void checkPermission() {
-        // first we check whether the user requesting the command has the right rank.
-        assertTrue("Your rank is invalid for this command", rank == SimpleRank.BOT_ADMIN);
+    BotStatusCommand botStatusCommand;
+
+
+    @Before
+    public void before() {
+       bot = mock(DiscordBot.class);
+       channel = mock(MessageChannel.class);
+       author = mock(User.class);
+       inputMessage = mock(Message.class);
+
+       botStatusCommand = new BotStatusCommand();
+
+       SimpleRank rank = SimpleRank.CREATOR;
     }
 
     @Test
-    public void checkMessage() {
-        // we then test if the message is valid has to be more than 0 characters
-        assertTrue("The text has to be longer", status.length() > 0);
+    public void testExecute() {
+        botStatusCommand.execute(bot, args, channel, author, inputMessage);
     }
 
-    @Test
-    public void checkCommand() {
-        // we then test if the command given is valid (reset, game and stream) are the only valid options.
-        assertTrue("You're using an invalid botstatus command", command.toLowerCase() == "reset" ||
-                command.toLowerCase() == "stream" || command.toLowerCase() == "game");
-    }
 }

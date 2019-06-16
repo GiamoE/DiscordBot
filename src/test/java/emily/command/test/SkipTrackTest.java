@@ -1,55 +1,114 @@
 package emily.command.test;
 
-import emily.command.meta.CommandVisibility;
 import emily.command.music.SkipTrack;
-import emily.permission.SimpleRank;
+import emily.main.DiscordBot;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.requests.RestAction;
+import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 public class SkipTrackTest {
 
-    private SkipTrack skiptrack = new SkipTrack();
+    @Mock DiscordBot bot;
+    @Mock String[] args;
+    @Mock MessageChannel channel;
+    @Mock User author;
+    @Mock Message inputMessage;
+    private SkipTrack skiptrack;
 
-    @Test
-    public void testDescription() {
-        assertEquals("skip current track", skiptrack.getDescription());
+    @Before
+    public void before() {
+//        MockitoAnnotations.initMocks(SkipTrack.class);
+        MockitoAnnotations.initMocks(SkipTrack.class);
+        skiptrack = new SkipTrack();
+
+        author = new User() {
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public String getDiscriminator() {
+                return null;
+            }
+
+            @Override
+            public String getAvatarId() {
+                return null;
+            }
+
+            @Override
+            public String getAvatarUrl() {
+                return null;
+            }
+
+            @Override
+            public String getDefaultAvatarId() {
+                return null;
+            }
+
+            @Override
+            public String getDefaultAvatarUrl() {
+                return null;
+            }
+
+            @Override
+            public String getEffectiveAvatarUrl() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrivateChannel() {
+                return false;
+            }
+
+            @Override
+            public RestAction<PrivateChannel> openPrivateChannel() {
+                return null;
+            }
+
+            @Override
+            public List<Guild> getMutualGuilds() {
+                return null;
+            }
+
+            @Override
+            public boolean isBot() {
+                return false;
+            }
+
+            @Override
+            public JDA getJDA() {
+                return null;
+            }
+
+            @Override
+            public boolean isFake() {
+                return false;
+            }
+
+            @Override
+            public String getAsMention() {
+                return null;
+            }
+
+            @Override
+            public long getIdLong() {
+                return 0;
+            }
+        };
     }
 
     @Test
-    public void testCommand() {
-        assertEquals("skip", skiptrack.getCommand());
-    }
-
-    @Test
-    public void testUsage() {
-        assertNotNull(skiptrack.getUsage());
-    }
-
-    @Test
-    public void testVisibility() {
-        assertEquals(skiptrack.getVisibility(), CommandVisibility.PUBLIC);
-
-    }
-
-    @Test
-    public void testAliases() {
-        assertArrayEquals(skiptrack.getAliases(), new String[]{"next"});
-    }
-
-    @Test
-    public void executeSkipSong() {
-
-        SimpleRank userRank = SimpleRank.GUILD_ADMIN;
-        boolean adminOnly = true;
-
-        assertTrue("Admin only & guild admin", adminOnly && userRank == SimpleRank.GUILD_ADMIN);
-    }
-
-    @Test
-    public void executeSkipSongByVote() {
-        int voteCount = 1;
-        int requiredVotes = 1;
-
-        assertTrue("Skip by vote", voteCount >= requiredVotes);
+    public void testExecute() {
+        skiptrack.execute(bot, args, channel, author, inputMessage);
     }
 }
