@@ -15,12 +15,11 @@ import static org.mockito.Mockito.when;
 
 public class UptimeCommandTest {
 
-    @Mock Message inputMessage;
+    Message inputMessage;
     DiscordBot bot;
     String[] args;
     MessageChannel channel;
     User author;
-    Message inputMessage;
 
     private UptimeCommand uptimeCommand;
 
