@@ -1,49 +1,137 @@
 package emily.command.test;
 
-import emily.permission.SimpleRank;
+import emily.command.bot_administration.ChangeName;
+import emily.main.DiscordBot;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.requests.RestAction;
+import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.util.List;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class ChangeNameTest {
 
+    DiscordBot bot;
+    String[] args;
+    MessageChannel channel;
+    User author;
+    Message inputMessage;
 
-    @Test
-    public void executeNoPermission() {
-        SimpleRank rank1 = SimpleRank.CREATOR;
-        SimpleRank rank2 = SimpleRank.BANNED_USER;
-        SimpleRank rank3 = SimpleRank.BOT;
-        SimpleRank rank4 = SimpleRank.USER;
-        SimpleRank rank5 = SimpleRank.INTERACTION_BOT;
-        SimpleRank rank6 = SimpleRank.GUILD_BOT_ADMIN;
-        SimpleRank rank7 = SimpleRank.GUILD_ADMIN;
-        SimpleRank rank8 = SimpleRank.BANNED_USER;
-        SimpleRank rank9 = SimpleRank.GUILD_OWNER;
-        SimpleRank rank10 = SimpleRank.CONTRIBUTOR;
-        SimpleRank rank11 = SimpleRank.BOT_ADMIN;
-        SimpleRank rank12 = SimpleRank.SYSTEM_ADMIN;
+    ChangeName changeName;
 
-        //only the creator can change the bot name
-        assertSame("You are the creator", rank1, SimpleRank.CREATOR);
+    @Before
+    public void before() {
+        bot = mock(DiscordBot.class);
+        channel = mock(MessageChannel.class);
+        author = mock(User.class);
+        inputMessage = mock(Message.class);
 
-        //other ranks cannot change the bot name
-        assertNotSame("You are not the creator", rank2, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank3, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank4, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank5, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank6, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank7, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank8, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank9, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank10, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank11, SimpleRank.CREATOR);
-        assertNotSame("You are not the creator", rank12, SimpleRank.CREATOR);
+        changeName = new ChangeName();
 
+        author = new User() {
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public String getDiscriminator() {
+                return null;
+            }
+
+            @Override
+            public String getAvatarId() {
+                return null;
+            }
+
+            @Override
+            public String getAvatarUrl() {
+                return null;
+            }
+
+            @Override
+            public String getDefaultAvatarId() {
+                return null;
+            }
+
+            @Override
+            public String getDefaultAvatarUrl() {
+                return null;
+            }
+
+            @Override
+            public String getEffectiveAvatarUrl() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrivateChannel() {
+                return false;
+            }
+
+            @Override
+            public RestAction<PrivateChannel> openPrivateChannel() {
+                return null;
+            }
+
+            @Override
+            public List<Guild> getMutualGuilds() {
+                return null;
+            }
+
+            @Override
+            public boolean isBot() {
+                return false;
+            }
+
+            @Override
+            public JDA getJDA() {
+                return null;
+            }
+
+            @Override
+            public boolean isFake() {
+                return false;
+            }
+
+            @Override
+            public String getAsMention() {
+                return null;
+            }
+
+            @Override
+            public long getIdLong() {
+                return 0;
+            }
+        };
     }
 
     @Test
-    public void executeNoName() {
-        // if the name given has no characters
-        String newName = "Timmy";
-        assertTrue("There is no input for the new name", newName.length() > 0);
+    public void testGetDescription() {
+        String expected = "Changes my name";
+        assertEquals(expected, changeName.getDescription());
+    }
+
+    @Test
+    public void testGetCommand() {
+        String expected = "changename";
+        assertEquals(expected, changeName.getCommand());
+    }
+
+    @Test
+    public void testGetUsage() {
+        String[] expected = new String[]{};
+        assertArrayEquals(expected, changeName.getUsage());
+    }
+
+    @Test
+    public void testGetAliases() {
+        String[] expected = new String[]{};
+        assertArrayEquals(expected, changeName.getAliases());
     }
 }
