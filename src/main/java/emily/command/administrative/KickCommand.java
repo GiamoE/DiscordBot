@@ -52,13 +52,17 @@ public class KickCommand extends AbstractModActionCommand {
         return Permission.KICK_MEMBERS;
     }
 
+    public Permission testGetRequiredPermission() {
+        return Permission.KICK_MEMBERS;
+    }
+
+    public OModerationCase.PunishType testGetPunishType() {
+        return OModerationCase.PunishType.KICK;
+    }
+
     @Override
     protected boolean punish(DiscordBot bot, Guild guild, Member member) {
         bot.queue.add(guild.getController().kick(member));
         return true;
     }
-//
-//    public boolean publicPunish(DiscordBot bot, Guild guild, Member member) {
-//        return punish(bot, guild, member);
-//    }
 }

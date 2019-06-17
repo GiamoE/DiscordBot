@@ -1,21 +1,38 @@
 package emily.command.test;
 
 import emily.command.administrative.KickCommand;
-import emily.command.bot_administration.ChangeName;
 import emily.db.model.OModerationCase;
+import emily.main.BotContainer;
 import emily.main.DiscordBot;
+import net.dv8tion.jda.client.requests.restaction.pagination.MentionPaginationAction;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.Region;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.managers.AudioManager;
+import net.dv8tion.jda.core.managers.GuildController;
+import net.dv8tion.jda.core.managers.GuildManager;
+import net.dv8tion.jda.core.managers.GuildManagerUpdatable;
 import net.dv8tion.jda.core.requests.RestAction;
+import net.dv8tion.jda.core.requests.restaction.MemberAction;
+import net.dv8tion.jda.core.requests.restaction.pagination.AuditLogPaginationAction;
+import net.dv8tion.jda.core.utils.cache.MemberCacheView;
+import net.dv8tion.jda.core.utils.cache.SnowflakeCacheView;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.*;
+import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 public class KickCommandTest {
@@ -25,10 +42,12 @@ public class KickCommandTest {
     MessageChannel channel;
     User author;
     Message inputMessage;
+    BotContainer botContainer;
 
     Guild guild;
     Member member;
     KickCommand kickCommand;
+
 
 
     @Before
@@ -37,6 +56,7 @@ public class KickCommandTest {
         channel = mock(MessageChannel.class);
         author = mock(User.class);
         inputMessage = mock(Message.class);
+        botContainer = mock(BotContainer.class);
         author = new User() {
             @Override
             public String getName() {
@@ -145,8 +165,15 @@ public class KickCommandTest {
         assertArrayEquals(expected, kickCommand.getAliases());
     }
 
-//    @Test
-//    public void testPunish() {
-//        assertEquals(false, kickCommand.publicPunish(bot, guild, member));
-//    }
+    @Test
+    public void testGetRequiredPermission() {
+        Permission expected = Permission.KICK_MEMBERS;
+        assertEquals(expected, kickCommand.testGetRequiredPermission());
+    }
+
+    @Test
+    public void testGetPunishmentType() {
+        OModerationCase.PunishType expected = OModerationCase.PunishType.KICK;
+        assertEquals(expected, kickCommand.testGetPunishType());
+    }
 }

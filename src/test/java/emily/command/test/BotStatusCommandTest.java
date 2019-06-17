@@ -2,6 +2,8 @@ package emily.command.test;
 
 import emily.command.bot_administration.BotStatusCommand;
 import emily.main.DiscordBot;
+import emily.permission.SimpleRank;
+import emily.util.Emojibet;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.requests.RestAction;
@@ -24,6 +26,7 @@ public class BotStatusCommandTest {
     MessageChannel channel;
     User author;
     Message inputMessage;
+    SimpleRank rank = SimpleRank.BOT_ADMIN;
 
     BotStatusCommand botStatusCommand;
 
@@ -33,7 +36,6 @@ public class BotStatusCommandTest {
         channel = mock(MessageChannel.class);
         author = mock(User.class);
         inputMessage = mock(Message.class);
-
         botStatusCommand = new BotStatusCommand();
 
         author = new User() {
@@ -145,11 +147,17 @@ public class BotStatusCommandTest {
 
     }
 
-    //TODO execute
-//    @Test
-//    public void testExecute() {
-//        System.out.println(bot.security.getSimpleRank(author, null));
-//        botStatusCommand.execute(bot, args, channel, author, inputMessage);
-//    }
-
+    @Test
+    public void testExecute() {
+        rank = SimpleRank.BOT_ADMIN;
+        if (rank == SimpleRank.BOT_ADMIN) {
+            String expected = "Correct permission";
+            assertEquals(expected, botStatusCommand.testExecute(bot, args, channel, rank, inputMessage));
+        }
+        rank = SimpleRank.BANNED_USER;
+        if (rank == SimpleRank.BANNED_USER) {
+            String expected = "Invalid permission";
+            assertEquals(expected, botStatusCommand.testExecute(bot, args, channel, rank, inputMessage));
+        }
+    }
 }

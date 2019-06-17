@@ -60,7 +60,7 @@ public class BotStatusCommand extends AbstractCommand {
         return new String[]{};
     }
 
-    @Override
+
     public String execute(DiscordBot bot, String[] args, MessageChannel channel, User author, Message inputMessage) {
         SimpleRank rank = bot.security.getSimpleRank(author);
         if (!rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
@@ -101,5 +101,15 @@ public class BotStatusCommand extends AbstractCommand {
             return Emojibet.THUMBS_UP;
         }
         return Templates.invalid_use.formatGuild(channel);
+    }
+
+    public String testExecute(DiscordBot bot, String[] args, MessageChannel channel, SimpleRank rank, Message inputMessage) {
+        if (rank != SimpleRank.BOT_ADMIN) {
+            return "Invalid permission";
+        }
+        if (rank.isAtLeast(SimpleRank.BOT_ADMIN)) {
+            return "Correct permission";
+        }
+        return "Invalid rank & Argument";
     }
 }
